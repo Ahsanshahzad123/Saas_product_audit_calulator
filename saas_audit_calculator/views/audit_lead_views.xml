@@ -1,0 +1,173 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+  <!-- ── List View ─────────────────────────────────────────────────────── -->
+  <record id="saas_audit_lead_list" model="ir.ui.view">
+    <field name="name">saas.audit.lead.list</field>
+    <field name="model">saas.audit.lead</field>
+    <field name="arch" type="xml">
+      <tree string="Audit Leads" decoration-danger="risk_level == 'Critical'"
+            decoration-warning="risk_level == 'High'"
+            decoration-success="risk_level == 'Low'">
+        <field name="create_date" string="Submitted"/>
+        <field name="name"/>
+        <field name="email"/>
+        <field name="company"/>
+        <field name="startup_stage"/>
+        <field name="architecture"/>
+        <field name="team_total" string="Team Size"/>
+        <field name="monthly_burn" widget="monetary" string="Burn/Mo"/>
+        <field name="health_score"/>
+        <field name="efficiency_grade" string="Grade"/>
+        <field name="risk_level"/>
+        <field name="monthly_cod" widget="monetary" string="Cost of Delay/Mo"/>
+        <field name="state"
+               widget="badge"
+               decoration-info="state == 'new'"
+               decoration-warning="state == 'contacted'"
+               decoration-success="state == 'converted'"
+               decoration-danger="state == 'lost'"/>
+      </tree>
+    </field>
+  </record>
+
+  <!-- ── Form View ─────────────────────────────────────────────────────── -->
+  <record id="saas_audit_lead_form" model="ir.ui.view">
+    <field name="name">saas.audit.lead.form</field>
+    <field name="model">saas.audit.lead</field>
+    <field name="arch" type="xml">
+      <form string="Audit Lead">
+        <header>
+          <button name="action_mark_contacted" string="Mark Contacted"
+                  type="object" class="btn-primary"
+                  attrs="{'invisible': [('state', 'not in', ['new'])]}"/>
+          <button name="action_mark_qualified" string="Mark Qualified"
+                  type="object" class="btn-primary"
+                  attrs="{'invisible': [('state', 'not in', ['contacted'])]}"/>
+          <button name="action_mark_converted" string="Mark Converted"
+                  type="object" class="btn-success"
+                  attrs="{'invisible': [('state', 'not in', ['qualified'])]}"/>
+          <field name="state" widget="statusbar"
+                 statusbar_visible="new,contacted,qualified,converted"/>
+        </header>
+        <sheet>
+          <div class="oe_button_box" name="button_box"/>
+          <group>
+            <!-- Contact info -->
+            <group string="Contact Information">
+              <field name="name"/>
+              <field name="email" widget="email"/>
+              <field name="phone" widget="phone"/>
+              <field name="company"/>
+              <field name="role"/>
+              <field name="website_url" widget="url"/>
+            </group>
+            <!-- Audit scores -->
+            <group string="Audit Results">
+              <field name="health_score"/>
+              <field name="efficiency_grade"/>
+              <field name="risk_level"/>
+              <field name="monthly_cod" widget="monetary"/>
+              <field name="annual_cod" widget="monetary"/>
+              <field name="benchmark_percentile" string="Benchmark Percentile (%)"/>
+            </group>
+          </group>
+          <group>
+            <!-- Calculator inputs -->
+            <group string="Calculator Inputs">
+              <field name="startup_stage"/>
+              <field name="architecture"/>
+              <field name="monthly_burn" widget="monetary"/>
+              <field name="monthly_revenue" widget="monetary"/>
+            </group>
+            <!-- Financial breakdown -->
+            <group string="Financial Breakdown">
+              <field name="burn_inefficiency" widget="monetary"/>
+              <field name="delay_cost" widget="monetary"/>
+              <field name="lost_opportunity" widget="monetary"/>
+              <field name="refactor_cost" widget="monetary"/>
+              <field name="security_risk_cost" widget="monetary"/>
+              <field name="valuation_at_risk" widget="monetary"/>
+            </group>
+          </group>
+          <group string="Team Breakdown">
+            <group>
+              <field name="team_pm" string="Project Managers"/>
+              <field name="team_ux" string="UX/UI Designers"/>
+              <field name="team_eng" string="Software Engineers"/>
+            </group>
+            <group>
+              <field name="team_qa" string="QA Engineers"/>
+              <field name="team_devops" string="DevOps Engineers"/>
+              <field name="team_support" string="Support Engineers"/>
+              <field name="team_total" string="Total Team" readonly="1"/>
+            </group>
+          </group>
+          <group string="Lead Details">
+            <field name="challenge" colspan="2"/>
+            <field name="notes" colspan="2"/>
+            <field name="source"/>
+            <field name="submitted_at" readonly="1"/>
+            <field name="ip_address" readonly="1"/>
+          </group>
+        </sheet>
+        <div class="oe_chatter">
+          <field name="message_follower_ids"/>
+          <field name="message_ids"/>
+        </div>
+      </form>
+    </field>
+  </record>
+
+  <!-- ── Search View ───────────────────────────────────────────────────── -->
+  <record id="saas_audit_lead_search" model="ir.ui.view">
+    <field name="name">saas.audit.lead.search</field>
+    <field name="model">saas.audit.lead</field>
+    <field name="arch" type="xml">
+      <search string="Search Audit Leads">
+        <field name="email"/>
+        <field name="name"/>
+        <field name="company"/>
+        <filter string="New"       name="new"       domain="[('state','=','new')]"/>
+        <filter string="Contacted" name="contacted" domain="[('state','=','contacted')]"/>
+        <filter string="Qualified" name="qualified" domain="[('state','=','qualified')]"/>
+        <filter string="Converted" name="converted" domain="[('state','=','converted')]"/>
+        <separator/>
+        <filter string="Critical Risk" name="critical" domain="[('risk_level','=','Critical')]"/>
+        <filter string="High Risk"     name="high"     domain="[('risk_level','=','High')]"/>
+        <separator/>
+        <group expand="0" string="Group By">
+          <filter string="Stage"    name="by_stage"  context="{'group_by':'startup_stage'}"/>
+          <filter string="Risk"     name="by_risk"   context="{'group_by':'risk_level'}"/>
+          <filter string="Status"   name="by_state"  context="{'group_by':'state'}"/>
+          <filter string="Month"    name="by_month"  context="{'group_by':'create_date:month'}"/>
+        </group>
+      </search>
+    </field>
+  </record>
+
+  <!-- ── Pivot View ────────────────────────────────────────────────────── -->
+  <record id="saas_audit_lead_pivot" model="ir.ui.view">
+    <field name="name">saas.audit.lead.pivot</field>
+    <field name="model">saas.audit.lead</field>
+    <field name="arch" type="xml">
+      <pivot string="Audit Leads Analysis">
+        <field name="startup_stage"  type="row"/>
+        <field name="risk_level"     type="col"/>
+        <field name="monthly_cod"    type="measure"/>
+        <field name="annual_cod"     type="measure"/>
+        <field name="health_score"   type="measure"/>
+      </pivot>
+    </field>
+  </record>
+
+  <!-- ── Action ────────────────────────────────────────────────────────── -->
+  <record id="saas_audit_lead_action" model="ir.actions.act_window">
+    <field name="name">Audit Leads</field>
+    <field name="res_model">saas.audit.lead</field>
+    <field name="view_mode">tree,form,pivot</field>
+    <field name="search_view_id" ref="saas_audit_lead_search"/>
+    <field name="context">{'search_default_new': 1}</field>
+  </record>
+
+</odoo>

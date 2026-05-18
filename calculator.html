@@ -1,0 +1,838 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SaaS Product Audit Calculator</title>
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+<style>
+/* ═══════ Reset & Base ═══════ */
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+body{
+  font-family:'Segoe UI',-apple-system,BlinkMacSystemFont,sans-serif;
+  background:linear-gradient(135deg,#0b1731 0%,#1a237e 45%,#1565c0 100%);
+  min-height:100vh;color:#fff;padding-bottom:60px;
+}
+
+/* ═══════ Header ═══════ */
+.sc-header{text-align:center;padding:50px 20px 38px}
+.sc-header h1{font-size:clamp(1.8rem,4.5vw,2.8rem);font-weight:800;letter-spacing:-.5px;margin-bottom:10px}
+.sc-header p{font-size:.98rem;color:rgba(255,255,255,.65)}
+
+/* ═══════ Layout ═══════ */
+.sc-container{max-width:1160px;margin:0 auto;padding:0 20px;display:grid;grid-template-columns:1fr 420px;gap:28px;align-items:start}
+
+/* ═══════ Form Rows ═══════ */
+.sc-form-panel{display:flex;flex-direction:column;gap:14px}
+.sc-row{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+.sc-field{display:flex;flex-direction:column;gap:6px}
+.sc-field label{font-size:.68rem;font-weight:700;text-transform:uppercase;letter-spacing:.9px;color:rgba(255,255,255,.82)}
+.sc-field input,.sc-field select{padding:12px 14px;background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.22);border-radius:9px;color:#fff;font-size:.9rem;outline:none;transition:border-color .2s,background .2s;width:100%;-webkit-appearance:none;appearance:none}
+.sc-field select{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='rgba(255,255,255,0.7)' d='M6 8L1 3h10z'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 12px center;padding-right:36px}
+.sc-field input::placeholder{color:rgba(255,255,255,.35)}
+.sc-field input:focus,.sc-field select:focus{border-color:rgba(255,255,255,.6);background:rgba(255,255,255,.19)}
+.sc-field select option{background:#1a237e;color:#fff}
+
+/* prefix $ */
+.pfx{position:relative}
+.pfx span{position:absolute;left:13px;top:50%;transform:translateY(-50%);color:rgba(255,255,255,.5);font-size:.9rem;pointer-events:none}
+.pfx input{padding-left:26px}
+
+/* ═══════ Team Section ═══════ */
+.sc-team-box{background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.13);border-radius:13px;padding:18px 20px}
+.sc-team-box h3{font-size:.65rem;font-weight:800;text-transform:uppercase;letter-spacing:1.6px;color:rgba(255,255,255,.82);margin-bottom:3px}
+.sc-team-box p.hint{font-size:.7rem;color:rgba(255,255,255,.42);margin-bottom:14px}
+.sc-team-grid{display:grid;grid-template-columns:1fr 1fr;gap:11px}
+.sc-spin-grp{display:flex;flex-direction:column;gap:5px}
+.sc-spin-grp label{font-size:.7rem;color:rgba(255,255,255,.78);font-weight:500}
+.sc-spin-wrap{display:flex;align-items:stretch;background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.22);border-radius:8px;overflow:hidden;height:38px}
+.sc-spin-wrap input[type=number]{flex:1;background:transparent;border:none;color:#fff;text-align:center;font-size:.9rem;-moz-appearance:textfield;outline:none}
+.sc-spin-wrap input[type=number]::-webkit-outer-spin-button,.sc-spin-wrap input[type=number]::-webkit-inner-spin-button{-webkit-appearance:none}
+.sc-spin-btn{background:rgba(255,255,255,.1);border:none;color:rgba(255,255,255,.8);width:32px;cursor:pointer;font-size:1.1rem;display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:background .15s}
+.sc-spin-btn:hover{background:rgba(255,255,255,.23)}
+
+/* ═══════ Calc Btn ═══════ */
+.sc-calc-btn{width:100%;padding:15px;background:#1565c0;color:#fff;font-size:1rem;font-weight:700;border:none;border-radius:10px;cursor:pointer;letter-spacing:.3px;transition:background .2s,transform .1s,box-shadow .2s;box-shadow:0 4px 20px rgba(21,101,192,.5)}
+.sc-calc-btn:hover{background:#1976d2;transform:translateY(-1px);box-shadow:0 7px 26px rgba(21,101,192,.65)}
+.sc-calc-btn:active{transform:translateY(0)}
+
+/* error */
+.sc-err{font-size:.7rem;color:#ef9a9a;margin-top:2px;display:none}
+.sc-err.show{display:block}
+
+/* ═══════ Results Panel ═══════ */
+.sc-results{background:#fff;border-radius:16px;overflow:hidden;box-shadow:0 24px 64px rgba(0,0,0,.35);position:sticky;top:20px;color:#1a1a2e}
+.sc-res-hdr{display:flex;justify-content:space-between;align-items:center;padding:13px 18px;background:#1a237e;color:#fff}
+.sc-res-hdr h3{font-size:.65rem;font-weight:800;text-transform:uppercase;letter-spacing:1.6px}
+
+/* risk badge */
+.sc-badge{padding:4px 11px;border-radius:20px;font-size:.68rem;font-weight:700}
+.r-crit{background:#ffcdd2;color:#b71c1c}
+.r-high{background:#ffe0b2;color:#e65100}
+.r-med {background:#fff9c4;color:#f57f17}
+.r-low {background:#c8e6c9;color:#1b5e20}
+
+.sc-res-body{padding:18px}
+
+/* COD */
+.cod-lbl{font-size:.68rem;color:#777;margin-bottom:2px}
+.cod-amt{font-size:clamp(1.7rem,4vw,2.6rem);font-weight:800;color:#1a237e;letter-spacing:-1px;margin-bottom:14px}
+
+/* health row */
+.hlth-row{display:flex;justify-content:space-between;align-items:center;margin-bottom:7px;font-size:.78rem;color:#333}
+.hlth-row strong{color:#1a237e}
+.eff-grade{font-weight:700}
+
+/* progress */
+.prog-track{width:100%;height:7px;background:#e0e0e0;border-radius:4px;overflow:hidden;margin-bottom:14px}
+.prog-fill{height:100%;border-radius:4px;transition:width 1s cubic-bezier(.4,0,.2,1)}
+
+/* metric cards */
+.sc-metrics{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin-bottom:14px}
+.sc-mc{background:#f8f9fa;border-radius:9px;padding:10px 8px;text-align:center}
+.sc-mc-icon{font-size:1.1rem;margin-bottom:3px}
+.sc-mc-lbl{font-size:.58rem;color:#777;margin-bottom:3px;line-height:1.3}
+.sc-mc-val{font-size:.78rem;font-weight:700;color:#222}
+
+/* divider */
+.sc-divider{height:1px;background:#f0f0f0;margin:12px 0}
+
+/* benchmark */
+.sc-bench{display:flex;align-items:center;gap:12px;background:#f8f9fa;border-radius:10px;padding:11px;margin-bottom:14px}
+.sc-bench canvas{flex-shrink:0}
+.sc-bench-txt h4{font-size:.73rem;font-weight:700;color:#222;margin-bottom:3px}
+.sc-bench-txt p{font-size:.65rem;color:#555;line-height:1.4}
+
+/* trajectory */
+.sc-traj h4{font-size:.7rem;font-weight:700;color:#333;margin-bottom:5px}
+.sc-traj-lbl{display:flex;justify-content:space-between;font-size:.57rem;color:#aaa;margin-bottom:2px}
+.sc-traj canvas{width:100%;height:68px;margin-bottom:14px}
+
+/* extra metrics (condensed) */
+.sc-extra-metrics{display:grid;grid-template-columns:1fr 1fr;gap:7px;margin-bottom:14px}
+.sc-em{background:#f0f4ff;border-left:3px solid #1565c0;border-radius:6px;padding:8px 10px}
+.sc-em-lbl{font-size:.58rem;color:#555;margin-bottom:2px}
+.sc-em-val{font-size:.8rem;font-weight:700;color:#1a237e}
+
+/* CTA */
+.sc-cta{display:block;width:100%;padding:13px;background:#1565c0;color:#fff;font-size:.82rem;font-weight:700;border:none;border-radius:9px;cursor:pointer;text-align:center;transition:background .2s}
+.sc-cta:hover{background:#1976d2}
+
+/* empty */
+.sc-empty{display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:400px;text-align:center;padding:24px;color:#bbb}
+.sc-empty-icon{font-size:3rem;opacity:.3;margin-bottom:14px}
+.sc-empty p{font-size:.83rem;line-height:1.6}
+
+/* ═══════ Audit Modal ═══════ */
+.sc-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.72);z-index:9999;align-items:center;justify-content:center;padding:16px}
+.sc-overlay.on{display:flex}
+.sc-modal{background:#fff;border-radius:16px;width:100%;max-width:740px;max-height:88vh;overflow-y:auto;padding:28px;position:relative;color:#1a1a2e}
+.sc-modal-x{position:absolute;top:13px;right:13px;background:#f0f0f0;border:none;border-radius:50%;width:30px;height:30px;cursor:pointer;font-size:.95rem;color:#444;display:flex;align-items:center;justify-content:center}
+.sc-modal-x:hover{background:#e0e0e0}
+.sc-modal h2{font-size:1.18rem;font-weight:800;color:#1a237e;margin-bottom:5px}
+.sc-modal .msub{font-size:.78rem;color:#666;margin-bottom:20px}
+
+/* accordion */
+.sc-acc{border:1px solid #ebebeb;border-radius:10px;overflow:hidden;margin-bottom:10px}
+.sc-acc-hdr{width:100%;text-align:left;padding:12px 16px;background:#f8f9fa;border:none;font-size:.85rem;font-weight:700;color:#1a237e;cursor:pointer;display:flex;justify-content:space-between;align-items:center;transition:background .15s}
+.sc-acc-hdr:hover{background:#eef1f7}
+.sc-acc-arr{transition:transform .25s}
+.sc-acc-hdr.open .sc-acc-arr{transform:rotate(180deg)}
+.sc-acc-body{padding:0 16px;max-height:0;overflow:hidden;transition:max-height .45s ease,padding .3s;font-size:.8rem;line-height:1.65;color:#333}
+.sc-acc-body.open{max-height:800px;padding:14px 16px}
+
+/* lead form */
+.sc-lead-form{margin-top:18px;padding-top:18px;border-top:2px solid #1a237e}
+.sc-lead-form h3{font-size:.92rem;font-weight:700;margin-bottom:14px;color:#1a237e}
+.sc-lead-grid{display:grid;grid-template-columns:1fr 1fr;gap:11px;margin-bottom:14px}
+.sc-lf{display:flex;flex-direction:column;gap:4px}
+.sc-lf label{font-size:.68rem;font-weight:700;color:#555;text-transform:uppercase;letter-spacing:.5px}
+.sc-lf input,.sc-lf textarea{padding:10px 12px;border:1px solid #d5d5d5;border-radius:8px;font-size:.83rem;color:#222;outline:none;transition:border-color .2s}
+.sc-lf input:focus,.sc-lf textarea:focus{border-color:#1565c0}
+.sc-lead-sub{width:100%;padding:13px;background:#1565c0;color:#fff;font-size:.9rem;font-weight:700;border:none;border-radius:9px;cursor:pointer;transition:background .2s}
+.sc-lead-sub:hover{background:#1976d2}
+.sc-lead-ok{text-align:center;padding:20px;color:#1b5e20;font-weight:600;font-size:.9rem;display:none}
+
+/* toast */
+.sc-toast{position:fixed;bottom:22px;right:22px;background:#1b5e20;color:#fff;padding:12px 20px;border-radius:10px;font-size:.82rem;font-weight:600;box-shadow:0 8px 24px rgba(0,0,0,.3);z-index:10000;transform:translateY(80px);opacity:0;transition:transform .35s ease,opacity .35s ease}
+.sc-toast.on{transform:translateY(0);opacity:1}
+
+/* ═══════ Responsive ═══════ */
+@media(max-width:900px){.sc-container{grid-template-columns:1fr}.sc-results{position:static}}
+@media(max-width:560px){.sc-row{grid-template-columns:1fr}.sc-team-grid{grid-template-columns:1fr}.sc-metrics{grid-template-columns:1fr}.sc-extra-metrics{grid-template-columns:1fr}.sc-lead-grid{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+
+<!-- ════ ROOT ════ -->
+<div id="calcRoot">
+
+  <!-- Header -->
+  <div class="sc-header">
+    <h1>See How Much you can Lose</h1>
+    <p>See how much poor execution is actually costing your startup.</p>
+  </div>
+
+  <!-- Main layout -->
+  <div class="sc-container">
+
+    <!-- ── LEFT: Form ─────────────────────────────────────── -->
+    <div class="sc-form-panel">
+
+      <!-- Row 1: URL + Email -->
+      <div class="sc-row">
+        <div class="sc-field">
+          <label>Website URL</label>
+          <input type="url" id="fWebsite" placeholder="Enter website URL">
+          <span class="sc-err" id="errWebsite">Please enter a valid URL</span>
+        </div>
+        <div class="sc-field">
+          <label>Email</label>
+          <input type="email" id="fEmail" placeholder="john.doe@company.com">
+          <span class="sc-err" id="errEmail">Please enter a valid email</span>
+        </div>
+      </div>
+
+      <!-- Row 2: Burn Rate + Monthly Revenue -->
+      <div class="sc-row">
+        <div class="sc-field">
+          <label>Monthly Burn Rate ($)</label>
+          <div class="pfx">
+            <span>$</span>
+            <input type="number" id="fBurn" placeholder="0" min="0" step="1000">
+          </div>
+          <span class="sc-err" id="errBurn">Please enter your monthly burn rate</span>
+        </div>
+        <div class="sc-field">
+          <label>Monthly Revenue ($)</label>
+          <div class="pfx">
+            <span>$</span>
+            <input type="number" id="fRevenue" placeholder="0 (pre-revenue OK)" min="0" step="500">
+          </div>
+        </div>
+      </div>
+
+      <!-- Row 3: Stage + Architecture -->
+      <div class="sc-row">
+        <div class="sc-field">
+          <label>Startup Stage</label>
+          <select id="fStage">
+            <option value="seed">Seed</option>
+            <option value="pre_series_a">Pre-Series A</option>
+            <option value="series_a">Series A</option>
+            <option value="series_b_plus">Series B+</option>
+          </select>
+        </div>
+        <div class="sc-field">
+          <label>Current Architecture Maturity</label>
+          <select id="fArch">
+            <option value="mvp_spaghetti">MVP (Spaghetti Code)</option>
+            <option value="early_structured">Early Stage (Some Structure)</option>
+            <option value="scaling_modular">Scaling (Microservices/Modular)</option>
+            <option value="mature_best_practice">Mature (Best Practices)</option>
+          </select>
+        </div>
+      </div>
+
+      <!-- Team Breakdown -->
+      <div class="sc-team-box">
+        <h3>Development Team Size (Breakdown)</h3>
+        <p class="hint">Enter number of people in each role</p>
+        <div class="sc-team-grid">
+          <div class="sc-spin-grp"><label>Project Manager</label>
+            <div class="sc-spin-wrap">
+              <button class="sc-spin-btn" data-target="fPM" data-dir="-1">−</button>
+              <input type="number" id="fPM" value="1" min="0" max="50">
+              <button class="sc-spin-btn" data-target="fPM" data-dir="1">+</button>
+            </div>
+          </div>
+          <div class="sc-spin-grp"><label>UX UI Designer</label>
+            <div class="sc-spin-wrap">
+              <button class="sc-spin-btn" data-target="fUX" data-dir="-1">−</button>
+              <input type="number" id="fUX" value="1" min="0" max="50">
+              <button class="sc-spin-btn" data-target="fUX" data-dir="1">+</button>
+            </div>
+          </div>
+          <div class="sc-spin-grp"><label>Software Engineers</label>
+            <div class="sc-spin-wrap">
+              <button class="sc-spin-btn" data-target="fEng" data-dir="-1">−</button>
+              <input type="number" id="fEng" value="3" min="0" max="200">
+              <button class="sc-spin-btn" data-target="fEng" data-dir="1">+</button>
+            </div>
+          </div>
+          <div class="sc-spin-grp"><label>Quality Assurance</label>
+            <div class="sc-spin-wrap">
+              <button class="sc-spin-btn" data-target="fQA" data-dir="-1">−</button>
+              <input type="number" id="fQA" value="1" min="0" max="100">
+              <button class="sc-spin-btn" data-target="fQA" data-dir="1">+</button>
+            </div>
+          </div>
+          <div class="sc-spin-grp"><label>DevOps Engineers</label>
+            <div class="sc-spin-wrap">
+              <button class="sc-spin-btn" data-target="fDevOps" data-dir="-1">−</button>
+              <input type="number" id="fDevOps" value="1" min="0" max="50">
+              <button class="sc-spin-btn" data-target="fDevOps" data-dir="1">+</button>
+            </div>
+          </div>
+          <div class="sc-spin-grp"><label>Support &amp; Maintenance Eng.</label>
+            <div class="sc-spin-wrap">
+              <button class="sc-spin-btn" data-target="fSupport" data-dir="-1">−</button>
+              <input type="number" id="fSupport" value="1" min="0" max="100">
+              <button class="sc-spin-btn" data-target="fSupport" data-dir="1">+</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Calculate -->
+      <button class="sc-calc-btn" id="calcBtn">Calculate Now</button>
+
+    </div><!-- /form panel -->
+
+    <!-- ── RIGHT: Results ─────────────────────────────────── -->
+    <div class="sc-results" id="resultsPanel">
+      <div class="sc-res-hdr">
+        <h3>Full Diagnostic Report</h3>
+        <span class="sc-badge r-crit" id="riskBadge">—</span>
+      </div>
+      <!-- Empty state -->
+      <div class="sc-empty" id="emptyState">
+        <div class="sc-empty-icon">📊</div>
+        <p>Fill in your startup details on the left and click <strong>Calculate Now</strong> to see your full diagnostic report.</p>
+      </div>
+      <!-- Results content (hidden until calculated) -->
+      <div class="sc-res-body" id="resContent" style="display:none">
+        <p class="cod-lbl">Estimated Cost of Delay</p>
+        <div class="cod-amt" id="rCOD">$0</div>
+
+        <div class="hlth-row">
+          <span>Health Score: <strong id="rHealthScore">0/100</strong></span>
+          <span>Efficiency Grade: <strong id="rGrade" class="eff-grade">—</strong></span>
+        </div>
+        <div class="prog-track"><div class="prog-fill" id="progFill" style="width:0%"></div></div>
+
+        <!-- Metric cards -->
+        <div class="sc-metrics">
+          <div class="sc-mc">
+            <div class="sc-mc-icon">🔥</div>
+            <div class="sc-mc-lbl">Burn Inefficiency</div>
+            <div class="sc-mc-val" id="rBurnIneff">—</div>
+          </div>
+          <div class="sc-mc">
+            <div class="sc-mc-icon">⏱️</div>
+            <div class="sc-mc-lbl">Delay Cost</div>
+            <div class="sc-mc-val" id="rDelayCost">—</div>
+          </div>
+          <div class="sc-mc">
+            <div class="sc-mc-icon">💸</div>
+            <div class="sc-mc-lbl">Lost Opportunity</div>
+            <div class="sc-mc-val" id="rLostOpp">—</div>
+          </div>
+        </div>
+
+        <div class="sc-divider"></div>
+
+        <!-- Benchmark -->
+        <div class="sc-bench">
+          <canvas id="benchDonut" width="60" height="60" class="sc-bench canvas"></canvas>
+          <div class="sc-bench-txt">
+            <h4>Benchmark Comparison</h4>
+            <p id="rBenchText">—</p>
+          </div>
+        </div>
+
+        <!-- Extra metrics -->
+        <div class="sc-extra-metrics">
+          <div class="sc-em">
+            <div class="sc-em-lbl">Annual Cost of Delay</div>
+            <div class="sc-em-val" id="rAnnualCOD">—</div>
+          </div>
+          <div class="sc-em">
+            <div class="sc-em-lbl">Refactor Cost (Now)</div>
+            <div class="sc-em-val" id="rRefactor">—</div>
+          </div>
+          <div class="sc-em">
+            <div class="sc-em-lbl">Security Risk (Annual)</div>
+            <div class="sc-em-val" id="rSecurity">—</div>
+          </div>
+          <div class="sc-em">
+            <div class="sc-em-lbl">Valuation at Risk</div>
+            <div class="sc-em-val" id="rValuation">—</div>
+          </div>
+        </div>
+
+        <!-- Trajectory -->
+        <div class="sc-traj">
+          <h4>Future Risk Trajectory</h4>
+          <div class="sc-traj-lbl">
+            <span>Now</span><span>3 months</span><span>6 months</span><span>9 months</span><span>12 months</span>
+          </div>
+          <canvas id="trajChart" height="68"></canvas>
+        </div>
+
+        <button class="sc-cta" id="openAuditBtn">📋 Book SaaS Execution Audit &amp; Get Full Risk Report</button>
+      </div>
+    </div><!-- /results -->
+
+  </div><!-- /container -->
+</div><!-- /root -->
+
+<!-- ════ AUDIT MODAL ════ -->
+<div class="sc-overlay" id="auditOverlay">
+  <div class="sc-modal" id="auditModal">
+    <button class="sc-modal-x" id="closeModal">✕</button>
+    <h2>Full SaaS Execution Audit Report</h2>
+    <p class="msub" id="modalSub">—</p>
+    <div id="accordionContainer"></div>
+
+    <!-- Lead Capture -->
+    <div class="sc-lead-form">
+      <h3>📬 Get Your Personalised Action Plan</h3>
+      <div class="sc-lead-grid">
+        <div class="sc-lf">
+          <label>Full Name</label>
+          <input type="text" id="lfName" placeholder="Jane Smith">
+        </div>
+        <div class="sc-lf">
+          <label>Phone Number</label>
+          <input type="tel" id="lfPhone" placeholder="+1 555 000 0000">
+        </div>
+        <div class="sc-lf">
+          <label>Company Name</label>
+          <input type="text" id="lfCompany" placeholder="Acme Inc.">
+        </div>
+        <div class="sc-lf">
+          <label>Role / Title</label>
+          <input type="text" id="lfRole" placeholder="CTO / Founder">
+        </div>
+        <div class="sc-lf" style="grid-column:1/-1">
+          <label>What is your biggest technical challenge?</label>
+          <textarea id="lfChallenge" rows="3" placeholder="Describe your current pain points…"></textarea>
+        </div>
+      </div>
+      <button class="sc-lead-sub" id="leadSubmit">Send Me the Action Plan &amp; Schedule a Call →</button>
+      <div class="sc-lead-ok" id="leadOk">✅ Thank you! We'll be in touch within 24 hours with your personalised roadmap.</div>
+    </div>
+  </div>
+</div>
+
+<!-- Toast -->
+<div class="sc-toast" id="toast"></div>
+
+<!-- ════ SCRIPTS ════ -->
+<script>
+/* ─── Lookup Tables ────────────────────────────────────────────────────── */
+const ARCH = {
+  mvp_spaghetti:       {label:'MVP (Spaghetti Code)',           debtRatio:.80,velocityPenalty:.65,maintenanceCost:.35,bugRate:.45,securityRisk:.75,scalabilityLimit:2,  refactorMonths:4,  ci_cd:false,testCoverage:.05},
+  early_structured:    {label:'Early Stage (Some Structure)',    debtRatio:.55,velocityPenalty:.45,maintenanceCost:.25,bugRate:.30,securityRisk:.55,scalabilityLimit:5,  refactorMonths:3,  ci_cd:false,testCoverage:.20},
+  scaling_modular:     {label:'Scaling (Microservices/Modular)', debtRatio:.25,velocityPenalty:.20,maintenanceCost:.15,bugRate:.15,securityRisk:.30,scalabilityLimit:20, refactorMonths:1.5,ci_cd:true, testCoverage:.60},
+  mature_best_practice:{label:'Mature (Best Practices)',         debtRatio:.08,velocityPenalty:.05,maintenanceCost:.08,bugRate:.05,securityRisk:.10,scalabilityLimit:100,refactorMonths:.5, ci_cd:true, testCoverage:.85},
+};
+const STAGES = {
+  seed:         {label:'Seed',          fundingPressure:.90,marketWindowMonths:6, competitorRisk:.80,burnRunwayIdeal:18,valuationMultiplier:3, urgencyMult:2.0},
+  pre_series_a: {label:'Pre-Series A',  fundingPressure:.75,marketWindowMonths:9, competitorRisk:.65,burnRunwayIdeal:18,valuationMultiplier:5, urgencyMult:1.7},
+  series_a:     {label:'Series A',      fundingPressure:.60,marketWindowMonths:12,competitorRisk:.50,burnRunwayIdeal:24,valuationMultiplier:8, urgencyMult:1.4},
+  series_b_plus:{label:'Series B+',     fundingPressure:.40,marketWindowMonths:18,competitorRisk:.35,burnRunwayIdeal:24,valuationMultiplier:12,urgencyMult:1.2},
+};
+
+/* ─── Helpers ──────────────────────────────────────────────────────────── */
+const fmt  = n => '$' + Math.round(n).toLocaleString();
+const fmtK = n => { const v=Math.round(n); return v>=1000?'$'+(v/1000).toFixed(0)+'K':fmt(v); };
+const clamp = (v,a,b) => Math.max(a,Math.min(b,v));
+const int = id => parseInt(document.getElementById(id).value)||0;
+const flt = id => parseFloat(document.getElementById(id).value)||0;
+
+/* ─── Core Calculations ─────────────────────────────────────────────────── */
+function healthScore(d){
+  const a=ARCH[d.arch], s=STAGES[d.stage], t=d.team;
+  const engTotal = t.eng+t.devops;
+  const total    = t.pm+t.ux+t.eng+t.qa+t.devops+t.support;
+
+  const archScore   = (1-a.debtRatio)*35;
+  const qaScore     = Math.min((t.qa/Math.max(engTotal,1))/0.33,1)*20;
+  const devopsScore = Math.min((t.devops/Math.max(total,1))/0.15,1)*15;
+  const ciBonus     = a.ci_cd?5:0;
+  const testBonus   = a.testCoverage*5;
+  const balance     = (Math.min((t.pm/Math.max(total,1))/0.10,1)*.4
+                      +Math.min((t.ux/Math.max(total,1))/0.10,1)*.3
+                      +Math.min((t.support/Math.max(total,1))/0.10,1)*.3)*10;
+  const stageScore  = (1-STAGES[d.stage].competitorRisk)*10;
+
+  return clamp(Math.round(archScore+qaScore+devopsScore+ciBonus+testBonus+balance+stageScore),0,100);
+}
+
+function grade(score){
+  if(score>=90)return{g:'A+',c:'#00c853'};if(score>=80)return{g:'A',c:'#00c853'};
+  if(score>=70)return{g:'B+',c:'#76d275'};if(score>=60)return{g:'B',c:'#aeea00'};
+  if(score>=50)return{g:'C',c:'#ffd600'};if(score>=40)return{g:'D',c:'#ff6d00'};
+  if(score>=30)return{g:'D-',c:'#dd2c00'};return{g:'F',c:'#b71c1c'};
+}
+function risk(score){
+  if(score>=70)return{l:'Low',    cls:'r-low'};
+  if(score>=50)return{l:'Medium', cls:'r-med'};
+  if(score>=30)return{l:'High',   cls:'r-high'};
+  return             {l:'Critical',cls:'r-crit'};
+}
+function financials(d){
+  const a=ARCH[d.arch], s=STAGES[d.stage];
+  const burn = d.burn, rev = d.revenue||burn*.30;
+  const burnIneff  = burn*a.maintenanceCost + burn*a.bugRate*.55;
+  const delayCost  = burn*a.velocityPenalty*s.urgencyMult*.75;
+  const lostOpp    = rev*a.debtRatio*s.competitorRisk;
+  const monthly    = burnIneff+delayCost+lostOpp;
+  const cmpd       = 1+a.debtRatio*.08;
+  const annual     = monthly*12*cmpd;
+  const refactor   = burn*a.refactorMonths;
+  const security   = 120000*a.securityRisk;
+  const valuation  = annual*s.valuationMultiplier*.5;
+  const recovery   = monthly*(Math.pow(cmpd,12)-1)/0.08; // PV of compounding
+  return {burnIneff,delayCost,lostOpp,monthly,annual,refactor,security,valuation,recovery,
+          month:Math.round(monthly)};
+}
+function benchmark(score,stage){
+  const B={seed:{p25:22,p50:38,p75:58},pre_series_a:{p25:28,p50:46,p75:63},series_a:{p25:38,p50:56,p75:72},series_b_plus:{p25:52,p50:68,p75:84}};
+  const b=B[stage]||B.seed;
+  let p;
+  if(score>=b.p75) p=75+((score-b.p75)/(100-b.p75))*25;
+  else if(score>=b.p50) p=50+((score-b.p50)/(b.p75-b.p50))*25;
+  else if(score>=b.p25) p=25+((score-b.p25)/(b.p50-b.p25))*25;
+  else p=(score/Math.max(b.p25,1))*25;
+  p=clamp(Math.round(p),1,99);
+  return{percentile:p,bottom:100-p};
+}
+function trajectory(monthly,archKey,months=12){
+  const rate=ARCH[archKey].debtRatio*.10;
+  return Array.from({length:months+1},(_,i)=>Math.round(monthly*Math.pow(1+rate,i)));
+}
+
+/* ─── Audit Text Generator ──────────────────────────────────────────────── */
+function buildAudit(d,fin,hs){
+  const a=ARCH[d.arch],s=STAGES[d.stage],t=d.team;
+  const total=Object.values(t).reduce((x,y)=>x+y,0);
+  const g=grade(hs),r=risk(hs);
+  const totalEng=t.eng+t.devops;
+  const qaR=((t.qa/Math.max(totalEng,1))*100).toFixed(0);
+  const dvR=((t.devops/Math.max(total,1))*100).toFixed(0);
+
+  return [
+    {
+      title:'📋 Executive Summary',
+      body:`Your startup is operating at Efficiency Grade <strong>${g.g}</strong> with a Health Score of <strong>${hs}/100</strong>.
+      Risk level: <strong>${r.l}</strong>. Running a <strong>${a.label}</strong> architecture with a <strong>${total}-person</strong> team at <strong>${s.label}</strong> stage,
+      we estimate a Monthly Cost of Delay of <strong>${fmt(fin.monthly)}</strong>, compounding to <strong>${fmt(fin.annual)}</strong> annually if nothing changes.
+      Every month of inaction increases that figure by ~${(ARCH[d.arch].debtRatio*8).toFixed(0)}%.`
+    },
+    {
+      title:'🏗️ Technical Debt Analysis',
+      body:`Codebase carries an estimated <strong>${Math.round(a.debtRatio*100)}% technical debt ratio</strong>.<br><br>
+      <strong>Bug resolution rate:</strong> ~${Math.round(a.bugRate*100)}% of sprint capacity consumed by defects.<br>
+      <strong>Maintenance overhead:</strong> ${Math.round(a.maintenanceCost*100)}% of monthly burn ($${Math.round(d.burn*a.maintenanceCost).toLocaleString()}).<br>
+      <strong>Velocity penalty:</strong> ${Math.round(a.velocityPenalty*100)}% slower than industry benchmark.<br>
+      <strong>Scalability ceiling:</strong> ~${a.scalabilityLimit}× current load before failure.<br>
+      <strong>Estimated test coverage:</strong> ${Math.round(a.testCoverage*100)}%.<br>
+      <strong>CI/CD pipeline:</strong> ${a.ci_cd?'✅ Present':'⚠️ Not implemented — manual deploys add risk &amp; delay'}.<br>
+      <strong>Cost to refactor now:</strong> ${fmt(fin.refactor)} vs. ${fmt(fin.refactor*3)} if delayed 12 months.`
+    },
+    {
+      title:'👥 Team Efficiency Analysis',
+      body:`Team size: <strong>${total} people</strong>.<br><br>
+      <strong>QA-to-Engineering:</strong> ${qaR}% — ${parseInt(qaR)<25?'⚠️ Below recommended 25–40%':'✅ Within range'}<br>
+      <strong>DevOps coverage:</strong> ${dvR}% — ${parseInt(dvR)<10?'⚠️ Under-resourced, deployment risk high':'✅ Adequate'}<br>
+      <strong>Project Managers:</strong> ${t.pm} for ${totalEng} engineers — ${t.pm===0?'⚠️ No PM = coordination chaos':'✅'}<br>
+      <strong>UX/UI Designers:</strong> ${t.ux} — ${t.ux===0?'⚠️ No dedicated UX: product-market fit risk':'✅'}<br>
+      <strong>Support Engineers:</strong> ${t.support} — ${t.support===0?'⚠️ Zero support escalation path':'✅'}<br><br>
+      Monthly burn attributed to team inefficiency: <strong>${fmt(fin.burnIneff)}</strong>`
+    },
+    {
+      title:'💰 Financial Impact Breakdown',
+      body:`<table style="width:100%;border-collapse:collapse;font-size:.8rem">
+        <tr style="background:#f5f5f5"><th style="padding:8px;text-align:left">Cost Category</th><th style="padding:8px;text-align:right">Monthly</th><th style="padding:8px;text-align:right">Annual</th></tr>
+        <tr><td style="padding:8px">Burn Inefficiency</td><td style="padding:8px;text-align:right">${fmt(fin.burnIneff)}</td><td style="padding:8px;text-align:right">${fmt(fin.burnIneff*12)}</td></tr>
+        <tr style="background:#fff8f8"><td style="padding:8px">Delivery Delay Cost</td><td style="padding:8px;text-align:right">${fmt(fin.delayCost)}</td><td style="padding:8px;text-align:right">${fmt(fin.delayCost*12)}</td></tr>
+        <tr><td style="padding:8px">Lost Revenue Opportunity</td><td style="padding:8px;text-align:right">${fmt(fin.lostOpp)}</td><td style="padding:8px;text-align:right">${fmt(fin.lostOpp*12)}</td></tr>
+        <tr style="background:#fff3e0;font-weight:700"><td style="padding:8px">Total Cost of Delay</td><td style="padding:8px;text-align:right">${fmt(fin.monthly)}</td><td style="padding:8px;text-align:right">${fmt(fin.annual)}</td></tr>
+        <tr style="background:#ffebee"><td style="padding:8px">Security Risk (Expected Annual)</td><td colspan="2" style="padding:8px;text-align:right">${fmt(fin.security)}</td></tr>
+        <tr style="background:#e8f5e9"><td style="padding:8px">Valuation at Risk (Next Round)</td><td colspan="2" style="padding:8px;text-align:right">${fmt(fin.valuation)}</td></tr>
+      </table>`
+    },
+    {
+      title:'⚠️ Risk Assessment Matrix',
+      body:(()=>{
+        const risks=[];
+        if(a.debtRatio>.5) risks.push({n:'Codebase Collapse',s:'Critical',d:'High debt ratio creates cascading failure risk under load spikes.'});
+        if(a.securityRisk>.6) risks.push({n:'Security Breach',s:'High',d:`${Math.round(a.securityRisk*100)}% risk profile — unpatched attack surface, compliance exposure.`});
+        if(t.qa===0) risks.push({n:'Quality Crisis',s:'High',d:'No QA means defects ship directly to production — customer churn risk.'});
+        if(t.devops===0) risks.push({n:'Deployment Paralysis',s:'Medium',d:'No DevOps → manual deploys, no rollback strategy, downtime risk.'});
+        if(s.marketWindowMonths<=9) risks.push({n:'Market Window',s:'High',d:`At ${s.label}, you have ~${s.marketWindowMonths} months before the market window narrows significantly.`});
+        if(a.scalabilityLimit<5) risks.push({n:'Scaling Failure',s:'Critical',d:`Architecture fails at ${a.scalabilityLimit}× current load — one viral event kills the product.`});
+        if(t.ux===0) risks.push({n:'UX Debt',s:'Medium',d:'No designer = poor user experience = higher churn, lower conversion.'});
+        const rows=risks.map(r=>{
+          const bg=r.s==='Critical'?'#ffebee':r.s==='High'?'#fff3e0':'#fffde7';
+          return `<tr style="background:${bg}"><td style="padding:8px;font-weight:700">${r.n}</td><td style="padding:8px">${r.s}</td><td style="padding:8px">${r.d}</td></tr>`;
+        }).join('');
+        return `<table style="width:100%;border-collapse:collapse;font-size:.8rem">
+          <tr style="background:#f5f5f5"><th style="padding:8px;text-align:left">Risk</th><th style="padding:8px">Severity</th><th style="padding:8px;text-align:left">Details</th></tr>
+          ${rows||'<tr><td colspan="3" style="padding:12px;text-align:center;color:#666">No critical risks identified at this time — excellent posture!</td></tr>'}
+        </table>`;
+      })()
+    },
+    {
+      title:'✅ Prioritised Recommendations',
+      body:(()=>{
+        const recs=[];
+        if(d.arch==='mvp_spaghetti'||d.arch==='early_structured') recs.push('🏗️ <strong>Architecture Refactor:</strong> Begin phased migration to modular/service-oriented architecture. Expected 3–4× velocity improvement within 6 months.');
+        if(parseInt(qaR)<25) recs.push('🧪 <strong>Invest in QA:</strong> Hire or contract QA engineers to reach a 1:3 ratio. Implement automated test suites targeting 60%+ coverage first.');
+        if(!a.ci_cd) recs.push('⚙️ <strong>Implement CI/CD:</strong> Automated build/test/deploy pipeline can recover 20–30% of velocity lost to manual processes immediately.');
+        if(t.devops===0) recs.push('☁️ <strong>DevOps Resource:</strong> Engage a DevOps engineer or consultant to set up infrastructure-as-code, monitoring, and auto-rollback.');
+        if(t.ux===0) recs.push('🎨 <strong>UX Investment:</strong> Even 1 part-time designer improves conversion 15–30% by reducing friction in user flows.');
+        recs.push(`📊 <strong>SaaS Execution Audit:</strong> Book a full diagnostic to receive a prioritised 90-day roadmap. Startups completing this process reduce their Cost of Delay by an average of <strong>62% within 90 days</strong>.`);
+        return '<ul style="list-style:none;padding:0">'+recs.map(r=>`<li style="padding:8px 0;border-bottom:1px solid #f0f0f0">${r}</li>`).join('')+'</ul>';
+      })()
+    },
+  ];
+}
+
+/* ─── Chart references ──────────────────────────────────────────────────── */
+let benchChart=null, trajChart=null;
+
+function drawBenchDonut(pct){
+  const ctx=document.getElementById('benchDonut').getContext('2d');
+  if(benchChart) benchChart.destroy();
+  benchChart=new Chart(ctx,{
+    type:'doughnut',
+    data:{datasets:[{data:[pct,100-pct],backgroundColor:['#1565c0','#e0e0e0'],borderWidth:0}]},
+    options:{cutout:'72%',plugins:{legend:{display:false},tooltip:{enabled:false}},animation:{duration:800}},
+    plugins:[{id:'centreLabel',beforeDraw(ch){
+      const {ctx,chartArea:{left,top,right,bottom}}=ch;
+      ctx.save();ctx.fillStyle='#1a237e';ctx.font='bold 11px sans-serif';
+      ctx.textAlign='center';ctx.textBaseline='middle';
+      ctx.fillText(pct+'%',(left+right)/2,(top+bottom)/2);ctx.restore();
+    }}]
+  });
+}
+
+function drawTraj(data){
+  const canvas=document.getElementById('trajChart');
+  const ctx=canvas.getContext('2d');
+  if(trajChart) trajChart.destroy();
+  const labels=data.map((_,i)=>i===0?'Now':i===12?'12m':i%3===0?i+'m':'');
+  trajChart=new Chart(ctx,{
+    type:'line',
+    data:{labels,datasets:[{data,borderColor:'#ef5350',backgroundColor:'rgba(239,83,80,.08)',borderWidth:2,pointRadius:0,fill:true,tension:.4}]},
+    options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false},tooltip:{enabled:false}},scales:{x:{display:false},y:{display:false}},animation:{duration:800}}
+  });
+}
+
+/* ─── Render Results ────────────────────────────────────────────────────── */
+function renderResults(d){
+  const hs=healthScore(d);
+  const g=grade(hs), r=risk(hs);
+  const fin=financials(d);
+  const bm=benchmark(hs,d.stage);
+  const traj=trajectory(fin.monthly,d.arch,12);
+
+  // Header badge
+  document.getElementById('riskBadge').textContent='Risk Level: '+r.l;
+  document.getElementById('riskBadge').className='sc-badge '+r.cls;
+
+  // COD
+  document.getElementById('rCOD').textContent=fmt(fin.monthly);
+
+  // Health
+  document.getElementById('rHealthScore').textContent=hs+'/100';
+  const gEl=document.getElementById('rGrade');
+  gEl.textContent=g.g; gEl.style.color=g.c;
+
+  // Progress bar
+  const fill=document.getElementById('progFill');
+  fill.style.background=g.c;
+  setTimeout(()=>{ fill.style.width=hs+'%'; },50);
+
+  // Metric cards
+  document.getElementById('rBurnIneff').textContent=fmtK(fin.burnIneff);
+  document.getElementById('rDelayCost').textContent=fmtK(fin.delayCost);
+  document.getElementById('rLostOpp').textContent=fmtK(fin.lostOpp);
+
+  // Extra metrics
+  document.getElementById('rAnnualCOD').textContent=fmt(fin.annual);
+  document.getElementById('rRefactor').textContent=fmt(fin.refactor);
+  document.getElementById('rSecurity').textContent=fmt(fin.security);
+  document.getElementById('rValuation').textContent=fmt(fin.valuation);
+
+  // Benchmark
+  drawBenchDonut(bm.percentile);
+  document.getElementById('rBenchText').innerHTML=
+    `You are in the <strong>bottom ${bm.bottom}%</strong> of ${STAGES[d.stage].label} startups.<br>
+     Your efficiency is lower than <strong>${bm.bottom}%</strong> of scaling companies at your stage.`;
+
+  // Trajectory
+  drawTraj(traj);
+
+  // Show content
+  document.getElementById('emptyState').style.display='none';
+  document.getElementById('resContent').style.display='block';
+
+  // Store for modal
+  window._lastAudit={d,fin,hs};
+}
+
+/* ─── Build Accordion ───────────────────────────────────────────────────── */
+function buildAccordion(sections){
+  const container=document.getElementById('accordionContainer');
+  container.innerHTML='';
+  sections.forEach((sec,i)=>{
+    const wrap=document.createElement('div'); wrap.className='sc-acc';
+    const hdr=document.createElement('button'); hdr.className='sc-acc-hdr'; hdr.innerHTML=`${sec.title}<span class="sc-acc-arr">▼</span>`;
+    const body=document.createElement('div'); body.className='sc-acc-body'; body.innerHTML=sec.body;
+    if(i===0){hdr.classList.add('open');body.classList.add('open');}
+    hdr.addEventListener('click',()=>{
+      hdr.classList.toggle('open'); body.classList.toggle('open');
+    });
+    wrap.append(hdr,body); container.appendChild(wrap);
+  });
+}
+
+/* ─── Validation ────────────────────────────────────────────────────────── */
+function validate(){
+  let ok=true;
+  const email=document.getElementById('fEmail').value.trim();
+  const burn=flt('fBurn');
+  const website=document.getElementById('fWebsite').value.trim();
+
+  const showErr=(id,show)=>{
+    const el=document.getElementById(id);
+    el.style.display=show?'block':'none';
+    if(show) ok=false;
+  };
+
+  showErr('errEmail', email && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email));
+  showErr('errBurn', burn<=0);
+  showErr('errWebsite', website && !/^https?:\/\//i.test(website));
+
+  if(!email){ document.getElementById('errEmail').textContent='Email is required'; showErr('errEmail',true); }
+  return ok;
+}
+
+/* ─── Spinner buttons ───────────────────────────────────────────────────── */
+document.querySelectorAll('.sc-spin-btn').forEach(btn=>{
+  btn.addEventListener('click',()=>{
+    const inp=document.getElementById(btn.dataset.target);
+    const dir=parseInt(btn.dataset.dir);
+    const val=Math.max(0, (parseInt(inp.value)||0)+dir);
+    inp.value=val;
+  });
+});
+
+/* ─── Calculate ─────────────────────────────────────────────────────────── */
+document.getElementById('calcBtn').addEventListener('click',()=>{
+  if(!validate()) return;
+
+  const d={
+    arch:    document.getElementById('fArch').value,
+    stage:   document.getElementById('fStage').value,
+    burn:    flt('fBurn'),
+    revenue: flt('fRevenue'),
+    website: document.getElementById('fWebsite').value.trim(),
+    email:   document.getElementById('fEmail').value.trim(),
+    team:{
+      pm:      int('fPM'),
+      ux:      int('fUX'),
+      eng:     int('fEng'),
+      qa:      int('fQA'),
+      devops:  int('fDevOps'),
+      support: int('fSupport'),
+    }
+  };
+
+  renderResults(d);
+  // Save to localStorage
+  try{
+    const leads=JSON.parse(localStorage.getItem('saas_calc_leads')||'[]');
+    leads.push({...d,timestamp:new Date().toISOString()});
+    localStorage.setItem('saas_calc_leads',JSON.stringify(leads));
+  }catch(_){}
+});
+
+/* ─── Open Full Audit Modal ─────────────────────────────────────────────── */
+document.getElementById('openAuditBtn').addEventListener('click',()=>{
+  if(!window._lastAudit) return;
+  const {d,fin,hs}=window._lastAudit;
+  const g=grade(hs),r=risk(hs);
+  document.getElementById('modalSub').textContent=
+    `Health Score ${hs}/100 · Grade ${g.g} · Risk Level: ${r.l} · Estimated Monthly Cost of Delay: ${fmt(fin.monthly)}`;
+  buildAccordion(buildAudit(d,fin,hs));
+  // Pre-fill lead form email
+  document.getElementById('lfName').value='';
+  document.getElementById('fEmail').value && (document.getElementById('lfName').value='');
+  document.getElementById('leadOk').style.display='none';
+  document.getElementById('leadSubmit').style.display='block';
+  document.getElementById('auditOverlay').classList.add('on');
+});
+
+/* ─── Close Modal ───────────────────────────────────────────────────────── */
+document.getElementById('closeModal').addEventListener('click',()=>{
+  document.getElementById('auditOverlay').classList.remove('on');
+});
+document.getElementById('auditOverlay').addEventListener('click',e=>{
+  if(e.target===document.getElementById('auditOverlay'))
+    document.getElementById('auditOverlay').classList.remove('on');
+});
+
+/* ─── Lead Submit ───────────────────────────────────────────────────────── */
+document.getElementById('leadSubmit').addEventListener('click',()=>{
+  const name=document.getElementById('lfName').value.trim();
+  const phone=document.getElementById('lfPhone').value.trim();
+  const company=document.getElementById('lfCompany').value.trim();
+  const role=document.getElementById('lfRole').value.trim();
+  const challenge=document.getElementById('lfChallenge').value.trim();
+
+  if(!name){ alert('Please enter your name.'); return; }
+
+  // Assemble full lead payload
+  const payload={
+    name, phone, company, role, challenge,
+    email: window._lastAudit?.d?.email||'',
+    website: window._lastAudit?.d?.website||'',
+    calculatorData: window._lastAudit?.d,
+    auditResults:{
+      healthScore: window._lastAudit?.hs,
+      grade: grade(window._lastAudit?.hs||0).g,
+      risk: risk(window._lastAudit?.hs||0).l,
+      monthlyCOD: window._lastAudit?.fin?.monthly,
+      annualCOD: window._lastAudit?.fin?.annual,
+    },
+    timestamp: new Date().toISOString(),
+    source: 'saas_audit_calculator',
+  };
+
+  // Save locally
+  try{
+    const leads=JSON.parse(localStorage.getItem('saas_calc_leads_full')||'[]');
+    leads.push(payload);
+    localStorage.setItem('saas_calc_leads_full',JSON.stringify(leads));
+  }catch(_){}
+
+  // Send to Odoo backend if available
+  fetch('/saas-calculator/submit-lead', {
+    method:'POST',
+    headers:{'Content-Type':'application/json','X-Requested-With':'XMLHttpRequest'},
+    body:JSON.stringify(payload)
+  }).catch(()=>{}); // fail silently in standalone mode
+
+  document.getElementById('leadSubmit').style.display='none';
+  document.getElementById('leadOk').style.display='block';
+
+  // Toast
+  const t=document.getElementById('toast');
+  t.textContent='✅ Lead captured! We\'ll be in touch within 24 hours.';
+  t.classList.add('on');
+  setTimeout(()=>t.classList.remove('on'),4000);
+});
+
+/* ─── Keyboard ESC to close modal ──────────────────────────────────────── */
+document.addEventListener('keydown',e=>{
+  if(e.key==='Escape') document.getElementById('auditOverlay').classList.remove('on');
+});
+</script>
+</body>
+</html>

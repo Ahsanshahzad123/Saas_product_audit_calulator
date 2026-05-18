@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+  <menuitem id="saas_audit_root"
+            name="SaaS Audit"
+            sequence="90"
+            web_icon="saas_audit_calculator,static/description/icon.png"/>
+
+  <menuitem id="saas_audit_leads_menu"
+            name="Audit Leads"
+            parent="saas_audit_root"
+            action="saas_audit_lead_action"
+            sequence="10"/>
+
+</odoo>
