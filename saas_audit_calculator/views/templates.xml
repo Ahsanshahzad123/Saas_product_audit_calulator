@@ -1,305 +1,299 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
 
-  <template id="calculator_page" name="SaaS Opportunity Audit Calculator">
-    <t t-call="website.layout">
-      <t t-set="additional_title">Free SaaS Opportunity Audit</t>
-      <t t-set="meta_description">Find out how much revenue you're leaving on the table and what it costs to delay. Free SaaS product audit in 60 seconds.</t>
+  <!-- ═══════════════════════════════════════════════════════════════════════
+       EMBEDDABLE CALCULATOR  (no layout wrapper — used by page + snippet)
+       ═══════════════════════════════════════════════════════════════════════ -->
+  <template id="calculator_embed" name="SaaS Calculator Embed">
 
-      <style>
-        .o_header_standard { background:#0b1731 !important; }
-        .o_footer { background:#0b1731 !important; }
-        #wrapwrap { background:linear-gradient(135deg,#0b1731 0%,#1a237e 45%,#1565c0 100%) !important; }
-      </style>
+    <div class="saas-calc-root">
 
-      <div id="wrap" class="saas-calc-root">
+      <section class="sc-header">
+        <h1>Free SaaS Opportunity Audit</h1>
+        <p>Answer 7 quick questions and find out exactly how much revenue you're leaving on the table — and what it costs to build it right.</p>
+      </section>
 
-        <section class="sc-header">
-          <h1>Free SaaS Opportunity Audit</h1>
-          <p>Answer 7 quick questions and find out exactly how much revenue you're leaving on the table — and what it costs to build it right.</p>
-        </section>
+      <div class="sc-container">
 
-        <div class="sc-container">
+        <!-- ── FORM ────────────────────────────────────────────────── -->
+        <div class="sc-form-panel">
 
-          <!-- ── FORM ────────────────────────────────────────────────── -->
-          <div class="sc-form-panel">
+          <div class="sc-field">
+            <label>Which best describes your situation?</label>
+            <select id="fAudience">
+              <option value="idea_personal">I have an idea + personal investment</option>
+              <option value="idea_funded">I have an idea + seed / investor funding</option>
+              <option value="unsatisfied_team">I have a dev team but unhappy with results</option>
+              <option value="mvp_investment">I have an MVP + investment, need a better team</option>
+              <option value="mvp_ai">Built MVP with AI tools — facing technical issues</option>
+              <option value="non_technical">Non-technical founder with limited budget</option>
+            </select>
+          </div>
 
+          <div class="sc-row">
             <div class="sc-field">
-              <label>Which best describes your situation?</label>
-              <select id="fAudience">
-                <option value="idea_personal">I have an idea + personal investment</option>
-                <option value="idea_funded">I have an idea + seed / investor funding</option>
-                <option value="unsatisfied_team">I have a dev team but unhappy with results</option>
-                <option value="mvp_investment">I have an MVP + investment, need a better team</option>
-                <option value="mvp_ai">Built MVP with AI tools — facing technical issues</option>
-                <option value="non_technical">Non-technical founder with limited budget</option>
+              <label>Type of SaaS Product</label>
+              <select id="fSaasType">
+                <option value="b2b">B2B SaaS (selling to businesses)</option>
+                <option value="b2c">B2C / Consumer SaaS</option>
+                <option value="marketplace">Marketplace / Platform</option>
+                <option value="enterprise">Enterprise Software</option>
               </select>
             </div>
-
-            <div class="sc-row">
-              <div class="sc-field">
-                <label>Type of SaaS Product</label>
-                <select id="fSaasType">
-                  <option value="b2b">B2B SaaS (selling to businesses)</option>
-                  <option value="b2c">B2C / Consumer SaaS</option>
-                  <option value="marketplace">Marketplace / Platform</option>
-                  <option value="enterprise">Enterprise Software</option>
-                </select>
-              </div>
-              <div class="sc-field">
-                <label>Product Complexity</label>
-                <select id="fComplexity">
-                  <option value="mvp">Simple MVP (core features only)</option>
-                  <option value="standard" selected="">Standard SaaS (full feature set)</option>
-                  <option value="complex">Complex Platform (APIs, integrations)</option>
-                  <option value="enterprise">Enterprise-grade (compliance, SSO)</option>
-                </select>
-              </div>
+            <div class="sc-field">
+              <label>Product Complexity</label>
+              <select id="fComplexity">
+                <option value="mvp">Simple MVP (core features only)</option>
+                <option value="standard" selected="">Standard SaaS (full feature set)</option>
+                <option value="complex">Complex Platform (APIs, integrations)</option>
+                <option value="enterprise">Enterprise-grade (compliance, SSO)</option>
+              </select>
             </div>
-
-            <div class="sc-row">
-              <div class="sc-field">
-                <label>Target Users in Year 1</label>
-                <select id="fUsers">
-                  <option value="small">Less than 500 users</option>
-                  <option value="medium" selected="">500 – 5,000 users</option>
-                  <option value="large">5,000 – 50,000 users</option>
-                  <option value="xlarge">50,000+ users</option>
-                </select>
-              </div>
-              <div class="sc-field">
-                <label>When Do You Need to Launch?</label>
-                <select id="fTimeline">
-                  <option value="asap">ASAP — within 3 months</option>
-                  <option value="short" selected="">3 – 6 months</option>
-                  <option value="medium">6 – 12 months</option>
-                  <option value="long">12+ months (no rush)</option>
-                </select>
-              </div>
-            </div>
-
-            <div class="sc-row">
-              <div class="sc-field">
-                <label>AI / Technology Component</label>
-                <select id="fAI">
-                  <option value="no_ai">No AI features</option>
-                  <option value="ai_api">AI via API (OpenAI, Claude…)</option>
-                  <option value="ai_custom">Custom ML model</option>
-                  <option value="ai_core">AI-powered core product</option>
-                </select>
-              </div>
-              <div class="sc-field">
-                <label>Industry / Compliance</label>
-                <select id="fIndustry">
-                  <option value="general">General / Other</option>
-                  <option value="ecommerce">E-commerce / Retail</option>
-                  <option value="hr_ops">HR / Operations</option>
-                  <option value="education">Education / EdTech</option>
-                  <option value="legal">Legal / LegalTech</option>
-                  <option value="healthcare">Healthcare / MedTech (HIPAA)</option>
-                  <option value="fintech">Finance / Fintech (PCI, SOC 2)</option>
-                </select>
-              </div>
-            </div>
-
-            <div class="sc-row">
-              <div class="sc-field">
-                <label>Target Revenue — Year 1 ($)</label>
-                <div class="pfx">
-                  <span>$</span>
-                  <input type="number" id="fRevenue" placeholder="e.g. 120000" min="0" step="5000"/>
-                </div>
-                <span class="sc-err" id="errRevenue">Please enter your revenue target</span>
-              </div>
-              <div class="sc-field">
-                <label>Your Available Budget ($)</label>
-                <div class="pfx">
-                  <span>$</span>
-                  <input type="number" id="fBudget" placeholder="e.g. 50000" min="0" step="5000"/>
-                </div>
-                <span class="sc-err" id="errBudget">Please enter your budget</span>
-              </div>
-            </div>
-
-            <div class="sc-row">
-              <div class="sc-field">
-                <label>Your Email</label>
-                <input type="email" id="fEmail" placeholder="you@company.com"/>
-                <span class="sc-err" id="errEmail">Email is required</span>
-              </div>
-              <div class="sc-field">
-                <label>Website / Idea URL (optional)</label>
-                <input type="url" id="fWebsite" placeholder="https://..."/>
-              </div>
-            </div>
-
-            <button class="sc-calc-btn" id="calcBtn">Run My Free SaaS Audit &#8594;</button>
-
-          </div><!-- /form -->
-
-          <!-- ── RESULTS ─────────────────────────────────────────────── -->
-          <div class="sc-results-panel" id="resultsPanel">
-            <div class="sc-results-header">
-              <h3>Your Opportunity Audit</h3>
-              <span class="sc-opp-badge" id="oppBadge">&#8212;</span>
-            </div>
-
-            <div class="sc-empty" id="emptyState">
-              <div class="sc-empty-icon">&#128640;</div>
-              <p>Fill in your details on the left and click <strong>Run My Free SaaS Audit</strong> to see your full personalised report.</p>
-            </div>
-
-            <div id="resContent" style="display:none">
-
-              <!-- 1. Score -->
-              <div class="sc-score-section">
-                <p class="sc-score-lbl">Opportunity Score</p>
-                <div class="sc-score-row">
-                  <span class="sc-score-num" id="rScore">0</span>
-                  <span class="sc-score-denom">/100</span>
-                </div>
-                <div class="sc-prog-track">
-                  <div class="sc-prog-fill" id="progFill" style="width:0%"/>
-                </div>
-                <p class="sc-score-verdict" id="rVerdict">&#8212;</p>
-                <div class="sc-score-factors" id="scoreFactors" style="display:none">
-                  <div class="sc-factor-row">
-                    <span class="sc-factor-lbl">Budget Fit</span>
-                    <div class="sc-factor-track"><div class="sc-factor-fill" id="sfBudget" style="background:#1565c0"/></div>
-                    <span class="sc-factor-pts" id="sfBudgetPts">0/40</span>
-                  </div>
-                  <div class="sc-factor-row">
-                    <span class="sc-factor-lbl">Market Opp.</span>
-                    <div class="sc-factor-track"><div class="sc-factor-fill" id="sfMarket" style="background:#2e7d32"/></div>
-                    <span class="sc-factor-pts" id="sfMarketPts">0/30</span>
-                  </div>
-                  <div class="sc-factor-row">
-                    <span class="sc-factor-lbl">Audience</span>
-                    <div class="sc-factor-track"><div class="sc-factor-fill" id="sfAudience" style="background:#6a1b9a"/></div>
-                    <span class="sc-factor-pts" id="sfAudiencePts">0/20</span>
-                  </div>
-                  <div class="sc-factor-row">
-                    <span class="sc-factor-lbl">Timeline</span>
-                    <div class="sc-factor-track"><div class="sc-factor-fill" id="sfUrgency" style="background:#e65100"/></div>
-                    <span class="sc-factor-pts" id="sfUrgencyPts">0/10</span>
-                  </div>
-                  <div class="sc-score-tip" id="rScoreTip"/>
-                </div>
-              </div>
-
-              <!-- 2. Investment to Build It Right -->
-              <div class="sc-section">
-                <p class="sc-section-title"><span>&#128176;</span> Investment to Build It Right</p>
-                <p class="sc-build-lbl">Estimated monthly development cost:</p>
-                <div class="sc-build-amt" id="rMonthlyBuild">$0 – $0 <small style="font-size:.6em;font-weight:500;color:#888">/month</small></div>
-                <div id="rBuildNotes" class="sc-build-notes" style="display:none"/>
-                <div class="sc-budget-row">
-                  <span class="sc-budget-lbl">Total project budget estimate:</span>
-                  <span class="sc-budget-val" id="rTotalBudget">&#8212;</span>
-                </div>
-              </div>
-
-              <!-- 3. Timeline & ROI -->
-              <div class="sc-section">
-                <p class="sc-section-title"><span>&#9201;</span> Timeline &amp; Return on Investment</p>
-                <div class="sc-timeline-grid">
-                  <div class="sc-tl-card">
-                    <div class="sc-tl-icon">&#128736;</div>
-                    <div class="sc-tl-lbl">Estimated Build Time</div>
-                    <div class="sc-tl-val" id="rBuildTime">&#8212;</div>
-                  </div>
-                  <div class="sc-tl-card">
-                    <div class="sc-tl-icon">&#128200;</div>
-                    <div class="sc-tl-lbl">Break-even If You Start Today</div>
-                    <div class="sc-tl-val" id="rROI">&#8212;</div>
-                  </div>
-                </div>
-              </div>
-
-              <!-- 4. Team Composition -->
-              <div class="sc-section">
-                <p class="sc-section-title"><span>&#128101;</span> Recommended Team Composition</p>
-                <div class="sc-team-grid" id="rTeamGrid"><!-- filled by JS --></div>
-                <p class="sc-team-total">Estimated team size: <strong id="rTeamSize">&#8212;</strong></p>
-              </div>
-
-              <!-- 5. Revenue at Risk -->
-              <div class="sc-section">
-                <p class="sc-section-title"><span>&#128293;</span> Revenue at Risk — Every Month Counts</p>
-                <p class="sc-monthly-loss-lbl">Revenue you stop losing the day you launch:</p>
-                <div class="sc-monthly-loss-amt" id="rMonthly">$0</div>
-                <div class="sc-loss-grid">
-                  <div class="sc-loss-card">
-                    <div class="sc-loss-period">Wait 6 More Months</div>
-                    <div class="sc-loss-amount" id="rLoss6">$0</div>
-                  </div>
-                  <div class="sc-loss-card crit">
-                    <div class="sc-loss-period">Wait 12 More Months</div>
-                    <div class="sc-loss-amount" id="rLoss12">$0</div>
-                  </div>
-                </div>
-              </div>
-
-              <!-- 5. Chart -->
-              <div class="sc-section">
-                <p class="sc-section-title"><span>&#128202;</span> Total Revenue Lost vs. Months of Delay</p>
-                <div class="sc-chart-wrap">
-                  <canvas id="trajChart"/>
-                </div>
-                <p class="sc-chart-note">The red line shows total compounding revenue opportunity lost the longer you wait to launch. Hover for exact values.</p>
-              </div>
-
-              <!-- 6. Insight -->
-              <div class="sc-section">
-                <div class="sc-insight-card">
-                  <span class="sc-insight-icon">&#128161;</span>
-                  <p class="sc-insight-text" id="rInsight">&#8212;</p>
-                </div>
-              </div>
-
-              <!-- 7. CTA -->
-              <button class="sc-cta-btn" id="openAuditBtn">
-                Get Full Report &amp; Book Your Free Strategy Call &#8594;
-              </button>
-
-            </div><!-- /resContent -->
-          </div><!-- /results panel -->
-
-        </div><!-- /container -->
-      </div><!-- /wrap -->
-
-      <!-- ── MODAL ────────────────────────────────────────────────────── -->
-      <div class="sc-overlay" id="auditOverlay">
-        <div class="sc-modal">
-          <button class="sc-modal-x" id="closeModal">&#10005;</button>
-          <h2>Your Full SaaS Opportunity Report</h2>
-          <p class="sc-modal-sub" id="modalSub">&#8212;</p>
-          <div class="sc-rec-box">
-            <strong>Our Recommendation for You</strong>
-            <p id="rRecommendation">&#8212;</p>
           </div>
-          <div class="sc-lead-form">
-            <h3>&#128236; Get Your Personalised Action Plan</h3>
-            <div class="sc-lead-grid">
-              <div class="sc-lf"><label>Full Name *</label><input type="text" id="lfName" placeholder="Jane Smith"/></div>
-              <div class="sc-lf"><label>Phone Number</label><input type="tel" id="lfPhone" placeholder="+1 555 000 0000"/></div>
-              <div class="sc-lf"><label>Company / Startup</label><input type="text" id="lfCompany" placeholder="Acme Inc."/></div>
-              <div class="sc-lf"><label>Your Role</label><input type="text" id="lfRole" placeholder="Founder / CTO"/></div>
-              <div class="sc-lf" style="grid-column:1/-1">
-                <label>What is your biggest challenge right now?</label>
-                <textarea id="lfChallenge" rows="3" placeholder="Describe your current situation&#8230;"/>
+
+          <div class="sc-row">
+            <div class="sc-field">
+              <label>Target Users in Year 1</label>
+              <select id="fUsers">
+                <option value="small">Less than 500 users</option>
+                <option value="medium" selected="">500 – 5,000 users</option>
+                <option value="large">5,000 – 50,000 users</option>
+                <option value="xlarge">50,000+ users</option>
+              </select>
+            </div>
+            <div class="sc-field">
+              <label>When Do You Need to Launch?</label>
+              <select id="fTimeline">
+                <option value="asap">ASAP — within 3 months</option>
+                <option value="short" selected="">3 – 6 months</option>
+                <option value="medium">6 – 12 months</option>
+                <option value="long">12+ months (no rush)</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="sc-row">
+            <div class="sc-field">
+              <label>AI / Technology Component</label>
+              <select id="fAI">
+                <option value="no_ai">No AI features</option>
+                <option value="ai_api">AI via API (OpenAI, Claude…)</option>
+                <option value="ai_custom">Custom ML model</option>
+                <option value="ai_core">AI-powered core product</option>
+              </select>
+            </div>
+            <div class="sc-field">
+              <label>Industry / Compliance</label>
+              <select id="fIndustry">
+                <option value="general">General / Other</option>
+                <option value="ecommerce">E-commerce / Retail</option>
+                <option value="hr_ops">HR / Operations</option>
+                <option value="education">Education / EdTech</option>
+                <option value="legal">Legal / LegalTech</option>
+                <option value="healthcare">Healthcare / MedTech (HIPAA)</option>
+                <option value="fintech">Finance / Fintech (PCI, SOC 2)</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="sc-row">
+            <div class="sc-field">
+              <label>Target Revenue — Year 1 ($)</label>
+              <div class="pfx">
+                <span>$</span>
+                <input type="number" id="fRevenue" placeholder="e.g. 120000" min="0" step="5000"/>
+              </div>
+              <span class="sc-err" id="errRevenue">Please enter your revenue target</span>
+            </div>
+            <div class="sc-field">
+              <label>Your Available Budget ($)</label>
+              <div class="pfx">
+                <span>$</span>
+                <input type="number" id="fBudget" placeholder="e.g. 50000" min="0" step="5000"/>
+              </div>
+              <span class="sc-err" id="errBudget">Please enter your budget</span>
+            </div>
+          </div>
+
+          <div class="sc-row">
+            <div class="sc-field">
+              <label>Your Email</label>
+              <input type="email" id="fEmail" placeholder="you@company.com"/>
+              <span class="sc-err" id="errEmail">Email is required</span>
+            </div>
+            <div class="sc-field">
+              <label>Website / Idea URL (optional)</label>
+              <input type="url" id="fWebsite" placeholder="https://..."/>
+            </div>
+          </div>
+
+          <button class="sc-calc-btn" id="calcBtn">Run My Free SaaS Audit &#8594;</button>
+
+        </div><!-- /form -->
+
+        <!-- ── RESULTS ─────────────────────────────────────────────── -->
+        <div class="sc-results-panel" id="resultsPanel">
+          <div class="sc-results-header">
+            <h3>Your Opportunity Audit</h3>
+            <span class="sc-opp-badge" id="oppBadge">&#8212;</span>
+          </div>
+
+          <div class="sc-empty" id="emptyState">
+            <div class="sc-empty-icon">&#128640;</div>
+            <p>Fill in your details on the left and click <strong>Run My Free SaaS Audit</strong> to see your full personalised report.</p>
+          </div>
+
+          <div id="resContent" style="display:none">
+
+            <!-- 1. Score -->
+            <div class="sc-score-section">
+              <p class="sc-score-lbl">Opportunity Score</p>
+              <div class="sc-score-row">
+                <span class="sc-score-num" id="rScore">0</span>
+                <span class="sc-score-denom">/100</span>
+              </div>
+              <div class="sc-prog-track">
+                <div class="sc-prog-fill" id="progFill" style="width:0%"/>
+              </div>
+              <p class="sc-score-verdict" id="rVerdict">&#8212;</p>
+              <div class="sc-score-factors" id="scoreFactors" style="display:none">
+                <div class="sc-factor-row">
+                  <span class="sc-factor-lbl">Budget Fit</span>
+                  <div class="sc-factor-track"><div class="sc-factor-fill" id="sfBudget" style="background:#1565c0"/></div>
+                  <span class="sc-factor-pts" id="sfBudgetPts">0/40</span>
+                </div>
+                <div class="sc-factor-row">
+                  <span class="sc-factor-lbl">Market Opp.</span>
+                  <div class="sc-factor-track"><div class="sc-factor-fill" id="sfMarket" style="background:#2e7d32"/></div>
+                  <span class="sc-factor-pts" id="sfMarketPts">0/30</span>
+                </div>
+                <div class="sc-factor-row">
+                  <span class="sc-factor-lbl">Audience</span>
+                  <div class="sc-factor-track"><div class="sc-factor-fill" id="sfAudience" style="background:#6a1b9a"/></div>
+                  <span class="sc-factor-pts" id="sfAudiencePts">0/20</span>
+                </div>
+                <div class="sc-factor-row">
+                  <span class="sc-factor-lbl">Timeline</span>
+                  <div class="sc-factor-track"><div class="sc-factor-fill" id="sfUrgency" style="background:#e65100"/></div>
+                  <span class="sc-factor-pts" id="sfUrgencyPts">0/10</span>
+                </div>
+                <div class="sc-score-tip" id="rScoreTip"/>
               </div>
             </div>
-            <button class="sc-lead-sub" id="leadSubmit">Send Me the Action Plan &amp; Schedule a Free Call &#8594;</button>
-            <div class="sc-lead-ok" id="leadOk">&#9989; Thank you! We'll review your audit and be in touch within 24 hours.</div>
+
+            <!-- 2. Investment to Build It Right -->
+            <div class="sc-section">
+              <p class="sc-section-title"><span>&#128176;</span> Investment to Build It Right</p>
+              <p class="sc-build-lbl">Estimated monthly development cost:</p>
+              <div class="sc-build-amt" id="rMonthlyBuild">$0 – $0 <small style="font-size:.6em;font-weight:500;color:#888">/month</small></div>
+              <div id="rBuildNotes" class="sc-build-notes" style="display:none"/>
+              <div class="sc-budget-row">
+                <span class="sc-budget-lbl">Total project budget estimate:</span>
+                <span class="sc-budget-val" id="rTotalBudget">&#8212;</span>
+              </div>
+            </div>
+
+            <!-- 3. Timeline & ROI -->
+            <div class="sc-section">
+              <p class="sc-section-title"><span>&#9201;</span> Timeline &amp; Return on Investment</p>
+              <div class="sc-timeline-grid">
+                <div class="sc-tl-card">
+                  <div class="sc-tl-icon">&#128736;</div>
+                  <div class="sc-tl-lbl">Estimated Build Time</div>
+                  <div class="sc-tl-val" id="rBuildTime">&#8212;</div>
+                </div>
+                <div class="sc-tl-card">
+                  <div class="sc-tl-icon">&#128200;</div>
+                  <div class="sc-tl-lbl">Break-even If You Start Today</div>
+                  <div class="sc-tl-val" id="rROI">&#8212;</div>
+                </div>
+              </div>
+            </div>
+
+            <!-- 4. Team Composition -->
+            <div class="sc-section">
+              <p class="sc-section-title"><span>&#128101;</span> Recommended Team Composition</p>
+              <div class="sc-team-grid" id="rTeamGrid"><!-- filled by JS --></div>
+              <p class="sc-team-total">Estimated team size: <strong id="rTeamSize">&#8212;</strong></p>
+            </div>
+
+            <!-- 5. Revenue at Risk -->
+            <div class="sc-section">
+              <p class="sc-section-title"><span>&#128293;</span> Revenue at Risk — Every Month Counts</p>
+              <p class="sc-monthly-loss-lbl">Revenue you stop losing the day you launch:</p>
+              <div class="sc-monthly-loss-amt" id="rMonthly">$0</div>
+              <div class="sc-loss-grid">
+                <div class="sc-loss-card">
+                  <div class="sc-loss-period">Wait 6 More Months</div>
+                  <div class="sc-loss-amount" id="rLoss6">$0</div>
+                </div>
+                <div class="sc-loss-card crit">
+                  <div class="sc-loss-period">Wait 12 More Months</div>
+                  <div class="sc-loss-amount" id="rLoss12">$0</div>
+                </div>
+              </div>
+            </div>
+
+            <!-- 6. Chart -->
+            <div class="sc-section">
+              <p class="sc-section-title"><span>&#128202;</span> Total Revenue Lost vs. Months of Delay</p>
+              <div class="sc-chart-wrap">
+                <canvas id="trajChart"/>
+              </div>
+              <p class="sc-chart-note">The red line shows total compounding revenue opportunity lost the longer you wait to launch. Hover for exact values.</p>
+            </div>
+
+            <!-- 7. Insight -->
+            <div class="sc-section">
+              <div class="sc-insight-card">
+                <span class="sc-insight-icon">&#128161;</span>
+                <p class="sc-insight-text" id="rInsight">&#8212;</p>
+              </div>
+            </div>
+
+            <!-- 8. CTA -->
+            <button class="sc-cta-btn" id="openAuditBtn">
+              Get Full Report &amp; Book Your Free Strategy Call &#8594;
+            </button>
+
+          </div><!-- /resContent -->
+        </div><!-- /results panel -->
+
+      </div><!-- /container -->
+    </div><!-- /saas-calc-root -->
+
+    <!-- ── MODAL ────────────────────────────────────────────────────── -->
+    <div class="sc-overlay" id="auditOverlay">
+      <div class="sc-modal">
+        <button class="sc-modal-x" id="closeModal">&#10005;</button>
+        <h2>Your Full SaaS Opportunity Report</h2>
+        <p class="sc-modal-sub" id="modalSub">&#8212;</p>
+        <div class="sc-rec-box">
+          <strong>Our Recommendation for You</strong>
+          <p id="rRecommendation">&#8212;</p>
+        </div>
+        <div class="sc-lead-form">
+          <h3>&#128236; Get Your Personalised Action Plan</h3>
+          <div class="sc-lead-grid">
+            <div class="sc-lf"><label>Full Name *</label><input type="text" id="lfName" placeholder="Jane Smith"/></div>
+            <div class="sc-lf"><label>Phone Number</label><input type="tel" id="lfPhone" placeholder="+1 555 000 0000"/></div>
+            <div class="sc-lf"><label>Company / Startup</label><input type="text" id="lfCompany" placeholder="Acme Inc."/></div>
+            <div class="sc-lf"><label>Your Role</label><input type="text" id="lfRole" placeholder="Founder / CTO"/></div>
+            <div class="sc-lf" style="grid-column:1/-1">
+              <label>What is your biggest challenge right now?</label>
+              <textarea id="lfChallenge" rows="3" placeholder="Describe your current situation&#8230;"/>
+            </div>
           </div>
+          <button class="sc-lead-sub" id="leadSubmit">Send Me the Action Plan &amp; Schedule a Free Call &#8594;</button>
+          <div class="sc-lead-ok" id="leadOk">&#9989; Thank you! We'll review your audit and be in touch within 24 hours.</div>
         </div>
       </div>
+    </div>
 
-      <div class="sc-toast" id="toast"/>
+    <div class="sc-toast" id="toast"/>
 
-      <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"/>
-      <script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"/>
+    <script>
 (function(){
   /* ── Data tables ── */
   var AUD={
@@ -354,7 +348,7 @@
     return Math.round(Math.min(99,Math.max(5,(fit*40)+(mkt*30)+(a.mktCapture*20)+(urg*10))));
   }
   function monthlyLost(rev,ak,sk,tk){return Math.round((rev/12)*AUD[ak].urgency*ST[sk].competition*TL[tk].um);}
-  function delayLoss(mo,months,mult){var t=0;for(var i=0;i<months;i++)t+=mo*Math.pow(1.05,i);return Math.round(t*mult);}
+  function delayLoss(mo,months,mult){var t=0;for(var i=0;i&lt;months;i++)t+=mo*Math.pow(1.05,i);return Math.round(t*mult);}
   function verdict(sc){if(sc>=80)return{text:'Strong Opportunity',cls:'opp-strong'};if(sc>=60)return{text:'Good Opportunity',cls:'opp-good'};if(sc>=40)return{text:'Moderate — Act Strategically',cls:'opp-moderate'};if(sc>=20)return{text:'Challenging — Plan Carefully',cls:'opp-challenging'};return{text:'High Risk — Seek Guidance',cls:'opp-risky'};}
 
   var TEAM_ROLES={
@@ -392,44 +386,20 @@
       data:{
         labels:data.map(function(_,i){return i===0?'Now':i+' mo';}),
         datasets:[{
-          label:'Revenue Lost',
-          data:data,
-          borderColor:'#e53935',
-          backgroundColor:'rgba(229,57,53,.07)',
-          borderWidth:2.5,
-          pointRadius:data.map(function(_,i){return i%3===0?3:0;}),
-          pointBackgroundColor:'#e53935',
-          fill:true,tension:.4,
+          label:'Revenue Lost',data:data,borderColor:'#e53935',backgroundColor:'rgba(229,57,53,.07)',
+          borderWidth:2.5,pointRadius:data.map(function(_,i){return i%3===0?3:0;}),
+          pointBackgroundColor:'#e53935',fill:true,tension:.4,
         }]
       },
       options:{
         responsive:true,maintainAspectRatio:false,
         plugins:{
           legend:{display:false},
-          tooltip:{
-            enabled:true,
-            callbacks:{
-              title:function(items){return'Delay: '+items[0].label;},
-              label:function(item){return'  Revenue lost: '+fmt(item.raw);},
-            },
-            backgroundColor:'#1a237e',titleColor:'#fff',bodyColor:'#fff',padding:8,cornerRadius:6,
-          },
+          tooltip:{enabled:true,callbacks:{title:function(items){return'Delay: '+items[0].label;},label:function(item){return'  Revenue lost: '+fmt(item.raw);}},backgroundColor:'#1a237e',titleColor:'#fff',bodyColor:'#fff',padding:8,cornerRadius:6},
         },
         scales:{
-          x:{
-            display:true,
-            title:{display:true,text:'Months of delay',font:{size:9},color:'#999'},
-            ticks:{font:{size:9},color:'#aaa',maxTicksLimit:7},
-            grid:{display:false},
-            border:{color:'#e8e8e8'},
-          },
-          y:{
-            display:true,
-            title:{display:true,text:'Cumulative revenue lost',font:{size:9},color:'#999'},
-            ticks:{font:{size:9},color:'#aaa',callback:fmtAxis,maxTicksLimit:5},
-            grid:{color:'rgba(0,0,0,.05)'},
-            border:{color:'#e8e8e8'},
-          },
+          x:{display:true,title:{display:true,text:'Months of delay',font:{size:9},color:'#999'},ticks:{font:{size:9},color:'#aaa',maxTicksLimit:7},grid:{display:false},border:{color:'#e8e8e8'}},
+          y:{display:true,title:{display:true,text:'Cumulative revenue lost',font:{size:9},color:'#999'},ticks:{font:{size:9},color:'#aaa',callback:fmtAxis,maxTicksLimit:5},grid:{color:'rgba(0,0,0,.05)'},border:{color:'#e8e8e8'}},
         },
         animation:{duration:900},
       },
@@ -462,7 +432,7 @@
     var verd = verdict(sc);
     var traj = [];for(var i=0;i&lt;=12;i++)traj.push(i===0?0:delayLoss(mo,i,a.riskMult));
 
-    /* Update badge */
+    /* Badge */
     var badge=document.getElementById('oppBadge');
     badge.textContent=verd.text; badge.className='sc-opp-badge '+verd.cls;
 
@@ -508,10 +478,10 @@
     document.getElementById('rMonthlyBuild').innerHTML=fmtK(mb.min)+' – '+fmtK(mb.max)+'<small style="font-size:.6em;font-weight:500;color:#888"> /month</small>';
     document.getElementById('rTotalBudget').textContent=fmtK(tbMin)+' – '+fmtK(tbMax);
     var notes=[];
-    if(AI[aik]&&AI[aik].note)notes.push(AI[aik].note);
-    if(IND[ik]&&IND[ik].note)notes.push(IND[ik].note);
+    if(AI[aik]&amp;&amp;AI[aik].note)notes.push(AI[aik].note);
+    if(IND[ik]&amp;&amp;IND[ik].note)notes.push(IND[ik].note);
     var noteEl=document.getElementById('rBuildNotes');
-    noteEl.innerHTML=notes.map(function(n){return'<span class="sc-build-note">&#9881; '+n+'</span>';}).join('');
+    noteEl.innerHTML=notes.map(function(n){return'&lt;span class="sc-build-note"&gt;&#9881; '+n+'&lt;/span&gt;';}).join('');
     noteEl.style.display=notes.length?'block':'none';
 
     /* Timeline */
@@ -529,7 +499,7 @@
     document.getElementById('rTeamGrid').innerHTML=team.map(function(r){
       var ro=TEAM_ROLES[r.key];
       var cnt=r.min===r.max?r.min+'×':(r.min+' – '+r.max+'×');
-      return'<div class="sc-team-card"><div class="sc-team-card-icon">'+ro.icon+'</div><div class="sc-team-card-role">'+ro.label+'</div><div class="sc-team-card-count">'+cnt+'</div><div class="sc-team-card-desc">'+ro.desc+'</div></div>';
+      return'&lt;div class="sc-team-card"&gt;&lt;div class="sc-team-card-icon"&gt;'+ro.icon+'&lt;/div&gt;&lt;div class="sc-team-card-role"&gt;'+ro.label+'&lt;/div&gt;&lt;div class="sc-team-card-count"&gt;'+cnt+'&lt;/div&gt;&lt;div class="sc-team-card-desc"&gt;'+ro.desc+'&lt;/div&gt;&lt;/div&gt;';
     }).join('');
 
     /* Insight */
@@ -540,7 +510,6 @@
     document.getElementById('resContent').style.display='block';
 
     window._audit={ak:ak,sk:sk,ck:ck,uk:uk,tk:tk,aik:aik,ik:ik,rev:rev,budget:budget,sc:sc,mo:mo,l6:l6,l12:l12,mb:mb,tbMin:tbMin,tbMax:tbMax,bt:bt,roi:roi,verd:verd,a:a,tMin:tMin,tMax:tMax};
-    try{var ls=JSON.parse(localStorage.getItem('saas_audit')||'[]');ls.push({audienceType:ak,saasType:sk,complexity:ck,users:uk,timeline:tk,revenue:rev,budget:budget,ts:new Date().toISOString()});localStorage.setItem('saas_audit',JSON.stringify(ls));}catch(_){}
   });
 
   document.getElementById('openAuditBtn').addEventListener('click',function(){
@@ -578,14 +547,58 @@
       source:'saas_audit_calculator',
     };
     fetch('/saas-calculator/submit-lead',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(payload)}).catch(function(){});
-    try{var ls=JSON.parse(localStorage.getItem('saas_audit_full')||'[]');ls.push(payload);localStorage.setItem('saas_audit_full',JSON.stringify(ls));}catch(_){}
     document.getElementById('leadSubmit').style.display='none';
     document.getElementById('leadOk').style.display='block';
     var t=document.getElementById('toast');t.textContent='Thank you! We will be in touch within 24 hours.';t.classList.add('on');setTimeout(function(){t.classList.remove('on');},4500);
   });
 })();
-      </script>
+    </script>
+
+  </template><!-- /calculator_embed -->
+
+
+  <!-- ═══════════════════════════════════════════════════════════════════════
+       STANDALONE PAGE  — served at  /saas-calculator
+       ═══════════════════════════════════════════════════════════════════════ -->
+  <template id="calculator_page" name="SaaS Opportunity Audit Calculator">
+    <t t-call="website.layout">
+      <t t-set="additional_title">Free SaaS Opportunity Audit</t>
+      <t t-set="meta_description">Find out how much revenue you're leaving on the table and what it costs to delay. Free SaaS product audit in 60 seconds.</t>
+
+      <!-- Make Odoo header/footer match the dark blue theme -->
+      <style>
+        .o_header_standard { background:#0b1731 !important; }
+        .o_footer { background:#0b1731 !important; }
+        #wrapwrap { background:linear-gradient(135deg,#0b1731 0%,#1a237e 45%,#1565c0 100%) !important; }
+      </style>
+
+      <t t-call="saas_audit_calculator.calculator_embed"/>
     </t>
+  </template>
+
+
+  <!-- ═══════════════════════════════════════════════════════════════════════
+       WEBSITE SNIPPET  — draggable building block for the website editor
+       ═══════════════════════════════════════════════════════════════════════ -->
+  <template id="s_saas_calculator" name="SaaS Audit Calculator">
+    <section class="s_saas_calc o_colored_level">
+      <t t-call="saas_audit_calculator.calculator_embed"/>
+    </section>
+  </template>
+
+  <!-- Register the snippet in the website editor sidebar -->
+  <template id="saas_audit_snippets" inherit_id="website.snippets" name="SaaS Audit — Snippet">
+    <xpath expr="//div[@id='snippet_structure']" position="before">
+      <div class="o_panel">
+        <div class="o_panel_header">&#128640; SaaS Tools</div>
+        <div class="o_panel_body">
+          <div t-snippet="saas_audit_calculator.s_saas_calculator"
+               t-thumbnail="/saas_audit_calculator/static/description/icon.png">
+            <span>SaaS Audit Calculator</span>
+          </div>
+        </div>
+      </div>
+    </xpath>
   </template>
 
 </odoo>
