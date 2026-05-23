@@ -73,12 +73,17 @@
             <group string="Audit Inputs">
               <field name="audience_type"/>
               <field name="saas_type"/>
+              <field name="product_complexity"/>
+              <field name="target_users"/>
+              <field name="launch_timeline"/>
               <field name="annual_revenue_goal" widget="monetary"/>
               <field name="available_budget" widget="monetary"/>
             </group>
-            <group string="Recommendations">
-              <field name="budget_rec_min" widget="monetary" string="Recommended Budget — Min"/>
-              <field name="budget_rec_max" widget="monetary" string="Recommended Budget — Max"/>
+            <group string="Build Cost Estimates">
+              <field name="monthly_build_cost_min" widget="monetary" string="Monthly Build Cost — Min"/>
+              <field name="monthly_build_cost_max" widget="monetary" string="Monthly Build Cost — Max"/>
+              <field name="total_budget_min" widget="monetary" string="Total Project Budget — Min"/>
+              <field name="total_budget_max" widget="monetary" string="Total Project Budget — Max"/>
               <field name="roi_months" string="Break-even (months)"/>
               <field name="build_timeline" string="Estimated Build Time (months)"/>
             </group>

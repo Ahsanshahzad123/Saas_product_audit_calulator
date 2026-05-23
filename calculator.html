@@ -19,164 +19,189 @@
 <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
 <style>
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
-body{font-family:'Segoe UI',-apple-system,BlinkMacSystemFont,sans-serif;background:linear-gradient(135deg,#0b1731 0%,#1a237e 45%,#1565c0 100%);min-height:100vh;color:#fff;padding-bottom:60px}
+body{font-family:'Segoe UI',-apple-system,BlinkMacSystemFont,'Inter',sans-serif;background:linear-gradient(135deg,#0b1731 0%,#1a237e 45%,#1565c0 100%);min-height:100vh;color:#fff;padding-bottom:60px}
 
-/* Header */
-.sc-header{text-align:center;padding:50px 20px 38px}
-.sc-header h1{font-size:clamp(1.7rem,4.5vw,2.6rem);font-weight:800;letter-spacing:-.5px;margin-bottom:10px}
-.sc-header p{font-size:.95rem;color:rgba(255,255,255,.65);max-width:540px;margin:0 auto;line-height:1.55}
+.sc-header{text-align:center;padding:44px 20px 32px}
+.sc-header h1{font-size:clamp(1.6rem,4vw,2.5rem);font-weight:800;letter-spacing:-.5px;margin-bottom:10px}
+.sc-header p{font-size:.94rem;color:rgba(255,255,255,.65);max-width:560px;margin:0 auto;line-height:1.55}
 
-/* Layout */
-.sc-container{max-width:1160px;margin:0 auto;padding:0 20px;display:grid;grid-template-columns:1fr 420px;gap:28px;align-items:start}
+.sc-container{max-width:1180px;margin:0 auto;padding:0 20px;display:grid;grid-template-columns:1fr 440px;gap:28px;align-items:start}
 
-/* Form */
 .sc-form-panel{display:flex;flex-direction:column;gap:14px}
 .sc-row{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+.sc-row-3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:14px}
 .sc-field{display:flex;flex-direction:column;gap:6px}
-.sc-field label{font-size:.68rem;font-weight:700;text-transform:uppercase;letter-spacing:.9px;color:rgba(255,255,255,.82)}
-.sc-field input,.sc-field select{padding:12px 14px;background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.22);border-radius:9px;color:#fff;font-size:.9rem;outline:none;transition:border-color .2s,background .2s;width:100%;-webkit-appearance:none;appearance:none}
-.sc-field select{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='rgba(255,255,255,0.7)' d='M6 8L1 3h10z'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 12px center;padding-right:36px}
+.sc-field label{font-size:.66rem;font-weight:700;text-transform:uppercase;letter-spacing:.9px;color:rgba(255,255,255,.82)}
+.sc-field input,.sc-field select{padding:11px 14px;background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.22);border-radius:9px;color:#fff;font-size:.88rem;outline:none;transition:border-color .2s,background .2s;width:100%;-webkit-appearance:none;appearance:none}
+.sc-field select{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='rgba(255,255,255,0.7)' d='M6 8L1 3h10z'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 12px center;padding-right:34px}
 .sc-field input::placeholder{color:rgba(255,255,255,.35)}
 .sc-field input:focus,.sc-field select:focus{border-color:rgba(255,255,255,.6);background:rgba(255,255,255,.19)}
 .sc-field select option{background:#1a237e;color:#fff}
-.pfx{position:relative}.pfx span{position:absolute;left:13px;top:50%;transform:translateY(-50%);color:rgba(255,255,255,.5);font-size:.9rem;pointer-events:none}.pfx input{padding-left:26px}
-.sc-err{font-size:.7rem;color:#ef9a9a;margin-top:2px;display:none}
+.pfx{position:relative}.pfx span{position:absolute;left:13px;top:50%;transform:translateY(-50%);color:rgba(255,255,255,.5);font-size:.88rem;pointer-events:none}.pfx input{padding-left:26px}
+.sc-err{font-size:.68rem;color:#ef9a9a;margin-top:2px;display:none}
 .sc-err.show{display:block}
+.sc-form-sep{font-size:.6rem;font-weight:800;text-transform:uppercase;letter-spacing:1.4px;color:rgba(255,255,255,.45);padding-top:4px;border-top:1px solid rgba(255,255,255,.12)}
 
-/* Button */
-.sc-calc-btn{width:100%;padding:16px;background:#1565c0;color:#fff;font-size:1rem;font-weight:700;border:none;border-radius:10px;cursor:pointer;letter-spacing:.3px;transition:background .2s,transform .1s,box-shadow .2s;box-shadow:0 4px 20px rgba(21,101,192,.5)}
+.sc-calc-btn{width:100%;padding:16px;background:#1565c0;color:#fff;font-size:.98rem;font-weight:700;border:none;border-radius:10px;cursor:pointer;letter-spacing:.3px;transition:background .2s,transform .1s,box-shadow .2s;box-shadow:0 4px 20px rgba(21,101,192,.5);margin-top:4px}
 .sc-calc-btn:hover{background:#1976d2;transform:translateY(-1px);box-shadow:0 7px 26px rgba(21,101,192,.65)}
 .sc-calc-btn:active{transform:translateY(0)}
 
-/* Results panel */
-.sc-results{background:#fff;border-radius:16px;overflow:hidden;box-shadow:0 24px 64px rgba(0,0,0,.35);position:sticky;top:20px;color:#1a1a2e}
-.sc-res-hdr{display:flex;justify-content:space-between;align-items:center;padding:14px 18px;background:#1a237e;color:#fff}
-.sc-res-hdr h3{font-size:.65rem;font-weight:800;text-transform:uppercase;letter-spacing:1.6px}
-.sc-badge{padding:4px 11px;border-radius:20px;font-size:.68rem;font-weight:700}
+.sc-results-panel{background:#fff;border-radius:16px;overflow:hidden;box-shadow:0 24px 64px rgba(0,0,0,.38);position:sticky;top:16px;color:#1a1a2e}
+.sc-results-header{display:flex;justify-content:space-between;align-items:center;padding:13px 18px;background:#1a237e;color:#fff}
+.sc-results-header h3{font-size:.63rem;font-weight:800;text-transform:uppercase;letter-spacing:1.6px}
+.sc-opp-badge{padding:4px 10px;border-radius:20px;font-size:.66rem;font-weight:700;white-space:nowrap}
 .opp-strong{background:#c8e6c9;color:#1b5e20}.opp-good{background:#bbdefb;color:#0d47a1}.opp-moderate{background:#fff9c4;color:#f57f17}.opp-challenging{background:#ffe0b2;color:#e65100}.opp-risky{background:#ffcdd2;color:#b71c1c}
 
-/* Empty */
-.sc-empty{display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:440px;text-align:center;padding:28px;color:#bbb}
-.sc-empty-icon{font-size:3rem;opacity:.3;margin-bottom:14px}
-.sc-empty p{font-size:.83rem;line-height:1.6}
+.sc-empty{display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:460px;text-align:center;padding:32px;color:#bbb}
+.sc-empty-icon{font-size:2.8rem;opacity:.28;margin-bottom:14px}
+.sc-empty p{font-size:.82rem;line-height:1.65}
 
-/* Results body */
-.sc-res-body{padding:18px}
+.sc-results-body{padding:0}
+.sc-section{padding:14px 18px;border-bottom:1px solid #f0f0f0}
+.sc-section:last-child{border-bottom:none}
+.sc-section-title{font-size:.6rem;font-weight:800;text-transform:uppercase;letter-spacing:1.2px;color:#aaa;margin-bottom:10px;display:flex;align-items:center;gap:6px}
+.sc-section-title span{font-size:.85rem}
 
-/* Score */
-.sc-score-section{text-align:center;padding:6px 0 12px}
-.sc-score-label{font-size:.63rem;color:#999;text-transform:uppercase;letter-spacing:.8px;margin-bottom:4px}
-.sc-score-display{display:flex;align-items:baseline;justify-content:center;gap:3px;margin-bottom:8px}
-.sc-score-num{font-size:3.2rem;font-weight:800;color:#1a237e;line-height:1}
-.sc-score-tot{font-size:1.1rem;color:#bbb}
-.sc-score-verdict{font-size:.74rem;font-weight:700;color:#555}
-.sc-prog-track{width:100%;height:7px;background:#e8e8e8;border-radius:4px;overflow:hidden;margin:8px 0 4px}
+.sc-score-section{text-align:center;padding:18px 18px 14px;border-bottom:1px solid #f0f0f0}
+.sc-score-lbl{font-size:.6rem;font-weight:700;text-transform:uppercase;letter-spacing:1px;color:#aaa;margin-bottom:4px}
+.sc-score-row{display:flex;align-items:baseline;justify-content:center;gap:3px;margin-bottom:8px}
+.sc-score-num{font-size:3.5rem;font-weight:900;line-height:1;color:#1a237e}
+.sc-score-denom{font-size:1.1rem;color:#ccc;font-weight:400}
+.sc-prog-track{width:100%;height:8px;background:#ebebeb;border-radius:4px;overflow:hidden;margin-bottom:6px}
 .sc-prog-fill{height:100%;border-radius:4px;transition:width 1s cubic-bezier(.4,0,.2,1)}
+.sc-score-verdict{font-size:.76rem;font-weight:700;color:#555}
 
-/* Monthly loss */
-.sc-risk-lbl{font-size:.63rem;color:#999;text-transform:uppercase;letter-spacing:.8px;margin-bottom:2px}
-.sc-risk-amt{font-size:1.9rem;font-weight:800;color:#e53935;margin-bottom:12px;letter-spacing:-.5px}
-
-/* Loss grid */
-.sc-loss-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:14px}
-.sc-loss-card{background:#fff3e0;border:1px solid #ffe0b2;border-radius:10px;padding:12px;text-align:center}
+.sc-monthly-loss-lbl{font-size:.7rem;color:#777;margin-bottom:2px}
+.sc-monthly-loss-amt{font-size:2rem;font-weight:800;color:#e53935;letter-spacing:-.5px;margin-bottom:10px;line-height:1}
+.sc-loss-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.sc-loss-card{background:#fff3e0;border:1px solid #ffe0b2;border-radius:9px;padding:11px;text-align:center}
 .sc-loss-card.crit{background:#ffebee;border-color:#ffcdd2}
-.sc-loss-period{font-size:.6rem;font-weight:700;text-transform:uppercase;letter-spacing:.5px;color:#999;margin-bottom:5px}
-.sc-loss-amt{font-size:1.05rem;font-weight:800;color:#c62828;margin-bottom:2px}
-.sc-loss-sub{font-size:.58rem;color:#bbb}
+.sc-loss-period{font-size:.58rem;font-weight:700;text-transform:uppercase;letter-spacing:.5px;color:#aaa;margin-bottom:4px}
+.sc-loss-amount{font-size:1.15rem;font-weight:800;color:#c62828}
 
-/* Divider */
-.sc-divider{height:1px;background:#f0f0f0;margin:12px 0}
+.sc-build-lbl{font-size:.68rem;color:#777;margin-bottom:3px}
+.sc-build-amt{font-size:1.5rem;font-weight:800;color:#1565c0;margin-bottom:2px;line-height:1.1}
+.sc-build-sub{font-size:.62rem;color:#aaa;margin-bottom:10px}
+.sc-budget-row{background:#f0f4ff;border-radius:8px;padding:10px 12px;display:flex;justify-content:space-between;align-items:center}
+.sc-budget-lbl{font-size:.65rem;color:#555}
+.sc-budget-val{font-size:.85rem;font-weight:700;color:#1a237e}
 
-/* Metrics */
-.sc-metrics{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin-bottom:14px}
-.sc-mc{background:#f8f9fa;border-radius:9px;padding:10px 8px;text-align:center}
-.sc-mc-icon{font-size:1.1rem;margin-bottom:3px}
-.sc-mc-lbl{font-size:.58rem;color:#888;margin-bottom:3px;line-height:1.3}
-.sc-mc-val{font-size:.75rem;font-weight:700;color:#222}
+.sc-timeline-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.sc-tl-card{background:#f8f9fa;border-radius:9px;padding:11px 12px}
+.sc-tl-icon{font-size:1.1rem;margin-bottom:3px}
+.sc-tl-lbl{font-size:.58rem;color:#999;text-transform:uppercase;letter-spacing:.5px;margin-bottom:3px}
+.sc-tl-val{font-size:.95rem;font-weight:800;color:#1a237e}
 
-/* Trajectory */
-.sc-traj h4{font-size:.68rem;font-weight:700;color:#444;margin-bottom:5px}
-.sc-traj-lbls{display:flex;justify-content:space-between;font-size:.56rem;color:#bbb;margin-bottom:2px}
-.sc-traj canvas{width:100%;height:68px;margin-bottom:14px}
+.sc-chart-wrap{position:relative;height:80px;width:100%}
+.sc-chart-wrap canvas{position:absolute;top:0;left:0}
 
-/* Insight */
-.sc-insight{background:#e8f0fe;border-left:4px solid #1565c0;border-radius:8px;padding:13px 14px;margin-bottom:14px;display:flex;gap:10px;align-items:flex-start}
-.sc-insight-icon{font-size:1.1rem;flex-shrink:0;margin-top:1px}
-.sc-insight-text{font-size:.75rem;color:#1a237e;line-height:1.55}
+.sc-insight-card{background:#e8f0fe;border-left:4px solid #1565c0;border-radius:0 8px 8px 0;padding:12px 14px;display:flex;gap:10px;align-items:flex-start}
+.sc-insight-icon{font-size:1rem;flex-shrink:0;margin-top:1px}
+.sc-insight-text{font-size:.74rem;color:#1a237e;line-height:1.55}
 
-/* CTA */
-.sc-cta{display:block;width:100%;padding:14px;background:#1565c0;color:#fff;font-size:.85rem;font-weight:700;border:none;border-radius:9px;cursor:pointer;text-align:center;transition:background .2s}
-.sc-cta:hover{background:#1976d2}
+.sc-cta-btn{display:block;width:100%;padding:15px 18px;background:#1565c0;color:#fff;font-size:.85rem;font-weight:700;border:none;border-radius:0 0 14px 14px;cursor:pointer;text-align:center;transition:background .2s;letter-spacing:.2px}
+.sc-cta-btn:hover{background:#1976d2}
 
-/* Modal */
 .sc-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.72);z-index:9999;align-items:center;justify-content:center;padding:16px}
 .sc-overlay.on{display:flex}
-.sc-modal{background:#fff;border-radius:16px;width:100%;max-width:640px;max-height:88vh;overflow-y:auto;padding:28px;position:relative;color:#1a1a2e}
-.sc-modal-x{position:absolute;top:13px;right:13px;background:#f0f0f0;border:none;border-radius:50%;width:30px;height:30px;cursor:pointer;font-size:.95rem;color:#444;display:flex;align-items:center;justify-content:center}
+.sc-modal{background:#fff;border-radius:16px;width:100%;max-width:660px;max-height:90vh;overflow-y:auto;padding:28px;position:relative;color:#1a1a2e}
+.sc-modal-x{position:absolute;top:13px;right:13px;background:#f0f0f0;border:none;border-radius:50%;width:30px;height:30px;cursor:pointer;font-size:.9rem;color:#444;display:flex;align-items:center;justify-content:center}
 .sc-modal-x:hover{background:#e0e0e0}
-.sc-modal h2{font-size:1.15rem;font-weight:800;color:#1a237e;margin-bottom:5px}
-.sc-modal .msub{font-size:.78rem;color:#666;margin-bottom:16px;line-height:1.5}
-.sc-rec-box{background:#e8f0fe;border-left:4px solid #1565c0;border-radius:8px;padding:13px 14px;margin-bottom:18px;font-size:.8rem;color:#1a237e;line-height:1.6}
-.sc-rec-box strong{display:block;font-size:.68rem;text-transform:uppercase;letter-spacing:.5px;margin-bottom:4px}
+.sc-modal h2{font-size:1.12rem;font-weight:800;color:#1a237e;margin-bottom:5px}
+.sc-modal-sub{font-size:.76rem;color:#666;margin-bottom:18px;line-height:1.55}
+.sc-rec-box{background:#e8f0fe;border-left:4px solid #1565c0;border-radius:8px;padding:14px;margin-bottom:20px}
+.sc-rec-box strong{display:block;font-size:.62rem;text-transform:uppercase;letter-spacing:.6px;color:#1565c0;margin-bottom:5px}
+.sc-rec-box p{font-size:.8rem;color:#1a237e;line-height:1.6}
 
-/* Lead form */
-.sc-lead-form{margin-top:18px;padding-top:18px;border-top:2px solid #1a237e}
-.sc-lead-form h3{font-size:.9rem;font-weight:700;margin-bottom:14px;color:#1a237e}
+.sc-lead-form{border-top:2px solid #1a237e;padding-top:18px;margin-top:6px}
+.sc-lead-form h3{font-size:.9rem;font-weight:700;color:#1a237e;margin-bottom:14px}
 .sc-lead-grid{display:grid;grid-template-columns:1fr 1fr;gap:11px;margin-bottom:14px}
 .sc-lf{display:flex;flex-direction:column;gap:4px}
-.sc-lf label{font-size:.68rem;font-weight:700;color:#666;text-transform:uppercase;letter-spacing:.5px}
-.sc-lf input,.sc-lf textarea{padding:10px 12px;border:1px solid #ddd;border-radius:8px;font-size:.83rem;color:#222;outline:none;transition:border-color .2s}
+.sc-lf label{font-size:.66rem;font-weight:700;color:#666;text-transform:uppercase;letter-spacing:.5px}
+.sc-lf input,.sc-lf textarea{padding:10px 12px;border:1px solid #ddd;border-radius:8px;font-size:.82rem;color:#222;outline:none;transition:border-color .2s}
 .sc-lf input:focus,.sc-lf textarea:focus{border-color:#1565c0}
-.sc-lead-sub{width:100%;padding:13px;background:#1565c0;color:#fff;font-size:.9rem;font-weight:700;border:none;border-radius:9px;cursor:pointer;transition:background .2s}
+.sc-lead-sub{width:100%;padding:14px;background:#1565c0;color:#fff;font-size:.88rem;font-weight:700;border:none;border-radius:9px;cursor:pointer;transition:background .2s}
 .sc-lead-sub:hover{background:#1976d2}
 .sc-lead-ok{text-align:center;padding:20px;color:#1b5e20;font-weight:600;font-size:.9rem;display:none}
 
-/* Toast */
-.sc-toast{position:fixed;bottom:22px;right:22px;background:#1b5e20;color:#fff;padding:12px 20px;border-radius:10px;font-size:.82rem;font-weight:600;box-shadow:0 8px 24px rgba(0,0,0,.3);z-index:10000;transform:translateY(80px);opacity:0;transition:transform .35s ease,opacity .35s ease}
+.sc-toast{position:fixed;bottom:22px;right:22px;background:#1b5e20;color:#fff;padding:12px 20px;border-radius:10px;font-size:.82rem;font-weight:600;box-shadow:0 8px 24px rgba(0,0,0,.3);z-index:10000;transform:translateY(80px);opacity:0;transition:transform .35s,opacity .35s}
 .sc-toast.on{transform:translateY(0);opacity:1}
 
-/* Responsive */
-@media(max-width:900px){.sc-container{grid-template-columns:1fr}.sc-results{position:static}}
-@media(max-width:560px){.sc-row{grid-template-columns:1fr}.sc-metrics{grid-template-columns:1fr 1fr}.sc-lead-grid{grid-template-columns:1fr}}
+@media(max-width:960px){.sc-container{grid-template-columns:1fr}.sc-results-panel{position:static}}
+@media(max-width:600px){.sc-row{grid-template-columns:1fr}.sc-row-3{grid-template-columns:1fr}.sc-lead-grid{grid-template-columns:1fr}.sc-modal{padding:18px}}
 </style>
 </head>
 <body>
 
 <div class="sc-header">
   <h1>Free SaaS Opportunity Audit</h1>
-  <p>Answer 4 quick questions and find out exactly how much revenue you're leaving on the table — and what it costs every month you delay.</p>
+  <p>Answer a few quick questions and discover exactly how much revenue you're leaving on the table — and what it costs to build your product right.</p>
 </div>
 
 <div class="sc-container">
 
-  <!-- FORM -->
+  <!-- ── FORM ── -->
   <div class="sc-form-panel">
+
     <div class="sc-field">
       <label>Which best describes your situation?</label>
       <select id="fAudience">
         <option value="idea_personal">I have an idea + personal investment</option>
         <option value="idea_funded">I have an idea + seed / investor funding</option>
         <option value="unsatisfied_team">I have a dev team but I'm unhappy with results</option>
-        <option value="mvp_investment">I have an MVP + investment and need a better team</option>
+        <option value="mvp_investment">I have an MVP + investment — need a better team</option>
         <option value="mvp_ai">I built an MVP with AI tools and facing technical issues</option>
         <option value="non_technical">Non-technical founder with limited budget</option>
       </select>
     </div>
 
-    <div class="sc-field">
-      <label>What type of SaaS product are you building?</label>
-      <select id="fSaasType">
-        <option value="b2b">B2B SaaS — selling to businesses</option>
-        <option value="b2c">B2C / Consumer SaaS — selling to end users</option>
-        <option value="marketplace">Marketplace or Platform</option>
-        <option value="enterprise">Enterprise Software</option>
-      </select>
+    <div class="sc-row">
+      <div class="sc-field">
+        <label>SaaS Product Type</label>
+        <select id="fSaasType">
+          <option value="b2b">B2B SaaS</option>
+          <option value="b2c">B2C / Consumer SaaS</option>
+          <option value="marketplace">Marketplace / Platform</option>
+          <option value="enterprise">Enterprise Software</option>
+        </select>
+      </div>
+      <div class="sc-field">
+        <label>Product Complexity</label>
+        <select id="fComplexity">
+          <option value="mvp">Simple MVP</option>
+          <option value="standard">Standard SaaS</option>
+          <option value="complex">Complex Platform</option>
+          <option value="enterprise">Enterprise-grade</option>
+        </select>
+      </div>
     </div>
 
     <div class="sc-row">
       <div class="sc-field">
-        <label>Target Revenue in Year 1 ($)</label>
+        <label>Target User Scale</label>
+        <select id="fUsers">
+          <option value="small">&lt; 500 users</option>
+          <option value="medium">500 – 5,000 users</option>
+          <option value="large">5K – 50K users</option>
+          <option value="xlarge">50,000+ users</option>
+        </select>
+      </div>
+      <div class="sc-field">
+        <label>Desired Launch Timeline</label>
+        <select id="fTimeline">
+          <option value="asap">ASAP (&lt; 3 months)</option>
+          <option value="short">3 – 6 months</option>
+          <option value="medium" selected>6 – 12 months</option>
+          <option value="long">12+ months</option>
+        </select>
+      </div>
+    </div>
+
+    <div class="sc-form-sep">Financial Details</div>
+
+    <div class="sc-row">
+      <div class="sc-field">
+        <label>Target Annual Revenue — Year 1 ($)</label>
         <div class="pfx"><span>$</span><input type="number" id="fRevenue" placeholder="e.g. 120000" min="0" step="5000"></div>
         <span class="sc-err" id="errRevenue">Please enter your revenue target</span>
       </div>
@@ -187,11 +212,13 @@ body{font-family:'Segoe UI',-apple-system,BlinkMacSystemFont,sans-serif;backgrou
       </div>
     </div>
 
+    <div class="sc-form-sep">Contact</div>
+
     <div class="sc-row">
       <div class="sc-field">
-        <label>Your Email</label>
+        <label>Your Email *</label>
         <input type="email" id="fEmail" placeholder="you@company.com">
-        <span class="sc-err" id="errEmail">Email is required</span>
+        <span class="sc-err" id="errEmail">A valid email is required</span>
       </div>
       <div class="sc-field">
         <label>Website / Idea URL (optional)</label>
@@ -202,92 +229,108 @@ body{font-family:'Segoe UI',-apple-system,BlinkMacSystemFont,sans-serif;backgrou
     <button class="sc-calc-btn" id="calcBtn">Run My Free SaaS Audit →</button>
   </div>
 
-  <!-- RESULTS -->
-  <div class="sc-results" id="resultsPanel">
-    <div class="sc-res-hdr">
+  <!-- ── RESULTS ── -->
+  <div class="sc-results-panel" id="resultsPanel">
+    <div class="sc-results-header">
       <h3>Your Opportunity Audit</h3>
-      <span class="sc-badge" id="oppBadge">—</span>
+      <span class="sc-opp-badge" id="oppBadge">—</span>
     </div>
+
     <div class="sc-empty" id="emptyState">
       <div class="sc-empty-icon">🚀</div>
       <p>Fill in your details and click <strong>Run My Free SaaS Audit</strong> to see your personalised opportunity analysis.</p>
     </div>
-    <div class="sc-res-body" id="resContent" style="display:none">
 
+    <div class="sc-results-body" id="resContent" style="display:none">
+
+      <!-- Score -->
       <div class="sc-score-section">
-        <p class="sc-score-label">Opportunity Score</p>
-        <div class="sc-score-display">
+        <p class="sc-score-lbl">Opportunity Score</p>
+        <div class="sc-score-row">
           <span class="sc-score-num" id="rScore">0</span>
-          <span class="sc-score-tot">/100</span>
+          <span class="sc-score-denom">/100</span>
         </div>
         <div class="sc-prog-track"><div class="sc-prog-fill" id="progFill" style="width:0%"></div></div>
         <p class="sc-score-verdict" id="rVerdict">—</p>
       </div>
 
-      <div class="sc-divider"></div>
-
-      <p class="sc-risk-lbl">Revenue Lost Per Month of Delay</p>
-      <div class="sc-risk-amt" id="rMonthly">$0</div>
-
-      <div class="sc-loss-grid">
-        <div class="sc-loss-card">
-          <div class="sc-loss-period">6-Month Delay</div>
-          <div class="sc-loss-amt" id="rLoss6">$0</div>
-          <div class="sc-loss-sub">Total opportunity lost</div>
-        </div>
-        <div class="sc-loss-card crit">
-          <div class="sc-loss-period">12-Month Delay</div>
-          <div class="sc-loss-amt" id="rLoss12">$0</div>
-          <div class="sc-loss-sub">Total opportunity lost</div>
-        </div>
-      </div>
-
-      <div class="sc-divider"></div>
-
-      <div class="sc-metrics">
-        <div class="sc-mc">
-          <div class="sc-mc-icon">💰</div>
-          <div class="sc-mc-lbl">Recommended Budget</div>
-          <div class="sc-mc-val" id="rBudgetRange">—</div>
-        </div>
-        <div class="sc-mc">
-          <div class="sc-mc-icon">⏱️</div>
-          <div class="sc-mc-lbl">Estimated Build Time</div>
-          <div class="sc-mc-val" id="rBuildTime">—</div>
-        </div>
-        <div class="sc-mc">
-          <div class="sc-mc-icon">📈</div>
-          <div class="sc-mc-lbl">Break-even In</div>
-          <div class="sc-mc-val" id="rROI">—</div>
+      <!-- Cost of doing nothing -->
+      <div class="sc-section">
+        <div class="sc-section-title"><span>⚠️</span> Cost of Doing Nothing</div>
+        <p class="sc-monthly-loss-lbl">Revenue lost per month of delay</p>
+        <div class="sc-monthly-loss-amt" id="rMonthly">$0</div>
+        <div class="sc-loss-grid">
+          <div class="sc-loss-card">
+            <div class="sc-loss-period">6-Month Delay</div>
+            <div class="sc-loss-amount" id="rLoss6">$0</div>
+          </div>
+          <div class="sc-loss-card crit">
+            <div class="sc-loss-period">12-Month Delay</div>
+            <div class="sc-loss-amount" id="rLoss12">$0</div>
+          </div>
         </div>
       </div>
 
-      <div class="sc-traj">
-        <h4>Cumulative Cost of Delay — 12-Month Projection</h4>
-        <div class="sc-traj-lbls"><span>Now</span><span>3 mo</span><span>6 mo</span><span>9 mo</span><span>12 mo</span></div>
-        <canvas id="trajChart" height="68"></canvas>
+      <!-- Investment to build it right -->
+      <div class="sc-section">
+        <div class="sc-section-title"><span>💰</span> Investment to Build It Right</div>
+        <p class="sc-build-lbl">Estimated monthly development cost</p>
+        <div class="sc-build-amt" id="rMonthlyBuild">$0 – $0 /month</div>
+        <p class="sc-build-sub">Based on your complexity, user scale &amp; timeline</p>
+        <div class="sc-budget-row">
+          <span class="sc-budget-lbl">Total Project Budget Estimate</span>
+          <span class="sc-budget-val" id="rTotalBudget">—</span>
+        </div>
       </div>
 
-      <div class="sc-insight">
-        <span class="sc-insight-icon">💡</span>
-        <p class="sc-insight-text" id="rInsight">—</p>
+      <!-- Timeline & ROI -->
+      <div class="sc-section">
+        <div class="sc-section-title"><span>⏱️</span> Timeline &amp; ROI</div>
+        <div class="sc-timeline-grid">
+          <div class="sc-tl-card">
+            <div class="sc-tl-icon">🛠️</div>
+            <div class="sc-tl-lbl">Estimated Build Time</div>
+            <div class="sc-tl-val" id="rBuildTime">—</div>
+          </div>
+          <div class="sc-tl-card">
+            <div class="sc-tl-icon">📈</div>
+            <div class="sc-tl-lbl">Break-even In</div>
+            <div class="sc-tl-val" id="rROI">—</div>
+          </div>
+        </div>
       </div>
 
-      <button class="sc-cta" id="openAuditBtn">Get Full Audit Report &amp; Book Free Strategy Call →</button>
+      <!-- Chart -->
+      <div class="sc-section">
+        <div class="sc-section-title"><span>📊</span> Cumulative Cost of Delay</div>
+        <div class="sc-chart-wrap">
+          <canvas id="trajChart"></canvas>
+        </div>
+      </div>
+
+      <!-- Insight -->
+      <div class="sc-section">
+        <div class="sc-insight-card">
+          <span class="sc-insight-icon">💡</span>
+          <p class="sc-insight-text" id="rInsight">—</p>
+        </div>
+      </div>
+
+      <button class="sc-cta-btn" id="openAuditBtn">Get Full Report &amp; Book a Free Strategy Call →</button>
     </div>
   </div>
 
 </div><!-- /container -->
 
-<!-- MODAL -->
+<!-- ── MODAL ── -->
 <div class="sc-overlay" id="auditOverlay">
   <div class="sc-modal">
     <button class="sc-modal-x" id="closeModal">✕</button>
     <h2>Your Full SaaS Opportunity Report</h2>
-    <p class="msub" id="modalSub">—</p>
+    <p class="sc-modal-sub" id="modalSub">—</p>
     <div class="sc-rec-box">
       <strong>Our Recommendation</strong>
-      <span id="rRecommendation">—</span>
+      <p id="rRecommendation">—</p>
     </div>
     <div class="sc-lead-form">
       <h3>📬 Get Your Personalised Action Plan</h3>
@@ -310,127 +353,261 @@ body{font-family:'Segoe UI',-apple-system,BlinkMacSystemFont,sans-serif;backgrou
 <div class="sc-toast" id="toast"></div>
 
 <script>
-/* ── Audience & SaaS type data ── */
-var AUD={
-  idea_personal:    {urgency:.85,riskMult:1.20,mktCapture:.60,insight:'Every month of delay is money from your own pocket — and an open door for competitors to enter your market first.',rec:'Start with a lean MVP targeting your first 10–20 paying customers. Budget 4–6 months of focused development with a reliable technical partner.'},
-  idea_funded:      {urgency:.95,riskMult:1.70,mktCapture:.75,insight:'Investor runway has a hard deadline. Slow execution compresses your window to hit milestones and close your next funding round.',rec:'Speed to a working product is everything. Investors expect milestones on schedule — a strong development partner can halve your time-to-demo.'},
-  unsatisfied_team: {urgency:.90,riskMult:1.50,mktCapture:.65,insight:'An underperforming team doubles your cost — you pay salaries AND lose market time simultaneously.',rec:'Audit your current output vs monthly spend. Switching to the right partner typically saves 40–60% long-term and recovers 3–6 months of lost velocity.'},
-  mvp_investment:   {urgency:.80,riskMult:1.40,mktCapture:.70,insight:'Your MVP proves the concept. Now you need execution speed and code quality to scale before competitors replicate your idea.',rec:'Prioritise scalability, code quality, and feature delivery speed. The right team pays for itself within 3–4 months.'},
-  mvp_ai:           {urgency:.88,riskMult:1.60,mktCapture:.60,insight:'AI-generated code carries hidden technical debt — security vulnerabilities, no scalability plan, logic that breaks under real user loads.',rec:'Get a professional technical audit before scaling marketing or pitching investors. Fixing AI-built MVPs early costs 3x less than a full rebuild under pressure.'},
-  non_technical:    {urgency:.75,riskMult:1.10,mktCapture:.50,insight:'Without technical knowledge, the wrong vendor can burn your entire budget with little to show — the most common founder mistake.',rec:'Start with a discovery and prototype phase before committing to full development. Validate cheaply with a trusted partner, then scale with confidence.'},
-};
-var ST={
-  b2b:        {competition:.60,timeToRev:3},
-  b2c:        {competition:.85,timeToRev:5},
-  marketplace:{competition:.78,timeToRev:7},
-  enterprise: {competition:.50,timeToRev:9},
+'use strict';
+
+/* ── Lookup tables (mirrors calculator.js) ── */
+var AUDIENCE_TYPES = {
+  idea_personal:    { urgency:.85, riskMult:1.20, mktCapture:.60, insight:'Every month of delay is money from your own pocket — and an open door for competitors to enter your market first.', rec:'Start with a lean MVP targeting your first 10–20 paying customers. Budget 4–6 months of focused development with a reliable technical partner who has built SaaS products before.' },
+  idea_funded:      { urgency:.95, riskMult:1.70, mktCapture:.75, insight:'Investor runway has a hard deadline. Slow execution compresses your window to hit milestones and secure your next funding round.', rec:'Speed to a working product is everything. Investors expect milestones on schedule — a strong development partner can halve your time-to-demo and strengthen your funding story.' },
+  unsatisfied_team: { urgency:.90, riskMult:1.50, mktCapture:.65, insight:'An underperforming team doubles your cost — you pay salaries AND lose market time simultaneously. Every month you stay costs more than switching.', rec:'Audit your current output vs monthly spend. Switching to the right partner typically saves 40–60% long-term and recovers 3–6 months of lost velocity immediately.' },
+  mvp_investment:   { urgency:.80, riskMult:1.40, mktCapture:.70, insight:'Your MVP proves the concept. Now you need execution speed and code quality to scale before competitors replicate your idea with better funding.', rec:'Prioritise scalability, code quality, and feature delivery speed. The right team pays for itself within 3–4 months through faster go-to-market execution.' },
+  mvp_ai:           { urgency:.88, riskMult:1.60, mktCapture:.60, insight:'AI-generated code carries hidden technical debt — security vulnerabilities, no scalability plan, and logic that breaks under real user loads.', rec:'Get a professional technical audit before scaling marketing or pitching investors. Fixing AI-built MVPs early costs 3x less than a full rebuild under pressure.' },
+  non_technical:    { urgency:.75, riskMult:1.10, mktCapture:.50, insight:'Without technical knowledge, the wrong development vendor can burn your entire budget with little to show — the most common and costly founder mistake.', rec:'Start with a discovery and prototype phase before committing to full development. Validate cheaply with a trusted partner, then scale with full confidence.' },
 };
 
-var fmt=function(n){return'$'+Math.round(n).toLocaleString();};
-var fmtK=function(n){var v=Math.round(n);return v>=1000?'$'+(v/1000).toFixed(0)+'K':fmt(v);};
-var flt=function(id){return parseFloat(document.getElementById(id).value)||0;};
+var SAAS_TYPES = {
+  b2b:         { competition:.60, baseMonths:3 },
+  b2c:         { competition:.85, baseMonths:5 },
+  marketplace: { competition:.78, baseMonths:7 },
+  enterprise:  { competition:.50, baseMonths:9 },
+};
 
-function oppScore(ak,sk,budget,rev){var a=AUD[ak],s=ST[sk];var fit=Math.min(budget/Math.max(rev*.40,1),1);return Math.round(Math.min(99,Math.max(10,(fit*40)+((1-s.competition)*35)+(a.mktCapture*25))));}
-function monthlyLost(rev,ak,sk){return Math.round((rev/12)*AUD[ak].urgency*ST[sk].competition);}
-function delayLoss(mo,months,mult){var t=0;for(var i=0;i<months;i++)t+=mo*Math.pow(1.05,i);return Math.round(t*mult);}
-function budgetRange(rev){var rb=rev*.45;return{min:Math.max(36000,Math.round(rb*.65)),max:Math.max(72000,Math.round(rb*1.10))};}
-function verdict(sc){if(sc>=80)return{text:'Strong Opportunity',cls:'opp-strong'};if(sc>=60)return{text:'Good Opportunity',cls:'opp-good'};if(sc>=40)return{text:'Moderate — Act Strategically',cls:'opp-moderate'};if(sc>=20)return{text:'Challenging — Plan Carefully',cls:'opp-challenging'};return{text:'High Risk — Seek Guidance',cls:'opp-risky'};}
-function buildTime(sk,budget){var base=ST[sk].timeToRev;var sp=budget>=80000?.65:budget>=40000?.80:budget>=20000?1.0:1.25;return Math.round(base*sp);}
+var COMPLEXITY = {
+  mvp:        { monthlyMin:8000,  monthlyMax:15000, timeMult:0.70 },
+  standard:   { monthlyMin:15000, monthlyMax:28000, timeMult:1.00 },
+  complex:    { monthlyMin:28000, monthlyMax:50000, timeMult:1.45 },
+  enterprise: { monthlyMin:45000, monthlyMax:90000, timeMult:1.85 },
+};
 
-var trajChart=null;
-function drawTraj(data){
-  var ctx=document.getElementById('trajChart').getContext('2d');
-  if(trajChart)trajChart.destroy();
-  trajChart=new Chart(ctx,{type:'line',data:{labels:data.map(function(_,i){return i===0?'Now':i+'mo';}),datasets:[{data:data,borderColor:'#e53935',backgroundColor:'rgba(229,57,53,.08)',borderWidth:2,pointRadius:0,fill:true,tension:.4}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false},tooltip:{enabled:false}},scales:{x:{display:false},y:{display:false}},animation:{duration:800}}});
+var TARGET_USERS = {
+  small:  { scaleFactor:1.00 },
+  medium: { scaleFactor:1.20 },
+  large:  { scaleFactor:1.55 },
+  xlarge: { scaleFactor:1.95 },
+};
+
+var LAUNCH_TIMELINE = {
+  asap:   { urgencyMult:1.50, costPremium:1.30 },
+  short:  { urgencyMult:1.20, costPremium:1.10 },
+  medium: { urgencyMult:1.00, costPremium:1.00 },
+  long:   { urgencyMult:0.80, costPremium:0.90 },
+};
+
+/* ── Helpers ── */
+function fmt(n) { return '$' + Math.round(n).toLocaleString(); }
+function fmtK(n) { var v = Math.round(n); return v >= 1000 ? '$' + (v / 1000).toFixed(0) + 'K' : fmt(v); }
+function sel(id) { return document.getElementById(id).value; }
+function flt(id) { return parseFloat(document.getElementById(id).value) || 0; }
+
+/* ── Calculation functions ── */
+function calcMonthlyBuildCost(ck, uk, tk) {
+  var cmp = COMPLEXITY[ck], usr = TARGET_USERS[uk], tl = LAUNCH_TIMELINE[tk];
+  return {
+    min: Math.round(cmp.monthlyMin * usr.scaleFactor * tl.costPremium),
+    max: Math.round(cmp.monthlyMax * usr.scaleFactor * tl.costPremium),
+  };
 }
 
-function validate(){
-  var ok=true;
-  var em=document.getElementById('fEmail').value.trim();
-  var rv=flt('fRevenue'),bud=flt('fBudget');
-  var show=function(id,v){var el=document.getElementById(id);if(v){el.classList.add('show');ok=false;}else el.classList.remove('show');};
-  show('errEmail',!em||!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(em));
-  show('errRevenue',rv<=0);
-  show('errBudget',bud<=0);
-  if(!em)document.getElementById('errEmail').textContent='Email is required';
+function calcBuildTimeline(sk, ck, budget) {
+  var base = SAAS_TYPES[sk].baseMonths;
+  var cMult = COMPLEXITY[ck].timeMult;
+  var spd = budget >= 100000 ? 0.60 : budget >= 60000 ? 0.75 : budget >= 30000 ? 0.90 : 1.15;
+  return Math.max(1, Math.round(base * cMult * spd));
+}
+
+function calcOpportunityScore(ak, sk, budget, rev, ck, uk, tk) {
+  var aud = AUDIENCE_TYPES[ak], st = SAAS_TYPES[sk], tl = LAUNCH_TIMELINE[tk];
+  var mbc = calcMonthlyBuildCost(ck, uk, tk);
+  var bt = calcBuildTimeline(sk, ck, budget);
+  var minTotal = mbc.min * bt;
+  var budgetFit = Math.min(budget / Math.max(minTotal, 1), 1);
+  var marketFactor = 1 - st.competition;
+  var urgencyFactor = Math.min(tl.urgencyMult / 1.5, 1);
+  var raw = (budgetFit * 40) + (marketFactor * 30) + (aud.mktCapture * 20) + (urgencyFactor * 10);
+  return Math.round(Math.min(99, Math.max(5, raw)));
+}
+
+function calcMonthlyRevLost(rev, ak, sk, tk) {
+  return Math.round((rev / 12) * AUDIENCE_TYPES[ak].urgency * SAAS_TYPES[sk].competition * LAUNCH_TIMELINE[tk].urgencyMult);
+}
+
+function calcDelayLoss(monthlyLoss, months, riskMult) {
+  var total = 0;
+  for (var i = 0; i < months; i++) total += monthlyLoss * Math.pow(1.05, i);
+  return Math.round(total * riskMult);
+}
+
+function calcROI(monthlyMax, buildMonths, rev) {
+  if (!rev) return null;
+  return Math.ceil((monthlyMax * buildMonths) / (rev / 12));
+}
+
+function verdictLabel(score) {
+  if (score >= 80) return { text:'Strong Opportunity',           cls:'opp-strong'     };
+  if (score >= 60) return { text:'Good Opportunity',             cls:'opp-good'       };
+  if (score >= 40) return { text:'Moderate — Act Strategically', cls:'opp-moderate'   };
+  if (score >= 20) return { text:'Challenging — Plan Carefully', cls:'opp-challenging'};
+  return               { text:'High Risk — Seek Expert Guidance',cls:'opp-risky'      };
+}
+
+/* ── Chart ── */
+var trajChart = null;
+function drawTraj(data) {
+  var ctx = document.getElementById('trajChart').getContext('2d');
+  if (trajChart) trajChart.destroy();
+  trajChart = new Chart(ctx, {
+    type: 'line',
+    data: {
+      labels: data.map(function(_, i) { return i === 0 ? 'Now' : i + 'mo'; }),
+      datasets: [{
+        data: data,
+        borderColor: '#e53935',
+        backgroundColor: 'rgba(229,57,53,.08)',
+        borderWidth: 2, pointRadius: 0, fill: true, tension: .4,
+      }]
+    },
+    options: {
+      responsive: true, maintainAspectRatio: false,
+      plugins: { legend: { display: false }, tooltip: { enabled: false } },
+      scales: { x: { display: false }, y: { display: false } },
+      animation: { duration: 800 },
+    }
+  });
+}
+
+/* ── Validation ── */
+function validate() {
+  var ok = true;
+  var em = document.getElementById('fEmail').value.trim();
+  var rv = flt('fRevenue'), bud = flt('fBudget');
+  function show(id, err) { var el = document.getElementById(id); if (err) { el.classList.add('show'); ok = false; } else el.classList.remove('show'); }
+  show('errEmail', !em || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(em));
+  show('errRevenue', rv <= 0);
+  show('errBudget', bud <= 0);
   return ok;
 }
 
-document.getElementById('calcBtn').addEventListener('click',function(){
-  if(!validate())return;
-  var ak=document.getElementById('fAudience').value;
-  var sk=document.getElementById('fSaasType').value;
-  var rev=flt('fRevenue'),budget=flt('fBudget');
-  var a=AUD[ak];
+/* ── Main calculate handler ── */
+document.getElementById('calcBtn').addEventListener('click', function() {
+  if (!validate()) return;
 
-  var sc=oppScore(ak,sk,budget,rev);
-  var mo=monthlyLost(rev,ak,sk);
-  var l6=delayLoss(mo,6,a.riskMult);
-  var l12=delayLoss(mo,12,a.riskMult);
-  var br=budgetRange(rev);
-  var roi=Math.ceil(budget/(rev/12));
-  var bt=buildTime(sk,budget);
-  var verd=verdict(sc);
-  var traj=[];for(var i=0;i<=12;i++)traj.push(i===0?0:delayLoss(mo,i,a.riskMult));
+  var ak = sel('fAudience'), sk = sel('fSaasType'), ck = sel('fComplexity');
+  var uk = sel('fUsers'), tk = sel('fTimeline');
+  var rev = flt('fRevenue'), budget = flt('fBudget');
+  var aud = AUDIENCE_TYPES[ak];
 
-  var badge=document.getElementById('oppBadge');
-  badge.textContent=verd.text;badge.className='sc-badge '+verd.cls;
+  var mbc = calcMonthlyBuildCost(ck, uk, tk);
+  var bt  = calcBuildTimeline(sk, ck, budget);
+  var sc  = calcOpportunityScore(ak, sk, budget, rev, ck, uk, tk);
+  var mo  = calcMonthlyRevLost(rev, ak, sk, tk);
+  var l6  = calcDelayLoss(mo, 6,  aud.riskMult);
+  var l12 = calcDelayLoss(mo, 12, aud.riskMult);
+  var roi = calcROI(mbc.max, bt, rev);
+  var totalMin = mbc.min * bt, totalMax = mbc.max * bt;
+  var verd = verdictLabel(sc);
+  var traj = [];
+  for (var i = 0; i <= 12; i++) traj.push(i === 0 ? 0 : calcDelayLoss(mo, i, aud.riskMult));
 
-  document.getElementById('rScore').textContent=sc;
-  document.getElementById('rVerdict').textContent=verd.text;
-  var fill=document.getElementById('progFill');
-  var col=sc>=80?'#1b5e20':sc>=60?'#1565c0':sc>=40?'#f57f17':'#c62828';
-  fill.style.background=col;setTimeout(function(){fill.style.width=sc+'%';},50);
+  /* Badge */
+  var badge = document.getElementById('oppBadge');
+  badge.textContent = verd.text; badge.className = 'sc-opp-badge ' + verd.cls;
 
-  document.getElementById('rMonthly').textContent=fmt(mo);
-  document.getElementById('rLoss6').textContent=fmt(l6);
-  document.getElementById('rLoss12').textContent=fmt(l12);
-  document.getElementById('rBudgetRange').textContent=fmtK(br.min)+' – '+fmtK(br.max);
-  document.getElementById('rBuildTime').textContent=bt+' months';
-  document.getElementById('rROI').textContent=roi+' months';
-  drawTraj(traj);
-  document.getElementById('rInsight').textContent=a.insight;
+  /* Score */
+  document.getElementById('rScore').textContent = sc;
+  document.getElementById('rVerdict').textContent = verd.text;
+  var fill = document.getElementById('progFill');
+  var col = sc >= 80 ? '#2e7d32' : sc >= 60 ? '#1565c0' : sc >= 40 ? '#f57f17' : '#c62828';
+  fill.style.background = col;
+  setTimeout(function() { fill.style.width = sc + '%'; }, 50);
 
-  document.getElementById('emptyState').style.display='none';
-  document.getElementById('resContent').style.display='block';
-  window._audit={ak:ak,sk:sk,rev:rev,budget:budget,sc:sc,mo:mo,l6:l6,l12:l12,br:br,roi:roi,bt:bt,verd:verd,a:a};
+  /* Loss */
+  document.getElementById('rMonthly').textContent = fmt(mo);
+  document.getElementById('rLoss6').textContent   = fmt(l6);
+  document.getElementById('rLoss12').textContent  = fmt(l12);
 
-  try{var ls=JSON.parse(localStorage.getItem('saas_audit_leads')||'[]');ls.push({audienceType:ak,saasType:sk,revenueGoal:rev,budget:budget,timestamp:new Date().toISOString()});localStorage.setItem('saas_audit_leads',JSON.stringify(ls));}catch(_){}
+  /* Build cost */
+  document.getElementById('rMonthlyBuild').textContent = fmt(mbc.min) + ' – ' + fmt(mbc.max) + ' /month';
+  document.getElementById('rTotalBudget').textContent  = fmtK(totalMin) + ' – ' + fmtK(totalMax);
+
+  /* Timeline */
+  document.getElementById('rBuildTime').textContent = bt + ' months';
+  document.getElementById('rROI').textContent = roi ? roi + ' months' : 'N/A';
+
+  /* Chart */
+  setTimeout(function() { drawTraj(traj); }, 100);
+
+  /* Insight */
+  document.getElementById('rInsight').textContent = aud.insight;
+
+  /* Show results */
+  document.getElementById('emptyState').style.display = 'none';
+  document.getElementById('resContent').style.display  = 'block';
+
+  window._audit = { ak:ak, sk:sk, ck:ck, uk:uk, tk:tk, rev:rev, budget:budget,
+    sc:sc, mo:mo, l6:l6, l12:l12, mbc:mbc, totalMin:totalMin, totalMax:totalMax,
+    bt:bt, roi:roi, verd:verd, aud:aud };
 });
 
-document.getElementById('openAuditBtn').addEventListener('click',function(){
-  if(!window._audit)return;
-  var d=window._audit;
-  document.getElementById('modalSub').textContent='Opportunity Score '+d.sc+'/100 · '+d.verd.text+' · Revenue at Risk: '+fmt(d.mo)+'/month · 12-Month Loss if Delayed: '+fmt(d.l12);
-  document.getElementById('rRecommendation').textContent=d.a.rec;
-  document.getElementById('leadOk').style.display='none';
-  document.getElementById('leadSubmit').style.display='block';
+/* ── Modal ── */
+document.getElementById('openAuditBtn').addEventListener('click', function() {
+  if (!window._audit) return;
+  var d = window._audit;
+  document.getElementById('modalSub').textContent = 'Score ' + d.sc + '/100 · ' + d.verd.text + ' · ' + fmt(d.mo) + '/month at risk · 12-month delay cost: ' + fmt(d.l12);
+  document.getElementById('rRecommendation').textContent = d.aud.rec;
+  document.getElementById('leadOk').style.display = 'none';
+  document.getElementById('leadSubmit').style.display = 'block';
   document.getElementById('auditOverlay').classList.add('on');
 });
 
-document.getElementById('closeModal').addEventListener('click',function(){document.getElementById('auditOverlay').classList.remove('on');});
-document.getElementById('auditOverlay').addEventListener('click',function(e){if(e.target===document.getElementById('auditOverlay'))document.getElementById('auditOverlay').classList.remove('on');});
-document.addEventListener('keydown',function(e){if(e.key==='Escape')document.getElementById('auditOverlay').classList.remove('on');});
+document.getElementById('closeModal').addEventListener('click', function() { document.getElementById('auditOverlay').classList.remove('on'); });
+document.getElementById('auditOverlay').addEventListener('click', function(e) { if (e.target === document.getElementById('auditOverlay')) document.getElementById('auditOverlay').classList.remove('on'); });
+document.addEventListener('keydown', function(e) { if (e.key === 'Escape') document.getElementById('auditOverlay').classList.remove('on'); });
 
-document.getElementById('leadSubmit').addEventListener('click',function(){
-  var name=document.getElementById('lfName').value.trim();
-  if(!name){alert('Please enter your name.');return;}
-  var d=window._audit||{};
-  var payload={
-    name:name,phone:document.getElementById('lfPhone').value.trim(),
-    company:document.getElementById('lfCompany').value.trim(),role:document.getElementById('lfRole').value.trim(),
-    challenge:document.getElementById('lfChallenge').value.trim(),
-    email:document.getElementById('fEmail').value.trim(),website:document.getElementById('fWebsite').value.trim(),
-    audienceType:d.ak,saasType:d.sk,revenueGoal:d.rev,budget:d.budget,
-    auditResults:{opportunityScore:d.sc,monthlyRevLost:d.mo,loss6Months:d.l6,loss12Months:d.l12,budgetMin:d.br?d.br.min:0,budgetMax:d.br?d.br.max:0,roiMonths:d.roi,buildTimeline:d.bt,verdict:d.verd?d.verd.text:''},
-    source:'saas_audit_calculator',
+/* ── Lead submit ── */
+document.getElementById('leadSubmit').addEventListener('click', function() {
+  var name = document.getElementById('lfName').value.trim();
+  if (!name) { alert('Please enter your name.'); return; }
+  var d = window._audit || {};
+  var payload = {
+    name:    name,
+    phone:   document.getElementById('lfPhone').value.trim(),
+    company: document.getElementById('lfCompany').value.trim(),
+    role:    document.getElementById('lfRole').value.trim(),
+    challenge: document.getElementById('lfChallenge').value.trim(),
+    email:   document.getElementById('fEmail').value.trim(),
+    website: document.getElementById('fWebsite').value.trim(),
+    audienceType:  d.ak, saasType: d.sk,
+    complexityKey: d.ck, usersKey: d.uk, timelineKey: d.tk,
+    revenueGoal: d.rev, budget: d.budget,
+    auditResults: {
+      opportunityScore: d.sc,
+      monthlyRevLost:   d.mo,
+      loss6Months:      d.l6,
+      loss12Months:     d.l12,
+      monthlyBuildMin:  d.mbc ? d.mbc.min : 0,
+      monthlyBuildMax:  d.mbc ? d.mbc.max : 0,
+      totalBudgetMin:   d.totalMin || 0,
+      totalBudgetMax:   d.totalMax || 0,
+      roiMonths:        d.roi || 0,
+      buildTimeline:    d.bt,
+      verdict:          d.verd ? d.verd.text : '',
+    },
+    source: 'saas_audit_calculator',
   };
-  // Send to Odoo backend if available (fails silently in standalone mode)
-  fetch('/saas-calculator/submit-lead',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(payload)}).catch(function(){});
-  try{var ls=JSON.parse(localStorage.getItem('saas_audit_leads_full')||'[]');ls.push(payload);localStorage.setItem('saas_audit_leads_full',JSON.stringify(ls));}catch(_){}
-  document.getElementById('leadSubmit').style.display='none';
-  document.getElementById('leadOk').style.display='block';
-  var t=document.getElementById('toast');t.textContent='Thank you! We will be in touch within 24 hours.';t.classList.add('on');setTimeout(function(){t.classList.remove('on');},4000);
+
+  /* Send to Odoo backend if available — fails silently in standalone mode */
+  fetch('/saas-calculator/submit-lead', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(payload),
+  }).catch(function() {});
+
+  document.getElementById('leadSubmit').style.display = 'none';
+  document.getElementById('leadOk').style.display = 'block';
+  var t = document.getElementById('toast');
+  t.textContent = 'Thank you! We'll review your audit and be in touch within 24 hours.';
+  t.classList.add('on');
+  setTimeout(function() { t.classList.remove('on'); }, 4500);
 });
 </script>
 </body>

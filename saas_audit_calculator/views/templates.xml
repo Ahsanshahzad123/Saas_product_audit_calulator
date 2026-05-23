@@ -7,23 +7,21 @@
       <t t-set="meta_description">Find out how much revenue you're leaving on the table and what it costs to delay. Free SaaS product audit in 60 seconds.</t>
 
       <style>
-        .o_header_standard { background: #0b1731 !important; }
-        .o_footer { background: #0b1731 !important; }
-        #wrapwrap { background: linear-gradient(135deg, #0b1731 0%, #1a237e 45%, #1565c0 100%) !important; }
+        .o_header_standard { background:#0b1731 !important; }
+        .o_footer { background:#0b1731 !important; }
+        #wrapwrap { background:linear-gradient(135deg,#0b1731 0%,#1a237e 45%,#1565c0 100%) !important; }
       </style>
 
       <div id="wrap" class="saas-calc-root">
 
-        <!-- Header -->
         <section class="sc-header">
           <h1>Free SaaS Opportunity Audit</h1>
-          <p>Answer 4 quick questions and find out exactly how much revenue you're leaving on the table — and what it costs you every month you delay.</p>
+          <p>Answer 7 quick questions and find out exactly how much revenue you're leaving on the table — and what it costs to build it right.</p>
         </section>
 
-        <!-- Main Grid -->
         <div class="sc-container">
 
-          <!-- ── Form Panel ──────────────────────────────────────────── -->
+          <!-- ── FORM ────────────────────────────────────────────────── -->
           <div class="sc-form-panel">
 
             <div class="sc-field">
@@ -31,26 +29,58 @@
               <select id="fAudience">
                 <option value="idea_personal">I have an idea + personal investment</option>
                 <option value="idea_funded">I have an idea + seed / investor funding</option>
-                <option value="unsatisfied_team">I have a dev team but I'm unhappy with results</option>
-                <option value="mvp_investment">I have an MVP + investment and need a better team</option>
-                <option value="mvp_ai">I built an MVP with AI tools and facing technical issues</option>
+                <option value="unsatisfied_team">I have a dev team but unhappy with results</option>
+                <option value="mvp_investment">I have an MVP + investment, need a better team</option>
+                <option value="mvp_ai">Built MVP with AI tools — facing technical issues</option>
                 <option value="non_technical">Non-technical founder with limited budget</option>
-              </select>
-            </div>
-
-            <div class="sc-field">
-              <label>What type of SaaS product are you building?</label>
-              <select id="fSaasType">
-                <option value="b2b">B2B SaaS — selling to businesses</option>
-                <option value="b2c">B2C / Consumer SaaS — selling to end users</option>
-                <option value="marketplace">Marketplace or Platform</option>
-                <option value="enterprise">Enterprise Software</option>
               </select>
             </div>
 
             <div class="sc-row">
               <div class="sc-field">
-                <label>Target Revenue in Year 1 ($)</label>
+                <label>Type of SaaS Product</label>
+                <select id="fSaasType">
+                  <option value="b2b">B2B SaaS (selling to businesses)</option>
+                  <option value="b2c">B2C / Consumer SaaS</option>
+                  <option value="marketplace">Marketplace / Platform</option>
+                  <option value="enterprise">Enterprise Software</option>
+                </select>
+              </div>
+              <div class="sc-field">
+                <label>Product Complexity</label>
+                <select id="fComplexity">
+                  <option value="mvp">Simple MVP (core features only)</option>
+                  <option value="standard" selected="">Standard SaaS (full feature set)</option>
+                  <option value="complex">Complex Platform (APIs, integrations)</option>
+                  <option value="enterprise">Enterprise-grade (compliance, SSO)</option>
+                </select>
+              </div>
+            </div>
+
+            <div class="sc-row">
+              <div class="sc-field">
+                <label>Target Users in Year 1</label>
+                <select id="fUsers">
+                  <option value="small">Less than 500 users</option>
+                  <option value="medium" selected="">500 – 5,000 users</option>
+                  <option value="large">5,000 – 50,000 users</option>
+                  <option value="xlarge">50,000+ users</option>
+                </select>
+              </div>
+              <div class="sc-field">
+                <label>When Do You Need to Launch?</label>
+                <select id="fTimeline">
+                  <option value="asap">ASAP — within 3 months</option>
+                  <option value="short" selected="">3 – 6 months</option>
+                  <option value="medium">6 – 12 months</option>
+                  <option value="long">12+ months (no rush)</option>
+                </select>
+              </div>
+            </div>
+
+            <div class="sc-row">
+              <div class="sc-field">
+                <label>Target Revenue — Year 1 ($)</label>
                 <div class="pfx">
                   <span>$</span>
                   <input type="number" id="fRevenue" placeholder="e.g. 120000" min="0" step="5000"/>
@@ -58,7 +88,7 @@
                 <span class="sc-err" id="errRevenue">Please enter your revenue target</span>
               </div>
               <div class="sc-field">
-                <label>Available Development Budget ($)</label>
+                <label>Your Available Budget ($)</label>
                 <div class="pfx">
                   <span>$</span>
                   <input type="number" id="fBudget" placeholder="e.g. 50000" min="0" step="5000"/>
@@ -83,7 +113,7 @@
 
           </div><!-- /form -->
 
-          <!-- ── Results Panel ────────────────────────────────────────── -->
+          <!-- ── RESULTS ─────────────────────────────────────────────── -->
           <div class="sc-results-panel" id="resultsPanel">
             <div class="sc-results-header">
               <h3>Your Opportunity Audit</h3>
@@ -92,82 +122,92 @@
 
             <div class="sc-empty" id="emptyState">
               <div class="sc-empty-icon">&#128640;</div>
-              <p>Fill in your details and click <strong>Run My Free SaaS Audit</strong> to see your personalised opportunity analysis.</p>
+              <p>Fill in your details on the left and click <strong>Run My Free SaaS Audit</strong> to see your full personalised report.</p>
             </div>
 
-            <div class="sc-results-body" id="resContent" style="display:none">
+            <div id="resContent" style="display:none">
 
-              <!-- Opportunity Score -->
+              <!-- 1. Score -->
               <div class="sc-score-section">
-                <p class="sc-score-label">Opportunity Score</p>
-                <div class="sc-score-display">
-                  <span class="sc-score-number" id="rScore">0</span>
-                  <span class="sc-score-total">/100</span>
+                <p class="sc-score-lbl">Opportunity Score</p>
+                <div class="sc-score-row">
+                  <span class="sc-score-num" id="rScore">0</span>
+                  <span class="sc-score-denom">/100</span>
                 </div>
-                <div class="sc-progress-track">
-                  <div class="sc-progress-fill" id="progFill" style="width:0%"/>
+                <div class="sc-prog-track">
+                  <div class="sc-prog-fill" id="progFill" style="width:0%"/>
                 </div>
                 <p class="sc-score-verdict" id="rVerdict">&#8212;</p>
               </div>
 
-              <div class="sc-divider"/>
-
-              <!-- Monthly Revenue at Risk -->
-              <p class="sc-risk-label">Revenue Lost Per Month of Delay</p>
-              <div class="sc-risk-amount" id="rMonthly">$0</div>
-
-              <!-- 6-month / 12-month loss -->
-              <div class="sc-loss-grid">
-                <div class="sc-loss-card">
-                  <div class="sc-loss-period">6-Month Delay</div>
-                  <div class="sc-loss-amount" id="rLoss6">$0</div>
-                  <div class="sc-loss-sub">Total opportunity lost</div>
-                </div>
-                <div class="sc-loss-card sc-loss-card--critical">
-                  <div class="sc-loss-period">12-Month Delay</div>
-                  <div class="sc-loss-amount" id="rLoss12">$0</div>
-                  <div class="sc-loss-sub">Total opportunity lost</div>
+              <!-- 2. Cost of doing nothing -->
+              <div class="sc-section">
+                <p class="sc-section-title"><span>&#128184;</span> Cost of Doing Nothing</p>
+                <p class="sc-monthly-loss-lbl">Revenue you miss every month you delay:</p>
+                <div class="sc-monthly-loss-amt" id="rMonthly">$0</div>
+                <div class="sc-loss-grid">
+                  <div class="sc-loss-card">
+                    <div class="sc-loss-period">6-Month Delay</div>
+                    <div class="sc-loss-amount" id="rLoss6">$0</div>
+                  </div>
+                  <div class="sc-loss-card crit">
+                    <div class="sc-loss-period">12-Month Delay</div>
+                    <div class="sc-loss-amount" id="rLoss12">$0</div>
+                  </div>
                 </div>
               </div>
 
-              <div class="sc-divider"/>
-
-              <!-- Key metrics -->
-              <div class="sc-metrics-row">
-                <div class="sc-metric-card">
-                  <div class="sc-metric-icon">&#128176;</div>
-                  <div class="sc-metric-lbl">Recommended Budget</div>
-                  <div class="sc-metric-val" id="rBudgetRange">&#8212;</div>
-                </div>
-                <div class="sc-metric-card">
-                  <div class="sc-metric-icon">&#9201;</div>
-                  <div class="sc-metric-lbl">Estimated Build Time</div>
-                  <div class="sc-metric-val" id="rBuildTime">&#8212;</div>
-                </div>
-                <div class="sc-metric-card">
-                  <div class="sc-metric-icon">&#128200;</div>
-                  <div class="sc-metric-lbl">Break-even In</div>
-                  <div class="sc-metric-val" id="rROI">&#8212;</div>
+              <!-- 3. Investment required -->
+              <div class="sc-section">
+                <p class="sc-section-title"><span>&#128176;</span> Investment to Build It Right</p>
+                <p class="sc-build-lbl">Estimated monthly development cost:</p>
+                <div class="sc-build-amt" id="rMonthlyBuild">$0 – $0 <small style="font-size:.6em;font-weight:500;color:#888">/month</small></div>
+                <div class="sc-budget-row">
+                  <span class="sc-budget-lbl">Total project budget estimate:</span>
+                  <span class="sc-budget-val" id="rTotalBudget">&#8212;</span>
                 </div>
               </div>
 
-              <!-- Trajectory chart -->
-              <div class="sc-trajectory">
-                <h4>Cumulative Cost of Delay — 12-Month Projection</h4>
-                <div class="sc-traj-labels">
-                  <span>Now</span><span>3 mo</span><span>6 mo</span><span>9 mo</span><span>12 mo</span>
+              <!-- 4. Timeline -->
+              <div class="sc-section">
+                <p class="sc-section-title"><span>&#9201;</span> Timeline &amp; Return on Investment</p>
+                <div class="sc-timeline-grid">
+                  <div class="sc-tl-card">
+                    <div class="sc-tl-icon">&#128736;</div>
+                    <div class="sc-tl-lbl">Estimated Build Time</div>
+                    <div class="sc-tl-val" id="rBuildTime">&#8212;</div>
+                  </div>
+                  <div class="sc-tl-card">
+                    <div class="sc-tl-icon">&#128200;</div>
+                    <div class="sc-tl-lbl">Break-even Point</div>
+                    <div class="sc-tl-val" id="rROI">&#8212;</div>
+                  </div>
                 </div>
-                <canvas id="trajChart" class="sc-traj-canvas"/>
               </div>
 
-              <!-- Insight card -->
-              <div class="sc-insight-card">
-                <span class="sc-insight-icon">&#128161;</span>
-                <p class="sc-insight-text" id="rInsight">&#8212;</p>
+              <!-- 5. Chart -->
+              <div class="sc-section">
+                <p class="sc-section-title"><span>&#128202;</span> Cumulative Loss if You Delay</p>
+                <div style="font-size:.58rem;color:#bbb;display:flex;justify-content:space-between;margin-bottom:4px">
+                  <span>Now</span><span>3 months</span><span>6 months</span><span>9 months</span><span>12 months</span>
+                </div>
+                <!-- Wrapper div with explicit height fixes Chart.js rendering -->
+                <div class="sc-chart-wrap">
+                  <canvas id="trajChart"/>
+                </div>
               </div>
 
+              <!-- 6. Insight -->
+              <div class="sc-section">
+                <div class="sc-insight-card">
+                  <span class="sc-insight-icon">&#128161;</span>
+                  <p class="sc-insight-text" id="rInsight">&#8212;</p>
+                </div>
+              </div>
+
+              <!-- 7. CTA -->
               <button class="sc-cta-btn" id="openAuditBtn">
-                Get Full Audit Report &#38; Book Free Strategy Call &#8594;
+                Get Full Report &amp; Book Your Free Strategy Call &#8594;
               </button>
 
             </div><!-- /resContent -->
@@ -176,46 +216,30 @@
         </div><!-- /container -->
       </div><!-- /wrap -->
 
-      <!-- ── Audit Modal ───────────────────────────────────────────────── -->
-      <div class="sc-modal-overlay" id="auditOverlay">
+      <!-- ── MODAL ────────────────────────────────────────────────────── -->
+      <div class="sc-overlay" id="auditOverlay">
         <div class="sc-modal">
-          <button class="sc-modal-close" id="closeModal">&#10005;</button>
+          <button class="sc-modal-x" id="closeModal">&#10005;</button>
           <h2>Your Full SaaS Opportunity Report</h2>
           <p class="sc-modal-sub" id="modalSub">&#8212;</p>
-          <div class="sc-rec-box" id="modalRec">
-            <strong>Our Recommendation</strong>
-            <span id="rRecommendation">&#8212;</span>
+          <div class="sc-rec-box">
+            <strong>Our Recommendation for You</strong>
+            <p id="rRecommendation">&#8212;</p>
           </div>
           <div class="sc-lead-form">
             <h3>&#128236; Get Your Personalised Action Plan</h3>
-            <div class="sc-lead-fields">
-              <div class="sc-lead-field">
-                <label>Full Name *</label>
-                <input type="text" id="lfName" placeholder="Jane Smith"/>
-              </div>
-              <div class="sc-lead-field">
-                <label>Phone Number</label>
-                <input type="tel" id="lfPhone" placeholder="+1 555 000 0000"/>
-              </div>
-              <div class="sc-lead-field">
-                <label>Company / Startup Name</label>
-                <input type="text" id="lfCompany" placeholder="Acme Inc."/>
-              </div>
-              <div class="sc-lead-field">
-                <label>Your Role</label>
-                <input type="text" id="lfRole" placeholder="Founder / CTO"/>
-              </div>
-              <div class="sc-lead-field" style="grid-column:1/-1">
+            <div class="sc-lead-grid">
+              <div class="sc-lf"><label>Full Name *</label><input type="text" id="lfName" placeholder="Jane Smith"/></div>
+              <div class="sc-lf"><label>Phone Number</label><input type="tel" id="lfPhone" placeholder="+1 555 000 0000"/></div>
+              <div class="sc-lf"><label>Company / Startup</label><input type="text" id="lfCompany" placeholder="Acme Inc."/></div>
+              <div class="sc-lf"><label>Your Role</label><input type="text" id="lfRole" placeholder="Founder / CTO"/></div>
+              <div class="sc-lf" style="grid-column:1/-1">
                 <label>What is your biggest challenge right now?</label>
-                <textarea id="lfChallenge" rows="3" placeholder="Describe your situation&#8230;"/>
+                <textarea id="lfChallenge" rows="3" placeholder="Describe your current situation&#8230;"/>
               </div>
             </div>
-            <button class="sc-lead-submit" id="leadSubmit">
-              Send Me the Action Plan &#38; Schedule a Free Call &#8594;
-            </button>
-            <div class="sc-lead-success" id="leadOk">
-              &#9989; Thank you! We'll review your audit and be in touch within 24 hours.
-            </div>
+            <button class="sc-lead-sub" id="leadSubmit">Send Me the Action Plan &amp; Schedule a Free Call &#8594;</button>
+            <div class="sc-lead-ok" id="leadOk">&#9989; Thank you! We'll review your audit and be in touch within 24 hours.</div>
           </div>
         </div>
       </div>
@@ -224,176 +248,161 @@
 
       <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"/>
       <script>
-(function () {
-  /* ── Lookup tables (mirrors calculator.js) ── */
-  var AUD = {
-    idea_personal:    { urgency:.85, riskMult:1.20, mktCapture:.60, insight:'Every month of delay is money from your own pocket — and an open door for competitors to enter your market first.', rec:'Start with a lean MVP targeting your first 10–20 paying customers. Budget 4–6 months of focused development with a reliable technical partner.' },
-    idea_funded:      { urgency:.95, riskMult:1.70, mktCapture:.75, insight:'Investor runway has a hard deadline. Slow execution compresses your window to hit milestones and close your next funding round.', rec:'Speed to a working product is everything. Investors expect milestones on schedule — a strong development partner can halve your time-to-demo.' },
-    unsatisfied_team: { urgency:.90, riskMult:1.50, mktCapture:.65, insight:'An underperforming team doubles your cost — you pay salaries AND lose market time simultaneously.', rec:'Audit your current output vs monthly spend. Switching to the right partner typically saves 40–60% long-term and recovers 3–6 months of lost velocity.' },
-    mvp_investment:   { urgency:.80, riskMult:1.40, mktCapture:.70, insight:'Your MVP proves the concept. Now you need execution speed and code quality to scale before competitors replicate your idea.', rec:'Prioritise scalability, code quality, and feature delivery speed. The right team pays for itself within 3–4 months.' },
-    mvp_ai:           { urgency:.88, riskMult:1.60, mktCapture:.60, insight:'AI-generated code carries hidden technical debt — security vulnerabilities, no scalability plan, logic that breaks under real users.', rec:'Get a professional technical audit before scaling marketing or pitching investors. Fixing AI-built MVPs early costs 3x less than a full rebuild under pressure.' },
-    non_technical:    { urgency:.75, riskMult:1.10, mktCapture:.50, insight:'Without technical knowledge, the wrong vendor can burn your entire budget with little to show — the most common founder mistake.', rec:'Start with a discovery and prototype phase before committing to full development. Validate cheaply with a trusted partner, then scale with confidence.' },
+(function(){
+  /* ── Data tables ── */
+  var AUD={
+    idea_personal:    {urgency:.85,riskMult:1.20,mktCapture:.60,insight:'Every month of delay is money from your own pocket — and an open door for competitors to enter your market first.',rec:'Start with a lean MVP targeting your first 10–20 paying customers. Budget 4–6 months of focused development with a reliable technical partner.'},
+    idea_funded:      {urgency:.95,riskMult:1.70,mktCapture:.75,insight:'Investor runway has a hard deadline. Slow execution compresses your window to hit milestones and secure your next funding round.',rec:'Speed to a working product is everything. Investors expect milestones on schedule — a strong development partner can halve your time-to-demo.'},
+    unsatisfied_team: {urgency:.90,riskMult:1.50,mktCapture:.65,insight:'An underperforming team doubles your cost — you pay salaries AND lose market time simultaneously.',rec:'Audit your current output vs monthly spend. Switching to the right partner typically saves 40–60% long-term and recovers 3–6 months of velocity.'},
+    mvp_investment:   {urgency:.80,riskMult:1.40,mktCapture:.70,insight:'Your MVP proves the concept. Now you need execution speed and code quality to scale before competitors replicate your idea.',rec:'Prioritise scalability, code quality, and feature delivery speed. The right team pays for itself within 3–4 months.'},
+    mvp_ai:           {urgency:.88,riskMult:1.60,mktCapture:.60,insight:'AI-generated code carries hidden technical debt — security vulnerabilities, no scalability plan, logic that breaks under real loads.',rec:'Get a professional technical audit before scaling marketing or pitching investors. Fixing AI-built MVPs early costs 3x less.'},
+    non_technical:    {urgency:.75,riskMult:1.10,mktCapture:.50,insight:'Without technical knowledge, the wrong development vendor can burn your entire budget with little to show.',rec:'Start with a discovery and prototype phase before committing to full development. Validate cheaply, then scale with confidence.'},
   };
-  var ST = {
-    b2b:         { competition:.60, timeToRev:3 },
-    b2c:         { competition:.85, timeToRev:5 },
-    marketplace: { competition:.78, timeToRev:7 },
-    enterprise:  { competition:.50, timeToRev:9 },
+  var ST={
+    b2b:        {competition:.60,baseMonths:3},
+    b2c:        {competition:.85,baseMonths:5},
+    marketplace:{competition:.78,baseMonths:7},
+    enterprise: {competition:.50,baseMonths:9},
   };
+  var CMP={
+    mvp:       {monthlyMin:8000,  monthlyMax:15000, timeMult:.70},
+    standard:  {monthlyMin:15000, monthlyMax:28000, timeMult:1.00},
+    complex:   {monthlyMin:28000, monthlyMax:50000, timeMult:1.45},
+    enterprise:{monthlyMin:45000, monthlyMax:90000, timeMult:1.85},
+  };
+  var USR={small:{sf:1.00},medium:{sf:1.20},large:{sf:1.55},xlarge:{sf:1.95}};
+  var TL={asap:{um:1.50,cp:1.30},short:{um:1.20,cp:1.10},medium:{um:1.00,cp:1.00},long:{um:0.80,cp:0.90}};
 
-  var fmt  = function(n){ return '$' + Math.round(n).toLocaleString(); };
-  var fmtK = function(n){ var v=Math.round(n); return v>=1000?'$'+(v/1000).toFixed(0)+'K':fmt(v); };
-  var flt  = function(id){ return parseFloat(document.getElementById(id).value)||0; };
+  /* ── Helpers ── */
+  var fmt  = function(n){return '$'+Math.round(n).toLocaleString();};
+  var fmtK = function(n){var v=Math.round(n);return v>=1000?'$'+(v/1000).toFixed(0)+'K':fmt(v);};
+  var flt  = function(id){return parseFloat(document.getElementById(id).value)||0;};
+  var sel  = function(id){return document.getElementById(id).value;};
 
-  function oppScore(ak, sk, budget, rev) {
-    var a=AUD[ak], s=ST[sk];
-    var fit = Math.min(budget/Math.max(rev*.40,1),1);
-    var mkt = 1-s.competition;
-    return Math.round(Math.min(99,Math.max(10,(fit*40)+(mkt*35)+(a.mktCapture*25))));
+  function monthlyBuild(ck,uk,tk){var c=CMP[ck],u=USR[uk],t=TL[tk];return{min:Math.round(c.monthlyMin*u.sf*t.cp),max:Math.round(c.monthlyMax*u.sf*t.cp)};}
+  function buildTime(sk,ck,budget){var base=ST[sk].baseMonths;var sp=budget>=100000?.60:budget>=60000?.75:budget>=30000?.90:1.15;return Math.max(1,Math.round(base*CMP[ck].timeMult*sp));}
+  function oppScore(ak,sk,ck,uk,tk,budget,rev){
+    var a=AUD[ak],s=ST[sk],t=TL[tk],mb=monthlyBuild(ck,uk,tk),bt=buildTime(sk,ck,budget);
+    var fit=Math.min(budget/Math.max(mb.min*bt,1),1),mkt=1-s.competition,urg=Math.min(t.um/1.5,1);
+    return Math.round(Math.min(99,Math.max(5,(fit*40)+(mkt*30)+(a.mktCapture*20)+(urg*10))));
   }
-  function monthlyLost(rev, ak, sk) {
-    return Math.round((rev/12)*AUD[ak].urgency*ST[sk].competition);
-  }
-  function delayLoss(mo, months, mult) {
-    var t=0; for(var i=0;i<months;i++) t+=mo*Math.pow(1.05,i); return Math.round(t*mult);
-  }
-  function budgetRange(rev) {
-    var rb=rev*.45;
-    return { min:Math.max(36000,Math.round(rb*.65)), max:Math.max(72000,Math.round(rb*1.10)) };
-  }
-  function verdict(sc) {
-    if(sc>=80) return {text:'Strong Opportunity',    cls:'opp-strong'};
-    if(sc>=60) return {text:'Good Opportunity',      cls:'opp-good'};
-    if(sc>=40) return {text:'Moderate — Act Strategically', cls:'opp-moderate'};
-    if(sc>=20) return {text:'Challenging — Plan Carefully', cls:'opp-challenging'};
-    return           {text:'High Risk — Seek Guidance', cls:'opp-risky'};
-  }
-  function buildTime(sk, budget) {
-    var base=ST[sk].timeToRev;
-    var sp=budget>=80000?.65:budget>=40000?.80:budget>=20000?1.0:1.25;
-    return Math.round(base*sp);
-  }
+  function monthlyLost(rev,ak,sk,tk){return Math.round((rev/12)*AUD[ak].urgency*ST[sk].competition*TL[tk].um);}
+  function delayLoss(mo,months,mult){var t=0;for(var i=0;i<months;i++)t+=mo*Math.pow(1.05,i);return Math.round(t*mult);}
+  function verdict(sc){if(sc>=80)return{text:'Strong Opportunity',cls:'opp-strong'};if(sc>=60)return{text:'Good Opportunity',cls:'opp-good'};if(sc>=40)return{text:'Moderate — Act Strategically',cls:'opp-moderate'};if(sc>=20)return{text:'Challenging — Plan Carefully',cls:'opp-challenging'};return{text:'High Risk — Seek Guidance',cls:'opp-risky'};}
 
-  var trajChart=null;
-  function drawTraj(data) {
-    var ctx=document.getElementById('trajChart').getContext('2d');
-    if(trajChart) trajChart.destroy();
-    trajChart=new Chart(ctx,{type:'line',data:{labels:data.map(function(_,i){return i===0?'Now':i+'mo';}),datasets:[{data:data,borderColor:'#e53935',backgroundColor:'rgba(229,57,53,.08)',borderWidth:2,pointRadius:0,fill:true,tension:.4}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false},tooltip:{enabled:false}},scales:{x:{display:false},y:{display:false}},animation:{duration:800}}});
+  var trajCh=null;
+  function drawTraj(data){
+    var canvas=document.getElementById('trajChart');
+    if(trajCh){trajCh.destroy();trajCh=null;}
+    trajCh=new Chart(canvas,{
+      type:'line',
+      data:{labels:data.map(function(_,i){return i;}),datasets:[{data:data,borderColor:'#e53935',backgroundColor:'rgba(229,57,53,.1)',borderWidth:2,pointRadius:0,fill:true,tension:.35}]},
+      options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false},tooltip:{enabled:false}},scales:{x:{display:false},y:{display:false}},animation:{duration:900}},
+    });
   }
 
-  function validate() {
-    var ok=true;
-    var em=document.getElementById('fEmail').value.trim();
-    var rv=flt('fRevenue'), bud=flt('fBudget');
+  function validate(){
+    var ok=true,em=document.getElementById('fEmail').value.trim(),rv=flt('fRevenue'),bud=flt('fBudget');
     var show=function(id,v){var el=document.getElementById(id);if(v){el.classList.add('show');ok=false;}else el.classList.remove('show');};
-    show('errEmail', !em || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(em));
-    show('errRevenue', rv<=0);
-    show('errBudget', bud<=0);
-    if(!em) document.getElementById('errEmail').textContent='Email is required';
+    if(!em||!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(em)){document.getElementById('errEmail').textContent=em?'Invalid email':'Email is required';show('errEmail',true);}else show('errEmail',false);
+    show('errRevenue',rv&lt;=0); show('errBudget',bud&lt;=0);
     return ok;
   }
 
-  document.getElementById('calcBtn').addEventListener('click', function(){
-    if(!validate()) return;
-    var ak=document.getElementById('fAudience').value;
-    var sk=document.getElementById('fSaasType').value;
-    var rev=flt('fRevenue'), budget=flt('fBudget');
-    var a=AUD[ak], s=ST[sk];
+  document.getElementById('calcBtn').addEventListener('click',function(){
+    if(!validate())return;
+    var ak=sel('fAudience'),sk=sel('fSaasType'),ck=sel('fComplexity'),uk=sel('fUsers'),tk=sel('fTimeline');
+    var rev=flt('fRevenue'),budget=flt('fBudget');
+    var a=AUD[ak];
 
-    var sc   = oppScore(ak,sk,budget,rev);
-    var mo   = monthlyLost(rev,ak,sk);
+    var mb   = monthlyBuild(ck,uk,tk);
+    var bt   = buildTime(sk,ck,budget);
+    var sc   = oppScore(ak,sk,ck,uk,tk,budget,rev);
+    var mo   = monthlyLost(rev,ak,sk,tk);
     var l6   = delayLoss(mo,6,a.riskMult);
     var l12  = delayLoss(mo,12,a.riskMult);
-    var br   = budgetRange(rev);
-    var roi  = Math.ceil(budget/(rev/12));
-    var bt   = buildTime(sk,budget);
+    var tbMin= mb.min*bt, tbMax=mb.max*bt;
+    var roi  = rev>0?Math.ceil(tbMax/(rev/12)):null;
     var verd = verdict(sc);
-    var traj = [];
-    for(var i=0;i<=12;i++) traj.push(i===0?0:delayLoss(mo,i,a.riskMult));
+    var traj = [];for(var i=0;i&lt;=12;i++)traj.push(i===0?0:delayLoss(mo,i,a.riskMult));
 
-    /* Badge */
+    /* Update badge */
     var badge=document.getElementById('oppBadge');
     badge.textContent=verd.text; badge.className='sc-opp-badge '+verd.cls;
 
     /* Score */
     document.getElementById('rScore').textContent=sc;
     document.getElementById('rVerdict').textContent=verd.text;
+    var col=sc>=80?'#2e7d32':sc>=60?'#1565c0':sc>=40?'#ef6c00':'#c62828';
     var fill=document.getElementById('progFill');
-    var col=sc>=80?'#1b5e20':sc>=60?'#1565c0':sc>=40?'#f57f17':'#c62828';
     fill.style.background=col; setTimeout(function(){fill.style.width=sc+'%';},50);
 
-    /* Losses */
+    /* Cost of doing nothing */
     document.getElementById('rMonthly').textContent=fmt(mo);
     document.getElementById('rLoss6').textContent=fmt(l6);
     document.getElementById('rLoss12').textContent=fmt(l12);
 
-    /* Metrics */
-    document.getElementById('rBudgetRange').textContent=fmtK(br.min)+' – '+fmtK(br.max);
-    document.getElementById('rBuildTime').textContent=bt+' months';
-    document.getElementById('rROI').textContent=roi+' months';
+    /* Investment */
+    document.getElementById('rMonthlyBuild').innerHTML=fmtK(mb.min)+' – '+fmtK(mb.max)+'<small style="font-size:.6em;font-weight:500;color:#888"> /month</small>';
+    document.getElementById('rTotalBudget').textContent=fmtK(tbMin)+' – '+fmtK(tbMax);
+
+    /* Timeline */
+    document.getElementById('rBuildTime').textContent=bt+(bt===1?' month':' months');
+    document.getElementById('rROI').textContent=roi?roi+(roi===1?' month':' months'):'N/A';
 
     /* Chart */
-    drawTraj(traj);
+    setTimeout(function(){drawTraj(traj);},100);
 
     /* Insight */
     document.getElementById('rInsight').textContent=a.insight;
 
-    /* Show results */
+    /* Show */
     document.getElementById('emptyState').style.display='none';
     document.getElementById('resContent').style.display='block';
 
-    /* Store for modal */
-    window._audit={ak:ak,sk:sk,rev:rev,budget:budget,sc:sc,mo:mo,l6:l6,l12:l12,br:br,roi:roi,bt:bt,verd:verd,a:a};
-
-    /* Save to localStorage */
-    try{var ls=JSON.parse(localStorage.getItem('saas_audit_leads')||'[]');ls.push({audienceType:ak,saasType:sk,revenueGoal:rev,budget:budget,timestamp:new Date().toISOString()});localStorage.setItem('saas_audit_leads',JSON.stringify(ls));}catch(_){}
+    window._audit={ak:ak,sk:sk,ck:ck,uk:uk,tk:tk,rev:rev,budget:budget,sc:sc,mo:mo,l6:l6,l12:l12,mb:mb,tbMin:tbMin,tbMax:tbMax,bt:bt,roi:roi,verd:verd,a:a};
+    try{var ls=JSON.parse(localStorage.getItem('saas_audit')||'[]');ls.push({audienceType:ak,saasType:sk,complexity:ck,users:uk,timeline:tk,revenue:rev,budget:budget,ts:new Date().toISOString()});localStorage.setItem('saas_audit',JSON.stringify(ls));}catch(_){}
   });
 
-  /* Open modal */
-  document.getElementById('openAuditBtn').addEventListener('click', function(){
-    if(!window._audit) return;
+  document.getElementById('openAuditBtn').addEventListener('click',function(){
+    if(!window._audit)return;
     var d=window._audit;
-    document.getElementById('modalSub').textContent='Opportunity Score '+d.sc+'/100 · '+d.verd.text+' · Revenue at Risk: '+fmt(d.mo)+'/month · 12-Month Loss if Delayed: '+fmt(d.l12);
+    document.getElementById('modalSub').textContent='Score '+d.sc+'/100 · '+d.verd.text+' · Monthly loss if delayed: '+fmt(d.mo)+' · 12-month risk: '+fmt(d.l12);
     document.getElementById('rRecommendation').textContent=d.a.rec;
     document.getElementById('leadOk').style.display='none';
     document.getElementById('leadSubmit').style.display='block';
-    document.getElementById('auditOverlay').classList.add('active');
+    document.getElementById('auditOverlay').classList.add('on');
   });
 
-  /* Close modal */
-  document.getElementById('closeModal').addEventListener('click', function(){ document.getElementById('auditOverlay').classList.remove('active'); });
-  document.getElementById('auditOverlay').addEventListener('click', function(e){ if(e.target===document.getElementById('auditOverlay')) document.getElementById('auditOverlay').classList.remove('active'); });
-  document.addEventListener('keydown', function(e){ if(e.key==='Escape') document.getElementById('auditOverlay').classList.remove('active'); });
+  document.getElementById('closeModal').addEventListener('click',function(){document.getElementById('auditOverlay').classList.remove('on');});
+  document.getElementById('auditOverlay').addEventListener('click',function(e){if(e.target===document.getElementById('auditOverlay'))document.getElementById('auditOverlay').classList.remove('on');});
+  document.addEventListener('keydown',function(e){if(e.key==='Escape')document.getElementById('auditOverlay').classList.remove('on');});
 
-  /* Lead submit */
-  document.getElementById('leadSubmit').addEventListener('click', function(){
+  document.getElementById('leadSubmit').addEventListener('click',function(){
     var name=document.getElementById('lfName').value.trim();
     if(!name){alert('Please enter your name.');return;}
     var d=window._audit||{};
-    var email=document.getElementById('fEmail').value.trim();
     var payload={
-      name:name,
-      phone:document.getElementById('lfPhone').value.trim(),
-      company:document.getElementById('lfCompany').value.trim(),
-      role:document.getElementById('lfRole').value.trim(),
+      name:name,phone:document.getElementById('lfPhone').value.trim(),
+      company:document.getElementById('lfCompany').value.trim(),role:document.getElementById('lfRole').value.trim(),
       challenge:document.getElementById('lfChallenge').value.trim(),
-      email:email,
+      email:document.getElementById('fEmail').value.trim(),
       website:document.getElementById('fWebsite').value.trim(),
-      audienceType:d.ak, saasType:d.sk,
-      revenueGoal:d.rev, budget:d.budget,
+      audienceType:d.ak,saasType:d.sk,complexityKey:d.ck,usersKey:d.uk,timelineKey:d.tk,
+      revenueGoal:d.rev,budget:d.budget,
       auditResults:{
-        opportunityScore:d.sc, monthlyRevLost:d.mo,
-        loss6Months:d.l6, loss12Months:d.l12,
-        budgetMin:d.br?d.br.min:0, budgetMax:d.br?d.br.max:0,
-        roiMonths:d.roi, buildTimeline:d.bt, verdict:d.verd?d.verd.text:'',
+        opportunityScore:d.sc,monthlyRevLost:d.mo,loss6Months:d.l6,loss12Months:d.l12,
+        monthlyBuildMin:d.mb?d.mb.min:0,monthlyBuildMax:d.mb?d.mb.max:0,
+        totalBudgetMin:d.tbMin,totalBudgetMax:d.tbMax,
+        buildTimeline:d.bt,roiMonths:d.roi,verdict:d.verd?d.verd.text:'',
       },
       source:'saas_audit_calculator',
     };
     fetch('/saas-calculator/submit-lead',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(payload)}).catch(function(){});
-    try{var ls=JSON.parse(localStorage.getItem('saas_audit_leads_full')||'[]');ls.push(payload);localStorage.setItem('saas_audit_leads_full',JSON.stringify(ls));}catch(_){}
+    try{var ls=JSON.parse(localStorage.getItem('saas_audit_full')||'[]');ls.push(payload);localStorage.setItem('saas_audit_full',JSON.stringify(ls));}catch(_){}
     document.getElementById('leadSubmit').style.display='none';
     document.getElementById('leadOk').style.display='block';
-    var t=document.getElementById('toast');t.textContent='Thank you! We will be in touch within 24 hours.';t.classList.add('show');setTimeout(function(){t.classList.remove('show');},4000);
+    var t=document.getElementById('toast');t.textContent='Thank you! We will be in touch within 24 hours.';t.classList.add('on');setTimeout(function(){t.classList.remove('on');},4500);
   });
 })();
       </script>
