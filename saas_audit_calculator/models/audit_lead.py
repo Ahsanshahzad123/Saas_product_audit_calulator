@@ -34,9 +34,6 @@ class SaasAuditLead(models.Model):
         ('enterprise',  'Enterprise Software'),
     ], string='SaaS Type')
 
-    annual_revenue_goal = fields.Float('Target Annual Revenue (Year 1, $)', digits=(16, 2))
-    available_budget    = fields.Float('Available Development Budget ($)',   digits=(16, 2))
-
     product_complexity = fields.Selection([
         ('mvp',        'Simple MVP'),
         ('standard',   'Standard SaaS'),
@@ -75,20 +72,30 @@ class SaasAuditLead(models.Model):
         ('fintech',    'Finance / Fintech (PCI, SOC 2)'),
     ], string='Industry / Compliance')
 
+    # Currency — required for monetary widget to work in Odoo 17
+    currency_id = fields.Many2one(
+        'res.currency', string='Currency',
+        default=lambda self: self.env.company.currency_id,
+    )
+
+    annual_revenue_goal = fields.Monetary('Target Annual Revenue (Year 1)', currency_field='currency_id')
+    available_budget    = fields.Monetary('Available Development Budget',   currency_field='currency_id')
+
     # ── Audit Results ──────────────────────────────────────────────────────
     opportunity_score      = fields.Integer('Opportunity Score (0–100)')
-    monthly_rev_lost       = fields.Float('Monthly Revenue at Risk ($)',       digits=(16, 2))
-    loss_6_months          = fields.Float('Loss if Delayed 6 Months ($)',      digits=(16, 2))
-    loss_12_months         = fields.Float('Loss if Delayed 12 Months ($)',     digits=(16, 2))
-    budget_rec_min         = fields.Float('Recommended Budget — Min ($)',      digits=(16, 2))
-    budget_rec_max         = fields.Float('Recommended Budget — Max ($)',      digits=(16, 2))
-    monthly_build_cost_min = fields.Float('Monthly Build Cost — Min ($)',      digits=(16, 2))
-    monthly_build_cost_max = fields.Float('Monthly Build Cost — Max ($)',      digits=(16, 2))
-    total_budget_min       = fields.Float('Total Project Budget — Min ($)',    digits=(16, 2))
-    total_budget_max       = fields.Float('Total Project Budget — Max ($)',    digits=(16, 2))
+    monthly_rev_lost       = fields.Monetary('Monthly Revenue at Risk',       currency_field='currency_id')
+    loss_6_months          = fields.Monetary('Loss if Delayed 6 Months',      currency_field='currency_id')
+    loss_12_months         = fields.Monetary('Loss if Delayed 12 Months',     currency_field='currency_id')
+    budget_rec_min         = fields.Monetary('Recommended Budget — Min',      currency_field='currency_id')
+    budget_rec_max         = fields.Monetary('Recommended Budget — Max',      currency_field='currency_id')
+    monthly_build_cost_min = fields.Monetary('Monthly Build Cost — Min',      currency_field='currency_id')
+    monthly_build_cost_max = fields.Monetary('Monthly Build Cost — Max',      currency_field='currency_id')
+    total_budget_min       = fields.Monetary('Total Project Budget — Min',    currency_field='currency_id')
+    total_budget_max       = fields.Monetary('Total Project Budget — Max',    currency_field='currency_id')
     roi_months             = fields.Integer('Estimated Break-even (months)')
     build_timeline         = fields.Integer('Estimated Build Timeline (months)')
     verdict                = fields.Char('Opportunity Verdict')
+    recommended_team_size  = fields.Char('Recommended Team Size')
 
     # ── Meta ───────────────────────────────────────────────────────────────
     source       = fields.Char('Source', default='saas_audit_calculator')
@@ -100,7 +107,7 @@ class SaasAuditLead(models.Model):
         ('qualified', 'Qualified'),
         ('converted', 'Converted'),
         ('lost',      'Lost'),
-    ], string='Status', default='new', index=True)
+    ], string='Status', default='new', index=True, tracking=True)
     notes = fields.Text('Internal Notes')
 
     def action_mark_contacted(self):

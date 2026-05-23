@@ -64,6 +64,7 @@
             <group string="Opportunity Audit Results">
               <field name="opportunity_score"/>
               <field name="verdict"/>
+              <field name="recommended_team_size" string="Recommended Team Size"/>
               <field name="monthly_rev_lost" widget="monetary" string="Monthly Revenue at Risk"/>
               <field name="loss_6_months" widget="monetary"/>
               <field name="loss_12_months" widget="monetary"/>

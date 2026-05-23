@@ -193,7 +193,14 @@
                 </div>
               </div>
 
-              <!-- 4. Revenue at Risk -->
+              <!-- 4. Team Composition -->
+              <div class="sc-section">
+                <p class="sc-section-title"><span>&#128101;</span> Recommended Team Composition</p>
+                <div class="sc-team-grid" id="rTeamGrid"><!-- filled by JS --></div>
+                <p class="sc-team-total">Estimated team size: <strong id="rTeamSize">&#8212;</strong></p>
+              </div>
+
+              <!-- 5. Revenue at Risk -->
               <div class="sc-section">
                 <p class="sc-section-title"><span>&#128293;</span> Revenue at Risk — Every Month Counts</p>
                 <p class="sc-monthly-loss-lbl">Revenue you stop losing the day you launch:</p>
@@ -327,6 +334,31 @@
   function delayLoss(mo,months,mult){var t=0;for(var i=0;i<months;i++)t+=mo*Math.pow(1.05,i);return Math.round(t*mult);}
   function verdict(sc){if(sc>=80)return{text:'Strong Opportunity',cls:'opp-strong'};if(sc>=60)return{text:'Good Opportunity',cls:'opp-good'};if(sc>=40)return{text:'Moderate — Act Strategically',cls:'opp-moderate'};if(sc>=20)return{text:'Challenging — Plan Carefully',cls:'opp-challenging'};return{text:'High Risk — Seek Guidance',cls:'opp-risky'};}
 
+  var TEAM_ROLES={
+    designer:{icon:'🎨',label:'UI/UX Designer',    desc:'Branding, wireframes, user flows &amp; visual design'},
+    frontend:{icon:'💻',label:'Frontend Engineer',  desc:'React/Vue, responsive UI &amp; performance'},
+    backend: {icon:'⚙️',label:'Backend Engineer',   desc:'APIs, database, business logic &amp; integrations'},
+    sqa:     {icon:'🧪',label:'QA / Test Engineer', desc:'Manual &amp; automated testing, release sign-off'},
+    pm:      {icon:'📋',label:'Project Manager',    desc:'Sprint planning, delivery &amp; stakeholder comms'},
+    devops:  {icon:'🔧',label:'DevOps Engineer',    desc:'CI/CD pipelines, cloud infrastructure &amp; monitoring'},
+    aiml:    {icon:'🤖',label:'AI / ML Engineer',   desc:'Model training, data pipelines &amp; MLOps'},
+    analyst: {icon:'📊',label:'Business Analyst',   desc:'Requirements, domain research &amp; user stories'},
+    support: {icon:'🛟',label:'Support Engineer',   desc:'Post-launch support, incidents &amp; onboarding'},
+  };
+  function calcTeam(ck,aik,ik,uk){
+    var t={designer:{min:1,max:1},frontend:{min:1,max:2},backend:{min:1,max:2},sqa:{min:1,max:1},pm:{min:1,max:1},devops:{min:0,max:1},aiml:{min:0,max:0},analyst:{min:0,max:1},support:{min:0,max:0}};
+    if(ck==='standard') {t.backend.max=3;}
+    if(ck==='complex')  {t.frontend.min=2;t.frontend.max=3;t.backend.min=2;t.backend.max=4;t.devops.min=1;t.analyst.min=1;}
+    if(ck==='enterprise'){t.frontend.min=2;t.frontend.max=4;t.backend.min=3;t.backend.max=6;t.sqa.max=2;t.pm.max=2;t.devops.min=1;t.analyst.min=1;t.support.min=1;t.support.max=1;}
+    if(aik==='ai_api')   {t.aiml.max=1;}
+    if(aik==='ai_custom'){t.aiml.min=1;t.aiml.max=2;}
+    if(aik==='ai_core')  {t.aiml.min=2;t.aiml.max=3;t.backend.min=Math.max(t.backend.min,2);}
+    if(ik==='healthcare'||ik==='fintech'||ik==='legal'){t.sqa.min=1;t.analyst.min=1;}
+    if(uk==='large'||uk==='xlarge'){t.devops.min=1;t.support.min=1;t.support.max=1;}
+    var res=[];for(var k in t){if(t[k].max>0)res.push({key:k,min:t[k].min,max:t[k].max});}
+    return res;
+  }
+
   var fmtAxis=function(v){if(v>=1000000)return'$'+(v/1000000).toFixed(1)+'M';if(v>=1000)return'$'+(v/1000).toFixed(0)+'K';return'$'+v;};
   var trajCh=null;
   function drawTraj(data){
@@ -440,6 +472,17 @@
     /* Chart */
     setTimeout(function(){drawTraj(traj);},100);
 
+    /* Team composition */
+    var team=calcTeam(ck,aik,ik,uk);
+    var tMin=team.reduce(function(s,r){return s+r.min;},0);
+    var tMax=team.reduce(function(s,r){return s+r.max;},0);
+    document.getElementById('rTeamSize').textContent=tMin+'–'+tMax+' people';
+    document.getElementById('rTeamGrid').innerHTML=team.map(function(r){
+      var ro=TEAM_ROLES[r.key];
+      var cnt=r.min===r.max?r.min+'×':(r.min+' – '+r.max+'×');
+      return'<div class="sc-team-card"><div class="sc-team-card-icon">'+ro.icon+'</div><div class="sc-team-card-role">'+ro.label+'</div><div class="sc-team-card-count">'+cnt+'</div><div class="sc-team-card-desc">'+ro.desc+'</div></div>';
+    }).join('');
+
     /* Insight */
     document.getElementById('rInsight').textContent=a.insight;
 
@@ -481,7 +524,7 @@
         opportunityScore:d.sc,monthlyRevLost:d.mo,loss6Months:d.l6,loss12Months:d.l12,
         monthlyBuildMin:d.mb?d.mb.min:0,monthlyBuildMax:d.mb?d.mb.max:0,
         totalBudgetMin:d.tbMin,totalBudgetMax:d.tbMax,
-        buildTimeline:d.bt,roiMonths:d.roi,verdict:d.verd?d.verd.text:'',
+        buildTimeline:d.bt,roiMonths:d.roi,verdict:d.verd?d.verd.text:'',teamSize:tMin+'–'+tMax+' people',
       },
       source:'saas_audit_calculator',
     };

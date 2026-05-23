@@ -137,6 +137,51 @@ function buildComplexityNotes(aiKey, industryKey) {
   return notes;
 }
 
+/* ─── Team Composition ──────────────────────────────────────────────────── */
+var TEAM_ROLES = {
+  designer: { icon:'🎨', label:'UI/UX Designer',     desc:'Branding, wireframes, user flows & visual design' },
+  frontend: { icon:'💻', label:'Frontend Engineer',   desc:'React/Vue, responsive UI & performance optimisation' },
+  backend:  { icon:'⚙️', label:'Backend Engineer',    desc:'APIs, database, business logic & third-party integrations' },
+  sqa:      { icon:'🧪', label:'QA / Test Engineer',  desc:'Manual & automated testing, bug tracking, release sign-off' },
+  pm:       { icon:'📋', label:'Project Manager',     desc:'Sprint planning, delivery milestones & stakeholder comms' },
+  devops:   { icon:'🔧', label:'DevOps Engineer',     desc:'CI/CD pipelines, cloud infrastructure & monitoring' },
+  aiml:     { icon:'🤖', label:'AI / ML Engineer',    desc:'Model training, data pipelines, MLOps & AI integration' },
+  analyst:  { icon:'📊', label:'Business Analyst',    desc:'Requirements gathering, domain research & user stories' },
+  support:  { icon:'🛟', label:'Support Engineer',    desc:'Post-launch support, incident response & onboarding' },
+};
+
+function calcTeam(complexityKey, aiKey, industryKey, usersKey) {
+  var t = {
+    designer: { min:1, max:1 },
+    frontend: { min:1, max:2 },
+    backend:  { min:1, max:2 },
+    sqa:      { min:1, max:1 },
+    pm:       { min:1, max:1 },
+    devops:   { min:0, max:1 },
+    aiml:     { min:0, max:0 },
+    analyst:  { min:0, max:1 },
+    support:  { min:0, max:0 },
+  };
+
+  if (complexityKey === 'standard')  { t.backend.max = 3; }
+  if (complexityKey === 'complex')   { t.frontend.min=2; t.frontend.max=3; t.backend.min=2; t.backend.max=4; t.devops.min=1; t.analyst.min=1; }
+  if (complexityKey === 'enterprise'){ t.frontend.min=2; t.frontend.max=4; t.backend.min=3; t.backend.max=6; t.sqa.max=2; t.pm.max=2; t.devops.min=1; t.analyst.min=1; t.support.min=1; }
+
+  if (aiKey === 'ai_api')    { t.aiml.max = 1; }
+  if (aiKey === 'ai_custom') { t.aiml.min=1; t.aiml.max=2; }
+  if (aiKey === 'ai_core')   { t.aiml.min=2; t.aiml.max=3; t.backend.min=Math.max(t.backend.min,2); }
+
+  if (industryKey === 'healthcare' || industryKey === 'fintech' || industryKey === 'legal') { t.sqa.min=1; t.analyst.min=1; }
+
+  if (usersKey === 'large' || usersKey === 'xlarge') { t.devops.min=1; t.support.min=1; t.support.max=1; }
+
+  var result = [];
+  for (var k in t) {
+    if (t[k].max > 0) result.push({ key:k, min:t[k].min, max:t[k].max });
+  }
+  return result;
+}
+
 /* ─── Master Run ────────────────────────────────────────────────────────── */
 function runAudit(data) {
   var aud = AUDIENCE_TYPES[data.audienceType];
@@ -152,6 +197,9 @@ function runAudit(data) {
   var totalBudgetMax   = monthlyBuildCost.max * buildTimeline;
   var verdict          = verdictLabel(opportunityScore);
   var complexityNotes  = buildComplexityNotes(data.aiKey, data.industryKey);
+  var team             = calcTeam(data.complexityKey, data.aiKey, data.industryKey, data.usersKey);
+  var teamTotalMin     = team.reduce(function(s,r){return s+r.min;},0);
+  var teamTotalMax     = team.reduce(function(s,r){return s+r.max;},0);
   var trajectory       = [];
   for (var i = 0; i <= 12; i++) trajectory.push(i === 0 ? 0 : calcDelayLoss(monthlyRevLost, i, aud.riskMult));
 
@@ -170,6 +218,8 @@ function runAudit(data) {
     insight:           aud.insight,
     recommendation:    aud.rec,
     complexityNotes:   complexityNotes,
+    team:              team,
+    teamSize:          teamTotalMin + '–' + teamTotalMax + ' people',
   };
 }
 

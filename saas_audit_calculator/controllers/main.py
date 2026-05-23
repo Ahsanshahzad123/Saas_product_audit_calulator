@@ -15,11 +15,9 @@ class SaasAuditController(http.Controller):
 
     @http.route('/saas-calculator/submit-lead', type='json', auth='public', methods=['POST'], csrf=False)
     def submit_lead(self, **post):
-        try:
-            body = json.loads(request.httprequest.data or '{}')
-        except (ValueError, TypeError):
-            body = post
-
+        # Odoo 17 type='json' routes auto-parse the body into request.jsonrequest.
+        # Use that directly; fall back to **post kwargs for JSON-RPC style callers.
+        body = request.jsonrequest or post or {}
         audit = body.get('auditResults', {}) or {}
 
         vals = {
@@ -55,6 +53,7 @@ class SaasAuditController(http.Controller):
             'roi_months':             int(audit.get('roiMonths', 0) or 0),
             'build_timeline':         int(audit.get('buildTimeline', 0) or 0),
             'verdict':                str(audit.get('verdict', '') or ''),
+            'recommended_team_size':  str(audit.get('teamSize', '') or ''),
             # Meta
             'source':     body.get('source', 'saas_audit_calculator'),
             'ip_address': request.httprequest.remote_addr or '',

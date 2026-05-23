@@ -154,6 +154,16 @@
 .sc-chart-wrap canvas { position:absolute; top:0; left:0; }
 .sc-chart-note { font-size:.6rem; color:#aaa; margin-top:6px; text-align:center; line-height:1.4; }
 
+/* Team composition grid */
+.sc-team-grid       { display:grid; grid-template-columns:1fr 1fr 1fr; gap:8px; margin-bottom:10px; }
+.sc-team-card       { background:#f8f9fa; border-radius:9px; padding:10px 10px 8px; text-align:center; border:1px solid #eee; }
+.sc-team-card-icon  { font-size:1.3rem; margin-bottom:4px; }
+.sc-team-card-role  { font-size:.62rem; font-weight:700; color:#1a237e; margin-bottom:2px; line-height:1.3; }
+.sc-team-card-count { font-size:.72rem; font-weight:800; color:#1565c0; margin-bottom:3px; }
+.sc-team-card-desc  { font-size:.56rem; color:#aaa; line-height:1.4; }
+.sc-team-total      { font-size:.72rem; color:#555; text-align:center; padding:8px 12px; background:#f0f4ff; border-radius:8px; }
+.sc-team-total strong { color:#1a237e; }
+
 /* Insight card */
 .sc-insight-card { background:#e8f0fe; border-left:4px solid #1565c0; border-radius:0 8px 8px 0; padding:12px 14px; display:flex; gap:10px; align-items:flex-start; }
 .sc-insight-icon { font-size:1rem; flex-shrink:0; margin-top:1px; }
@@ -197,4 +207,4 @@
 
 /* ─── Responsive ─────────────────────────────────────────── */
 @media(max-width:960px){ .sc-container{grid-template-columns:1fr} .sc-results-panel{position:static} }
-@media(max-width:600px){ .sc-row{grid-template-columns:1fr} .sc-row-3{grid-template-columns:1fr} .sc-lead-grid{grid-template-columns:1fr} .sc-modal{padding:18px} }
+@media(max-width:600px){ .sc-row{grid-template-columns:1fr} .sc-row-3{grid-template-columns:1fr} .sc-lead-grid{grid-template-columns:1fr} .sc-modal{padding:18px} .sc-team-grid{grid-template-columns:1fr 1fr} }
