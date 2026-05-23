@@ -21,6 +21,127 @@
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
 body{font-family:'Segoe UI',-apple-system,BlinkMacSystemFont,'Inter',sans-serif;background:linear-gradient(135deg,#0b1731 0%,#1a237e 45%,#1565c0 100%);min-height:100vh;color:#fff;padding-bottom:60px}
 
+.sc-header{text-align:center;padding:40px 20px 24px}
+.sc-header h1{font-size:clamp(1.5rem,3.5vw,2.2rem);font-weight:800;letter-spacing:-.5px;margin-bottom:8px}
+.sc-header p{font-size:.9rem;color:rgba(255,255,255,.65);max-width:560px;margin:0 auto;line-height:1.55}
+
+/* ── Container: both panels stretch to same height ── */
+.sc-container{max-width:960px;margin:0 auto;padding:0 20px;display:grid;grid-template-columns:400px 1fr;gap:0;align-items:stretch}
+
+/* ── Form Panel ── */
+.sc-form-panel{background:#0d1b35;border-radius:16px 0 0 16px;padding:22px 20px;display:flex;flex-direction:column;gap:9px}
+.sc-row{display:grid;grid-template-columns:1fr 1fr;gap:9px}
+.sc-field{display:flex;flex-direction:column;gap:4px}
+.sc-field label{font-size:.59rem;font-weight:700;text-transform:uppercase;letter-spacing:.9px;color:rgba(255,255,255,.5)}
+.sc-field input,.sc-field select{padding:9px 12px;background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.17);border-radius:8px;color:#fff;font-size:.83rem;outline:none;transition:border-color .2s,background .2s;width:100%;-webkit-appearance:none;appearance:none}
+.sc-field select{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='rgba(255,255,255,0.55)' d='M6 8L1 3h10z'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 11px center;padding-right:29px}
+.sc-field input::placeholder{color:rgba(255,255,255,.28)}
+.sc-field input:focus,.sc-field select:focus{border-color:rgba(255,255,255,.5);background:rgba(255,255,255,.16)}
+.sc-field select option{background:#1a237e;color:#fff}
+.pfx{position:relative}.pfx span{position:absolute;left:12px;top:50%;transform:translateY(-50%);color:rgba(255,255,255,.42);font-size:.83rem;pointer-events:none}.pfx input{padding-left:23px}
+.sc-err{font-size:.64rem;color:#ef9a9a;margin-top:1px;display:none}.sc-err.show{display:block}
+.sc-form-sep{font-size:.56rem;font-weight:800;text-transform:uppercase;letter-spacing:1.3px;color:rgba(255,255,255,.35);padding-top:2px;border-top:1px solid rgba(255,255,255,.1)}
+.sc-form-note{font-size:.63rem;color:rgba(255,255,255,.3);text-align:center;padding-top:4px}
+
+.sc-calc-btn{width:100%;padding:13px;background:#1565c0;color:#fff;font-size:.9rem;font-weight:700;border:none;border-radius:9px;cursor:pointer;letter-spacing:.3px;transition:background .2s,transform .1s,box-shadow .2s;box-shadow:0 4px 16px rgba(21,101,192,.45)}
+.sc-calc-btn:hover{background:#1976d2;transform:translateY(-1px);box-shadow:0 6px 20px rgba(21,101,192,.6)}
+.sc-calc-btn:active{transform:translateY(0)}
+
+/* ── Results Panel ── */
+.sc-results-panel{background:#fff;border-radius:0 16px 16px 0;box-shadow:10px 0 50px rgba(0,0,0,.28);color:#1a1a2e;display:flex;flex-direction:column;overflow:hidden}
+.sc-results-header{display:flex;justify-content:space-between;align-items:center;padding:11px 16px;border-bottom:1px solid #f0f0f0;flex-shrink:0}
+.sc-results-header h3{font-size:.61rem;font-weight:800;text-transform:uppercase;letter-spacing:1.4px;color:#aaa}
+.sc-opp-badge{padding:3px 9px;border-radius:20px;font-size:.63rem;font-weight:700;white-space:nowrap}
+.opp-strong{background:#c8e6c9;color:#1b5e20}.opp-good{background:#bbdefb;color:#0d47a1}.opp-moderate{background:#fff9c4;color:#f57f17}.opp-challenging{background:#ffe0b2;color:#e65100}.opp-risky{background:#ffcdd2;color:#b71c1c}
+
+.sc-empty{display:flex;flex-direction:column;align-items:center;justify-content:center;flex:1;text-align:center;padding:32px;color:#bbb}
+.sc-empty-icon{font-size:2.4rem;opacity:.22;margin-bottom:12px}
+.sc-empty p{font-size:.79rem;line-height:1.65}
+
+/* ── Score ring + info (side by side) ── */
+.sc-score-section{display:flex;align-items:center;gap:14px;padding:14px 16px;border-bottom:1px solid #f0f0f0;flex-shrink:0}
+.sc-ring-wrap{flex-shrink:0;width:76px;height:76px;position:relative}
+.sc-ring-wrap svg{width:100%;height:100%}
+.sc-ring-num{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);font-size:1.4rem;font-weight:900;color:#1a237e;line-height:1}
+.sc-score-info{flex:1;min-width:0}
+.sc-score-verdict{font-size:.82rem;font-weight:800;color:#1a237e;margin-bottom:2px}
+.sc-score-sub{font-size:.62rem;color:#aaa;margin-bottom:7px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.sc-score-factors{text-align:left}
+.sc-factor-row{display:flex;align-items:center;gap:7px;margin-bottom:4px}
+.sc-factor-lbl{font-size:.54rem;font-weight:700;color:#aaa;width:62px;flex-shrink:0;text-transform:uppercase;letter-spacing:.4px}
+.sc-factor-track{flex:1;height:4px;background:#ebebeb;border-radius:3px;overflow:hidden}
+.sc-factor-fill{height:100%;border-radius:3px;width:0%;transition:width .9s cubic-bezier(.4,0,.2,1)}
+.sc-factor-pts{font-size:.58rem;font-weight:800;color:#777;width:28px;text-align:right;flex-shrink:0}
+.sc-score-tip{margin-top:7px;background:#fff8e1;border-left:3px solid #f9a825;border-radius:0 5px 5px 0;padding:6px 8px;font-size:.63rem;color:#5d4037;line-height:1.5}
+
+/* ── 3-column metrics ── */
+.sc-metrics-row{display:grid;grid-template-columns:repeat(3,1fr);border-bottom:1px solid #f0f0f0;flex-shrink:0}
+.sc-metric-card{padding:11px 13px;border-right:1px solid #f0f0f0}
+.sc-metric-card:last-child{border-right:none}
+.sc-metric-lbl{font-size:.54rem;font-weight:700;text-transform:uppercase;letter-spacing:.6px;color:#bbb;margin-bottom:5px;display:flex;align-items:center;gap:3px}
+.sc-metric-val{font-size:.92rem;font-weight:800;color:#1a237e;line-height:1.1;margin-bottom:2px}
+.sc-metric-sub{font-size:.57rem;color:#bbb}
+.sc-build-note{display:block;font-size:.58rem;color:#e65100;line-height:1.4;margin-top:3px}
+
+/* ── Team chips ── */
+.sc-team-chips{padding:9px 14px;border-bottom:1px solid #f0f0f0;display:flex;flex-wrap:wrap;align-items:center;gap:5px;flex-shrink:0}
+.sc-team-chips-lbl{font-size:.62rem;font-weight:700;color:#888;margin-right:2px;white-space:nowrap}
+.sc-team-chip{background:#f0f4ff;border:1px solid #dde5ff;border-radius:20px;padding:2px 8px;font-size:.6rem;font-weight:700;color:#1a237e;white-space:nowrap}
+.sc-team-chip.total{background:#1a237e;color:#fff;border-color:#1a237e}
+
+/* ── Delay cost alert ── */
+.sc-delay-alert{padding:11px 14px;border-bottom:1px solid #f0f0f0;background:#fff8f8;flex-shrink:0}
+.sc-delay-top{display:flex;align-items:center;gap:5px;margin-bottom:2px}
+.sc-delay-icon{font-size:.78rem}
+.sc-delay-lbl{font-size:.64rem;color:#c62828;font-weight:600}
+.sc-delay-amt{font-size:1.55rem;font-weight:900;color:#c62828;letter-spacing:-.5px;line-height:1.1;margin-bottom:2px}
+.sc-delay-sub{font-size:.6rem;color:#e57373}
+
+/* ── Chart / Insight / Sections ── */
+.sc-section{padding:10px 14px;border-bottom:1px solid #f0f0f0}
+.sc-section:last-child{border-bottom:none}
+.sc-section-title{font-size:.57rem;font-weight:800;text-transform:uppercase;letter-spacing:1px;color:#bbb;margin-bottom:7px;display:flex;align-items:center;gap:5px}
+.sc-section-title span{font-size:.8rem}
+.sc-chart-wrap{position:relative;height:130px;width:100%}
+.sc-chart-wrap canvas{position:absolute;top:0;left:0}
+.sc-chart-note{font-size:.57rem;color:#ccc;margin-top:5px;text-align:center;line-height:1.4}
+.sc-insight-card{background:#e8f0fe;border-left:4px solid #1565c0;border-radius:0 8px 8px 0;padding:10px 12px;display:flex;gap:8px;align-items:flex-start}
+.sc-insight-icon{font-size:.88rem;flex-shrink:0;margin-top:1px}
+.sc-insight-text{font-size:.69rem;color:#1a237e;line-height:1.55}
+
+/* ── CTA ── */
+.sc-cta-btn{display:block;width:100%;padding:13px 16px;background:#1565c0;color:#fff;font-size:.83rem;font-weight:700;border:none;border-radius:0 0 14px 14px;cursor:pointer;text-align:center;transition:background .2s;letter-spacing:.2px;margin-top:auto;flex-shrink:0}
+.sc-cta-btn:hover{background:#1976d2}
+
+/* ── Modal ── */
+.sc-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.72);z-index:9999;align-items:center;justify-content:center;padding:16px}
+.sc-overlay.on{display:flex}
+.sc-modal{background:#fff;border-radius:16px;width:100%;max-width:660px;max-height:90vh;overflow-y:auto;padding:26px;position:relative;color:#1a1a2e}
+.sc-modal-x{position:absolute;top:13px;right:13px;background:#f0f0f0;border:none;border-radius:50%;width:30px;height:30px;cursor:pointer;font-size:.9rem;color:#444;display:flex;align-items:center;justify-content:center}
+.sc-modal-x:hover{background:#e0e0e0}
+.sc-modal h2{font-size:1.08rem;font-weight:800;color:#1a237e;margin-bottom:5px}
+.sc-modal-sub{font-size:.74rem;color:#666;margin-bottom:16px;line-height:1.55}
+.sc-rec-box{background:#e8f0fe;border-left:4px solid #1565c0;border-radius:8px;padding:13px;margin-bottom:16px}
+.sc-rec-box strong{display:block;font-size:.6rem;text-transform:uppercase;letter-spacing:.6px;color:#1565c0;margin-bottom:4px}
+.sc-rec-box p{font-size:.8rem;color:#1a237e;line-height:1.6}
+.sc-lead-form{border-top:2px solid #1a237e;padding-top:16px;margin-top:4px}
+.sc-lead-form h3{font-size:.88rem;font-weight:700;color:#1a237e;margin-bottom:12px}
+.sc-lead-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:12px}
+.sc-lf{display:flex;flex-direction:column;gap:4px}
+.sc-lf label{font-size:.63rem;font-weight:700;color:#666;text-transform:uppercase;letter-spacing:.5px}
+.sc-lf input,.sc-lf textarea{padding:9px 12px;border:1px solid #ddd;border-radius:8px;font-size:.82rem;color:#222;outline:none;transition:border-color .2s}
+.sc-lf input:focus,.sc-lf textarea:focus{border-color:#1565c0}
+.sc-lead-sub{width:100%;padding:13px;background:#1565c0;color:#fff;font-size:.86rem;font-weight:700;border:none;border-radius:9px;cursor:pointer;transition:background .2s}
+.sc-lead-sub:hover{background:#1976d2}
+.sc-lead-ok{text-align:center;padding:18px;color:#1b5e20;font-weight:600;font-size:.9rem;display:none}
+
+.sc-toast{position:fixed;bottom:22px;right:22px;background:#1b5e20;color:#fff;padding:12px 20px;border-radius:10px;font-size:.82rem;font-weight:600;box-shadow:0 8px 24px rgba(0,0,0,.3);z-index:10000;transform:translateY(80px);opacity:0;transition:transform .35s,opacity .35s}
+.sc-toast.on{transform:translateY(0);opacity:1}
+
+@media(max-width:860px){.sc-container{grid-template-columns:1fr}.sc-form-panel{border-radius:16px 16px 0 0}.sc-results-panel{border-radius:0 0 16px 16px}}
+@media(max-width:600px){.sc-row{grid-template-columns:1fr}.sc-lead-grid{grid-template-columns:1fr}.sc-modal{padding:18px}.sc-metrics-row{grid-template-columns:1fr 1fr}}
+</style>
+
 .sc-header{text-align:center;padding:44px 20px 32px}
 .sc-header h1{font-size:clamp(1.6rem,4vw,2.5rem);font-weight:800;letter-spacing:-.5px;margin-bottom:10px}
 .sc-header p{font-size:.94rem;color:rgba(255,255,255,.65);max-width:560px;margin:0 auto;line-height:1.55}
@@ -269,117 +390,106 @@ body{font-family:'Segoe UI',-apple-system,BlinkMacSystemFont,'Inter',sans-serif;
     </div>
 
     <button class="sc-calc-btn" id="calcBtn">Run My Free SaaS Audit →</button>
+    <p class="sc-form-note">Takes 60 seconds. No signup required.</p>
   </div>
 
   <!-- ── RESULTS ── -->
   <div class="sc-results-panel" id="resultsPanel">
     <div class="sc-results-header">
-      <h3>Your Opportunity Audit</h3>
+      <h3>Your growth score</h3>
       <span class="sc-opp-badge" id="oppBadge">—</span>
     </div>
 
     <div class="sc-empty" id="emptyState">
       <div class="sc-empty-icon">🚀</div>
-      <p>Fill in your details and click <strong>Run My Free SaaS Audit</strong> to see your personalised opportunity analysis.</p>
+      <p>Fill in your details and click <strong>Run My Free SaaS Audit</strong> to see your personalised analysis.</p>
     </div>
 
-    <div class="sc-results-body" id="resContent" style="display:none">
+    <div id="resContent" style="display:none;display:flex;flex-direction:column;flex:1;overflow:hidden">
 
-      <!-- 1. Score -->
+      <!-- 1. Score ring + factor breakdown -->
       <div class="sc-score-section">
-        <p class="sc-score-lbl">Opportunity Score</p>
-        <div class="sc-score-row">
-          <span class="sc-score-num" id="rScore">0</span>
-          <span class="sc-score-denom">/100</span>
+        <div class="sc-ring-wrap">
+          <svg viewBox="0 0 80 80" fill="none">
+            <circle cx="40" cy="40" r="32" stroke="#ebebeb" stroke-width="7"/>
+            <circle cx="40" cy="40" r="32" stroke="#1565c0" stroke-width="7"
+              stroke-linecap="round" stroke-dasharray="201.1"
+              id="ringFill" style="stroke-dashoffset:201.1;transition:stroke-dashoffset 1s cubic-bezier(.4,0,.2,1)"
+              transform="rotate(-90 40 40)"/>
+          </svg>
+          <div class="sc-ring-num" id="rScore">0</div>
         </div>
-        <div class="sc-prog-track"><div class="sc-prog-fill" id="progFill" style="width:0%"></div></div>
-        <p class="sc-score-verdict" id="rVerdict">—</p>
-        <div class="sc-score-factors" id="scoreFactors" style="display:none">
-          <div class="sc-factor-row">
-            <span class="sc-factor-lbl">Budget Fit</span>
-            <div class="sc-factor-track"><div class="sc-factor-fill" id="sfBudget" style="background:#1565c0"></div></div>
-            <span class="sc-factor-pts" id="sfBudgetPts">0/40</span>
-          </div>
-          <div class="sc-factor-row">
-            <span class="sc-factor-lbl">Market Opp.</span>
-            <div class="sc-factor-track"><div class="sc-factor-fill" id="sfMarket" style="background:#2e7d32"></div></div>
-            <span class="sc-factor-pts" id="sfMarketPts">0/30</span>
-          </div>
-          <div class="sc-factor-row">
-            <span class="sc-factor-lbl">Audience</span>
-            <div class="sc-factor-track"><div class="sc-factor-fill" id="sfAudience" style="background:#6a1b9a"></div></div>
-            <span class="sc-factor-pts" id="sfAudiencePts">0/20</span>
-          </div>
-          <div class="sc-factor-row">
-            <span class="sc-factor-lbl">Timeline</span>
-            <div class="sc-factor-track"><div class="sc-factor-fill" id="sfUrgency" style="background:#e65100"></div></div>
-            <span class="sc-factor-pts" id="sfUrgencyPts">0/10</span>
-          </div>
-          <div class="sc-score-tip" id="rScoreTip"></div>
-        </div>
-      </div>
-
-      <!-- 2. Investment to Build It Right -->
-      <div class="sc-section">
-        <div class="sc-section-title"><span>💰</span> Investment to Build It Right</div>
-        <p class="sc-build-lbl">Estimated monthly development cost</p>
-        <div class="sc-build-amt" id="rMonthlyBuild">$0 – $0 /month</div>
-        <p class="sc-build-sub">Based on complexity, user scale, timeline, AI &amp; industry</p>
-        <div id="rBuildNotes" class="sc-build-notes" style="display:none"></div>
-        <div class="sc-budget-row">
-          <span class="sc-budget-lbl">Total Project Budget Estimate</span>
-          <span class="sc-budget-val" id="rTotalBudget">—</span>
-        </div>
-      </div>
-
-      <!-- 3. Timeline & ROI -->
-      <div class="sc-section">
-        <div class="sc-section-title"><span>⏱️</span> Timeline &amp; ROI</div>
-        <div class="sc-timeline-grid">
-          <div class="sc-tl-card">
-            <div class="sc-tl-icon">🛠️</div>
-            <div class="sc-tl-lbl">Estimated Build Time</div>
-            <div class="sc-tl-val" id="rBuildTime">—</div>
-          </div>
-          <div class="sc-tl-card">
-            <div class="sc-tl-icon">📈</div>
-            <div class="sc-tl-lbl">Break-even If You Start Today</div>
-            <div class="sc-tl-val" id="rROI">—</div>
+        <div class="sc-score-info">
+          <div class="sc-score-verdict" id="rVerdict">—</div>
+          <div class="sc-score-sub" id="rScoreSub">—</div>
+          <div class="sc-score-factors" id="scoreFactors" style="display:none">
+            <div class="sc-factor-row">
+              <span class="sc-factor-lbl">Budget</span>
+              <div class="sc-factor-track"><div class="sc-factor-fill" id="sfBudget" style="background:#1565c0"></div></div>
+              <span class="sc-factor-pts" id="sfBudgetPts">0/40</span>
+            </div>
+            <div class="sc-factor-row">
+              <span class="sc-factor-lbl">Market</span>
+              <div class="sc-factor-track"><div class="sc-factor-fill" id="sfMarket" style="background:#2e7d32"></div></div>
+              <span class="sc-factor-pts" id="sfMarketPts">0/30</span>
+            </div>
+            <div class="sc-factor-row">
+              <span class="sc-factor-lbl">Audience</span>
+              <div class="sc-factor-track"><div class="sc-factor-fill" id="sfAudience" style="background:#6a1b9a"></div></div>
+              <span class="sc-factor-pts" id="sfAudiencePts">0/20</span>
+            </div>
+            <div class="sc-factor-row">
+              <span class="sc-factor-lbl">Timeline</span>
+              <div class="sc-factor-track"><div class="sc-factor-fill" id="sfUrgency" style="background:#e65100"></div></div>
+              <span class="sc-factor-pts" id="sfUrgencyPts">0/10</span>
+            </div>
+            <div class="sc-score-tip" id="rScoreTip"></div>
           </div>
         </div>
       </div>
 
-      <!-- 4. Team Composition -->
-      <div class="sc-section">
-        <div class="sc-section-title"><span>👥</span> Recommended Team Composition</div>
-        <div class="sc-team-grid" id="rTeamGrid"></div>
-        <p class="sc-team-total">Estimated team size: <strong id="rTeamSize">—</strong></p>
-      </div>
-
-      <!-- 5. Revenue at Risk -->
-      <div class="sc-section">
-        <div class="sc-section-title"><span>🔥</span> Revenue at Risk — Every Month Counts</div>
-        <p class="sc-monthly-loss-lbl">Revenue you stop losing the day you launch</p>
-        <div class="sc-monthly-loss-amt" id="rMonthly">$0</div>
-        <div class="sc-loss-grid">
-          <div class="sc-loss-card">
-            <div class="sc-loss-period">Wait 6 More Months</div>
-            <div class="sc-loss-amount" id="rLoss6">$0</div>
-          </div>
-          <div class="sc-loss-card crit">
-            <div class="sc-loss-period">Wait 12 More Months</div>
-            <div class="sc-loss-amount" id="rLoss12">$0</div>
-          </div>
+      <!-- 2. 3-column metrics: Budget · Build Time · Break-Even -->
+      <div class="sc-metrics-row">
+        <div class="sc-metric-card">
+          <div class="sc-metric-lbl">💰 Budget</div>
+          <div class="sc-metric-val" id="rMonthlyBuild">—</div>
+          <div class="sc-metric-sub">per month</div>
+          <div id="rBuildNotes" style="display:none"></div>
+        </div>
+        <div class="sc-metric-card">
+          <div class="sc-metric-lbl">⏱️ Build Time</div>
+          <div class="sc-metric-val" id="rBuildTime">—</div>
+          <div class="sc-metric-sub">to launch</div>
+        </div>
+        <div class="sc-metric-card">
+          <div class="sc-metric-lbl">📈 Break-Even</div>
+          <div class="sc-metric-val" id="rROI">—</div>
+          <div class="sc-metric-sub">after launch</div>
         </div>
       </div>
 
-      <!-- 5. Chart — Cumulative cost of delay with axes -->
-      <div class="sc-section">
-        <div class="sc-section-title"><span>📊</span> Total Revenue Lost vs. Months of Delay</div>
-        <div class="sc-chart-wrap">
-          <canvas id="trajChart"></canvas>
+      <!-- 3. Team chips -->
+      <div class="sc-team-chips">
+        <span class="sc-team-chips-lbl">Team:</span>
+        <div id="rTeamGrid" style="display:contents"></div>
+        <span class="sc-team-chip total" id="rTeamSize">—</span>
+      </div>
+
+      <!-- 4. Delay cost alert -->
+      <div class="sc-delay-alert">
+        <div class="sc-delay-top">
+          <span class="sc-delay-icon">⚠️</span>
+          <span class="sc-delay-lbl">Every month you delay costs</span>
         </div>
-        <p class="sc-chart-note">The red line shows total compounding revenue opportunity lost the longer you wait to launch. Hover for exact values.</p>
+        <div class="sc-delay-amt" id="rMonthly">$0</div>
+        <div class="sc-delay-sub"><span id="rLoss6">$0</span> at risk over 6 months &nbsp;·&nbsp; <span id="rLoss12">$0</span> over 12 months</div>
+      </div>
+
+      <!-- 5. Chart -->
+      <div class="sc-section">
+        <div class="sc-section-title"><span>📊</span> Cumulative Revenue Lost vs. Months of Delay</div>
+        <div class="sc-chart-wrap"><canvas id="trajChart"></canvas></div>
+        <p class="sc-chart-note">Hover for exact values. Red line shows how delay compounds your lost revenue.</p>
       </div>
 
       <!-- 6. Insight -->
@@ -670,17 +780,20 @@ document.getElementById('calcBtn').addEventListener('click', function() {
   var traj = [];
   for (var i = 0; i <= 12; i++) traj.push(i === 0 ? 0 : calcDelayLoss(mo, i, aud.riskMult));
 
-  /* Badge */
+  /* Badge + ring */
   var badge = document.getElementById('oppBadge');
   badge.textContent = verd.text; badge.className = 'sc-opp-badge ' + verd.cls;
-
-  /* Score */
+  var ringCol = sc >= 80 ? '#2e7d32' : sc >= 60 ? '#1565c0' : sc >= 40 ? '#f57f17' : '#c62828';
   document.getElementById('rScore').textContent = sc;
   document.getElementById('rVerdict').textContent = verd.text;
-  var fill = document.getElementById('progFill');
-  var col = sc >= 80 ? '#2e7d32' : sc >= 60 ? '#1565c0' : sc >= 40 ? '#f57f17' : '#c62828';
-  fill.style.background = col;
-  setTimeout(function() { fill.style.width = sc + '%'; }, 50);
+  document.getElementById('rVerdict').style.color = ringCol;
+  var saasLbls = {b2b:'B2B SaaS',b2c:'B2C SaaS',marketplace:'Marketplace',enterprise:'Enterprise'};
+  var cmpLbls  = {mvp:'Simple MVP',standard:'Standard SaaS',complex:'Complex Platform',enterprise:'Enterprise-grade'};
+  var indLbls  = {general:'General',ecommerce:'E-commerce',hr_ops:'HR/Ops',education:'EdTech',legal:'Legal',healthcare:'Healthcare',fintech:'Fintech'};
+  document.getElementById('rScoreSub').textContent = (saasLbls[sk]||sk) + ' · ' + (indLbls[ik]||ik) + ' · ' + (cmpLbls[ck]||ck);
+  var ringEl = document.getElementById('ringFill');
+  ringEl.style.stroke = ringCol;
+  setTimeout(function() { ringEl.style.strokeDashoffset = (201.1 * (1 - sc / 100)).toFixed(1); }, 60);
 
   /* Score factor breakdown */
   var minTotal = mbc.min * bt;
@@ -688,36 +801,37 @@ document.getElementById('calcBtn').addEventListener('click', function() {
   var marketFactor = 1 - SAAS_TYPES[sk].competition;
   var urgencyFactor = Math.min(LAUNCH_TIMELINE[tk].urgencyMult / 1.5, 1);
   var mktCapture = aud.mktCapture;
-  document.getElementById('sfBudgetPts').textContent  = Math.round(budgetFit * 40) + '/40';
-  document.getElementById('sfMarketPts').textContent  = Math.round(marketFactor * 30) + '/30';
+  document.getElementById('sfBudgetPts').textContent   = Math.round(budgetFit * 40) + '/40';
+  document.getElementById('sfMarketPts').textContent   = Math.round(marketFactor * 30) + '/30';
   document.getElementById('sfAudiencePts').textContent = Math.round(mktCapture * 20) + '/20';
-  document.getElementById('sfUrgencyPts').textContent = Math.round(urgencyFactor * 10) + '/10';
+  document.getElementById('sfUrgencyPts').textContent  = Math.round(urgencyFactor * 10) + '/10';
   setTimeout(function() {
     document.getElementById('sfBudget').style.width   = Math.round(budgetFit * 100) + '%';
     document.getElementById('sfMarket').style.width   = Math.round(marketFactor * 100) + '%';
     document.getElementById('sfAudience').style.width = Math.round(mktCapture * 100) + '%';
     document.getElementById('sfUrgency').style.width  = Math.round(urgencyFactor * 100) + '%';
-  }, 60);
+  }, 80);
   var tipPct = Math.round(budgetFit * 100);
   var scoreTipText;
-  if (budgetFit < 0.40) scoreTipText = '⚠️ Budget covers only ' + tipPct + '% of the min build cost (' + fmt(minTotal) + '). Increasing your budget or choosing a simpler scope would have the biggest impact on your score.';
-  else if (budgetFit < 0.75) scoreTipText = '💡 Budget covers ' + tipPct + '% of the estimated build cost — closing this gap would add up to ' + Math.round((1 - budgetFit) * 40) + ' more points.';
-  else if (marketFactor < 0.25) scoreTipText = '⚡ Highly competitive market. Fast execution and strong product differentiation are critical to claiming your opportunity window.';
-  else if (urgencyFactor < 0.85) scoreTipText = '📅 ASAP timeline carries a 30% cost premium. A 3–6 month structured plan reduces risk and lifts your score.';
-  else scoreTipText = '✅ Your opportunity is well-balanced. Focus on shipping fast and signing your first paying customers.';
+  if (budgetFit < 0.40) scoreTipText = '⚠️ Budget covers only ' + tipPct + '% of min build cost (' + fmt(minTotal) + '). Increasing budget or simplifying scope has the biggest impact.';
+  else if (budgetFit < 0.75) scoreTipText = '💡 Budget covers ' + tipPct + '% of build cost — closing this gap adds up to ' + Math.round((1 - budgetFit) * 40) + ' more points.';
+  else if (marketFactor < 0.25) scoreTipText = '⚡ Highly competitive market. Fast execution and differentiation are critical.';
+  else if (urgencyFactor < 0.85) scoreTipText = '📅 ASAP timeline carries a 30% cost premium. A 3–6 month plan reduces risk and lifts your score.';
+  else scoreTipText = '✅ Well-balanced opportunity. Focus on shipping fast and signing your first customers.';
   document.getElementById('rScoreTip').textContent = scoreTipText;
   document.getElementById('scoreFactors').style.display = 'block';
 
-  /* Loss */
+  /* Delay cost */
   document.getElementById('rMonthly').textContent = fmt(mo);
   document.getElementById('rLoss6').textContent   = fmt(l6);
   document.getElementById('rLoss12').textContent  = fmt(l12);
 
-  /* Build cost */
-  document.getElementById('rMonthlyBuild').textContent = fmt(mbc.min) + ' – ' + fmt(mbc.max) + ' /month';
-  document.getElementById('rTotalBudget').textContent  = fmtK(totalMin) + ' – ' + fmtK(totalMax);
+  /* Metrics row */
+  document.getElementById('rMonthlyBuild').textContent = fmtK(mbc.min) + ' – ' + fmtK(mbc.max);
+  document.getElementById('rBuildTime').textContent    = bt + (bt === 1 ? ' month' : ' months');
+  document.getElementById('rROI').textContent          = roi ? '~' + roi + (roi === 1 ? ' month' : ' months') : 'N/A';
 
-  /* Complexity notes (AI + industry) */
+  /* Complexity notes */
   var notes = [];
   if (AI_TYPES[aik] && AI_TYPES[aik].note)  notes.push(AI_TYPES[aik].note);
   if (INDUSTRIES[ik] && INDUSTRIES[ik].note) notes.push(INDUSTRIES[ik].note);
@@ -725,22 +839,18 @@ document.getElementById('calcBtn').addEventListener('click', function() {
   noteEl.innerHTML = notes.map(function(n) { return '<span class="sc-build-note">⚙️ ' + n + '</span>'; }).join('');
   noteEl.style.display = notes.length ? 'block' : 'none';
 
-  /* Timeline */
-  document.getElementById('rBuildTime').textContent = bt + ' months';
-  document.getElementById('rROI').textContent = roi ? roi + ' months' : 'N/A';
-
   /* Chart */
   setTimeout(function() { drawTraj(traj); }, 100);
 
-  /* Team composition */
+  /* Team chips */
   var team = calcTeam(ck, aik, ik, uk);
   var tMin = team.reduce(function(s,r){return s+r.min;},0);
   var tMax = team.reduce(function(s,r){return s+r.max;},0);
-  document.getElementById('rTeamSize').textContent = tMin + '–' + tMax + ' people';
+  document.getElementById('rTeamSize').textContent = tMin + '–' + tMax + ' total';
   document.getElementById('rTeamGrid').innerHTML = team.map(function(r) {
     var ro = TEAM_ROLES[r.key];
-    var cnt = r.min === r.max ? r.min + '×' : r.min + ' – ' + r.max + '×';
-    return '<div class="sc-team-card"><div class="sc-team-card-icon">' + ro.icon + '</div><div class="sc-team-card-role">' + ro.label + '</div><div class="sc-team-card-count">' + cnt + '</div><div class="sc-team-card-desc">' + ro.desc + '</div></div>';
+    var cnt = r.min === r.max ? r.min + '×' : r.min + '–' + r.max + '×';
+    return '<span class="sc-team-chip">' + cnt + ' ' + ro.label.split(' ').slice(0,2).join(' ') + '</span>';
   }).join('');
 
   /* Insight */
@@ -748,7 +858,8 @@ document.getElementById('calcBtn').addEventListener('click', function() {
 
   /* Show results */
   document.getElementById('emptyState').style.display = 'none';
-  document.getElementById('resContent').style.display  = 'block';
+  var rc = document.getElementById('resContent');
+  rc.style.display = 'flex'; rc.style.flexDirection = 'column'; rc.style.flex = '1';
 
   window._audit = { ak:ak, sk:sk, ck:ck, uk:uk, tk:tk, aik:aik, ik:ik, rev:rev, budget:budget,
     sc:sc, mo:mo, l6:l6, l12:l12, mbc:mbc, totalMin:totalMin, totalMax:totalMax,

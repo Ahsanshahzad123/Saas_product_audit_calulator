@@ -145,93 +145,82 @@
 
           <div id="resContent" style="display:none">
 
-            <!-- 1. Score -->
+            <!-- 1. Score ring + factor breakdown -->
             <div class="sc-score-section">
-              <p class="sc-score-lbl">Opportunity Score</p>
-              <div class="sc-score-row">
-                <span class="sc-score-num" id="rScore">0</span>
-                <span class="sc-score-denom">/100</span>
+              <div class="sc-ring-wrap">
+                <svg viewBox="0 0 80 80" fill="none">
+                  <circle cx="40" cy="40" r="32" stroke="#ebebeb" stroke-width="7"/>
+                  <circle cx="40" cy="40" r="32" stroke="#1565c0" stroke-width="7"
+                    stroke-linecap="round" stroke-dasharray="201.1"
+                    id="ringFill" style="stroke-dashoffset:201.1;transition:stroke-dashoffset 1s cubic-bezier(.4,0,.2,1)"
+                    transform="rotate(-90 40 40)"/>
+                </svg>
+                <div class="sc-ring-num" id="rScore">0</div>
               </div>
-              <div class="sc-prog-track">
-                <div class="sc-prog-fill" id="progFill" style="width:0%"/>
-              </div>
-              <p class="sc-score-verdict" id="rVerdict">&#8212;</p>
-              <div class="sc-score-factors" id="scoreFactors" style="display:none">
-                <div class="sc-factor-row">
-                  <span class="sc-factor-lbl">Budget Fit</span>
-                  <div class="sc-factor-track"><div class="sc-factor-fill" id="sfBudget" style="background:#1565c0"/></div>
-                  <span class="sc-factor-pts" id="sfBudgetPts">0/40</span>
-                </div>
-                <div class="sc-factor-row">
-                  <span class="sc-factor-lbl">Market Opp.</span>
-                  <div class="sc-factor-track"><div class="sc-factor-fill" id="sfMarket" style="background:#2e7d32"/></div>
-                  <span class="sc-factor-pts" id="sfMarketPts">0/30</span>
-                </div>
-                <div class="sc-factor-row">
-                  <span class="sc-factor-lbl">Audience</span>
-                  <div class="sc-factor-track"><div class="sc-factor-fill" id="sfAudience" style="background:#6a1b9a"/></div>
-                  <span class="sc-factor-pts" id="sfAudiencePts">0/20</span>
-                </div>
-                <div class="sc-factor-row">
-                  <span class="sc-factor-lbl">Timeline</span>
-                  <div class="sc-factor-track"><div class="sc-factor-fill" id="sfUrgency" style="background:#e65100"/></div>
-                  <span class="sc-factor-pts" id="sfUrgencyPts">0/10</span>
-                </div>
-                <div class="sc-score-tip" id="rScoreTip"/>
-              </div>
-            </div>
-
-            <!-- 2. Investment to Build It Right -->
-            <div class="sc-section">
-              <p class="sc-section-title"><span>&#128176;</span> Investment to Build It Right</p>
-              <p class="sc-build-lbl">Estimated monthly development cost:</p>
-              <div class="sc-build-amt" id="rMonthlyBuild">$0 – $0 <small style="font-size:.6em;font-weight:500;color:#888">/month</small></div>
-              <div id="rBuildNotes" class="sc-build-notes" style="display:none"/>
-              <div class="sc-budget-row">
-                <span class="sc-budget-lbl">Total project budget estimate:</span>
-                <span class="sc-budget-val" id="rTotalBudget">&#8212;</span>
-              </div>
-            </div>
-
-            <!-- 3. Timeline & ROI -->
-            <div class="sc-section">
-              <p class="sc-section-title"><span>&#9201;</span> Timeline &amp; Return on Investment</p>
-              <div class="sc-timeline-grid">
-                <div class="sc-tl-card">
-                  <div class="sc-tl-icon">&#128736;</div>
-                  <div class="sc-tl-lbl">Estimated Build Time</div>
-                  <div class="sc-tl-val" id="rBuildTime">&#8212;</div>
-                </div>
-                <div class="sc-tl-card">
-                  <div class="sc-tl-icon">&#128200;</div>
-                  <div class="sc-tl-lbl">Break-even If You Start Today</div>
-                  <div class="sc-tl-val" id="rROI">&#8212;</div>
+              <div class="sc-score-info">
+                <div class="sc-score-verdict" id="rVerdict">&#8212;</div>
+                <div class="sc-score-sub" id="rScoreSub">&#8212;</div>
+                <div class="sc-score-factors" id="scoreFactors" style="display:none">
+                  <div class="sc-factor-row">
+                    <span class="sc-factor-lbl">Budget</span>
+                    <div class="sc-factor-track"><div class="sc-factor-fill" id="sfBudget" style="background:#1565c0"/></div>
+                    <span class="sc-factor-pts" id="sfBudgetPts">0/40</span>
+                  </div>
+                  <div class="sc-factor-row">
+                    <span class="sc-factor-lbl">Market</span>
+                    <div class="sc-factor-track"><div class="sc-factor-fill" id="sfMarket" style="background:#2e7d32"/></div>
+                    <span class="sc-factor-pts" id="sfMarketPts">0/30</span>
+                  </div>
+                  <div class="sc-factor-row">
+                    <span class="sc-factor-lbl">Audience</span>
+                    <div class="sc-factor-track"><div class="sc-factor-fill" id="sfAudience" style="background:#6a1b9a"/></div>
+                    <span class="sc-factor-pts" id="sfAudiencePts">0/20</span>
+                  </div>
+                  <div class="sc-factor-row">
+                    <span class="sc-factor-lbl">Timeline</span>
+                    <div class="sc-factor-track"><div class="sc-factor-fill" id="sfUrgency" style="background:#e65100"/></div>
+                    <span class="sc-factor-pts" id="sfUrgencyPts">0/10</span>
+                  </div>
+                  <div class="sc-score-tip" id="rScoreTip"/>
                 </div>
               </div>
             </div>
 
-            <!-- 4. Team Composition -->
-            <div class="sc-section">
-              <p class="sc-section-title"><span>&#128101;</span> Recommended Team Composition</p>
-              <div class="sc-team-grid" id="rTeamGrid"><!-- filled by JS --></div>
-              <p class="sc-team-total">Estimated team size: <strong id="rTeamSize">&#8212;</strong></p>
+            <!-- 2. 3-column metrics: Budget · Build Time · Break-Even -->
+            <div class="sc-metrics-row">
+              <div class="sc-metric-card">
+                <div class="sc-metric-lbl">&#128176; Budget</div>
+                <div class="sc-metric-val" id="rMonthlyBuild">&#8212;</div>
+                <div class="sc-metric-sub">per month</div>
+                <div id="rBuildNotes" style="display:none"/>
+              </div>
+              <div class="sc-metric-card">
+                <div class="sc-metric-lbl">&#9201; Build Time</div>
+                <div class="sc-metric-val" id="rBuildTime">&#8212;</div>
+                <div class="sc-metric-sub">to launch</div>
+              </div>
+              <div class="sc-metric-card">
+                <div class="sc-metric-lbl">&#128200; Break-Even</div>
+                <div class="sc-metric-val" id="rROI">&#8212;</div>
+                <div class="sc-metric-sub">after launch</div>
+              </div>
             </div>
 
-            <!-- 5. Revenue at Risk -->
-            <div class="sc-section">
-              <p class="sc-section-title"><span>&#128293;</span> Revenue at Risk — Every Month Counts</p>
-              <p class="sc-monthly-loss-lbl">Revenue you stop losing the day you launch:</p>
-              <div class="sc-monthly-loss-amt" id="rMonthly">$0</div>
-              <div class="sc-loss-grid">
-                <div class="sc-loss-card">
-                  <div class="sc-loss-period">Wait 6 More Months</div>
-                  <div class="sc-loss-amount" id="rLoss6">$0</div>
-                </div>
-                <div class="sc-loss-card crit">
-                  <div class="sc-loss-period">Wait 12 More Months</div>
-                  <div class="sc-loss-amount" id="rLoss12">$0</div>
-                </div>
+            <!-- 3. Team chips -->
+            <div class="sc-team-chips">
+              <span class="sc-team-chips-lbl">Team:</span>
+              <div id="rTeamGrid" style="display:contents"/>
+              <span class="sc-team-chip total" id="rTeamSize">&#8212;</span>
+            </div>
+
+            <!-- 4. Delay cost alert -->
+            <div class="sc-delay-alert">
+              <div class="sc-delay-top">
+                <span class="sc-delay-icon">&#9888;&#65039;</span>
+                <span class="sc-delay-lbl">Every month you delay costs</span>
               </div>
+              <div class="sc-delay-amt" id="rMonthly">$0</div>
+              <div class="sc-delay-sub"><span id="rLoss6">$0</span> at risk over 6 months &#183; <span id="rLoss12">$0</span> over 12 months</div>
             </div>
 
             <!-- 6. Chart -->
@@ -432,16 +421,20 @@
     var verd = verdict(sc);
     var traj = [];for(var i=0;i&lt;=12;i++)traj.push(i===0?0:delayLoss(mo,i,a.riskMult));
 
-    /* Badge */
+    /* Badge + ring */
     var badge=document.getElementById('oppBadge');
     badge.textContent=verd.text; badge.className='sc-opp-badge '+verd.cls;
-
-    /* Score */
+    var ringCol=sc>=80?'#2e7d32':sc>=60?'#1565c0':sc>=40?'#f57f17':'#c62828';
     document.getElementById('rScore').textContent=sc;
     document.getElementById('rVerdict').textContent=verd.text;
-    var col=sc>=80?'#2e7d32':sc>=60?'#1565c0':sc>=40?'#ef6c00':'#c62828';
-    var fill=document.getElementById('progFill');
-    fill.style.background=col; setTimeout(function(){fill.style.width=sc+'%';},50);
+    document.getElementById('rVerdict').style.color=ringCol;
+    var saasLbls={b2b:'B2B SaaS',b2c:'B2C SaaS',marketplace:'Marketplace',enterprise:'Enterprise'};
+    var cmpLbls={mvp:'Simple MVP',standard:'Standard SaaS',complex:'Complex Platform',enterprise:'Enterprise-grade'};
+    var indLbls={general:'General',ecommerce:'E-commerce',hr_ops:'HR/Ops',education:'EdTech',legal:'Legal',healthcare:'Healthcare',fintech:'Fintech'};
+    document.getElementById('rScoreSub').textContent=(saasLbls[sk]||sk)+' · '+(indLbls[ik]||ik)+' · '+(cmpLbls[ck]||ck);
+    var ringEl=document.getElementById('ringFill');
+    ringEl.style.stroke=ringCol;
+    setTimeout(function(){ringEl.style.strokeDashoffset=(201.1*(1-sc/100)).toFixed(1);},60);
 
     /* Score factor breakdown */
     var minTotal=mb.min*bt;
@@ -458,25 +451,28 @@
       document.getElementById('sfMarket').style.width=Math.round(marketFactor*100)+'%';
       document.getElementById('sfAudience').style.width=Math.round(mktCap*100)+'%';
       document.getElementById('sfUrgency').style.width=Math.round(urgencyFactor*100)+'%';
-    },60);
+    },80);
     var tipPct=Math.round(budgetFit*100);
     var scoreTipTxt;
-    if(budgetFit&lt;0.40)scoreTipTxt='&#9888;&#65039; Budget covers only '+tipPct+'% of the min build cost ('+fmt(minTotal)+'). Increasing budget or simplifying scope would have the biggest impact on your score.';
-    else if(budgetFit&lt;0.75)scoreTipTxt='&#128161; Budget covers '+tipPct+'% of the estimated build cost — closing this gap would add up to '+Math.round((1-budgetFit)*40)+' more points.';
-    else if(marketFactor&lt;0.25)scoreTipTxt='&#9889; Highly competitive market. Fast execution and strong differentiation are critical to claiming your opportunity window.';
+    if(budgetFit&lt;0.40)scoreTipTxt='&#9888;&#65039; Budget covers only '+tipPct+'% of min build cost ('+fmt(minTotal)+'). Increasing budget or simplifying scope has the biggest impact.';
+    else if(budgetFit&lt;0.75)scoreTipTxt='&#128161; Budget covers '+tipPct+'% of build cost — closing this gap adds up to '+Math.round((1-budgetFit)*40)+' more points.';
+    else if(marketFactor&lt;0.25)scoreTipTxt='&#9889; Highly competitive market. Fast execution and differentiation are critical.';
     else if(urgencyFactor&lt;0.85)scoreTipTxt='&#128197; ASAP timeline carries a 30% cost premium. A 3–6 month plan reduces risk and lifts your score.';
-    else scoreTipTxt='&#9989; Your opportunity is well-balanced. Focus on shipping fast and signing your first paying customers.';
+    else scoreTipTxt='&#9989; Well-balanced opportunity. Focus on shipping fast and signing your first customers.';
     document.getElementById('rScoreTip').textContent=scoreTipTxt;
     document.getElementById('scoreFactors').style.display='block';
 
-    /* Cost of doing nothing */
+    /* Delay cost */
     document.getElementById('rMonthly').textContent=fmt(mo);
     document.getElementById('rLoss6').textContent=fmt(l6);
     document.getElementById('rLoss12').textContent=fmt(l12);
 
-    /* Investment */
-    document.getElementById('rMonthlyBuild').innerHTML=fmtK(mb.min)+' – '+fmtK(mb.max)+'<small style="font-size:.6em;font-weight:500;color:#888"> /month</small>';
-    document.getElementById('rTotalBudget').textContent=fmtK(tbMin)+' – '+fmtK(tbMax);
+    /* Metrics row */
+    document.getElementById('rMonthlyBuild').textContent=fmtK(mb.min)+' – '+fmtK(mb.max);
+    document.getElementById('rBuildTime').textContent=bt+(bt===1?' month':' months');
+    document.getElementById('rROI').textContent=roi?'~'+roi+(roi===1?' month':' months'):'N/A';
+
+    /* Complexity notes */
     var notes=[];
     if(AI[aik]&amp;&amp;AI[aik].note)notes.push(AI[aik].note);
     if(IND[ik]&amp;&amp;IND[ik].note)notes.push(IND[ik].note);
@@ -484,22 +480,18 @@
     noteEl.innerHTML=notes.map(function(n){return'&lt;span class="sc-build-note"&gt;&#9881; '+n+'&lt;/span&gt;';}).join('');
     noteEl.style.display=notes.length?'block':'none';
 
-    /* Timeline */
-    document.getElementById('rBuildTime').textContent=bt+(bt===1?' month':' months');
-    document.getElementById('rROI').textContent=roi?roi+(roi===1?' month':' months'):'N/A';
-
     /* Chart */
     setTimeout(function(){drawTraj(traj);},100);
 
-    /* Team composition */
+    /* Team chips */
     var team=calcTeam(ck,aik,ik,uk);
     var tMin=team.reduce(function(s,r){return s+r.min;},0);
     var tMax=team.reduce(function(s,r){return s+r.max;},0);
-    document.getElementById('rTeamSize').textContent=tMin+'–'+tMax+' people';
+    document.getElementById('rTeamSize').textContent=tMin+'–'+tMax+' total';
     document.getElementById('rTeamGrid').innerHTML=team.map(function(r){
       var ro=TEAM_ROLES[r.key];
-      var cnt=r.min===r.max?r.min+'×':(r.min+' – '+r.max+'×');
-      return'&lt;div class="sc-team-card"&gt;&lt;div class="sc-team-card-icon"&gt;'+ro.icon+'&lt;/div&gt;&lt;div class="sc-team-card-role"&gt;'+ro.label+'&lt;/div&gt;&lt;div class="sc-team-card-count"&gt;'+cnt+'&lt;/div&gt;&lt;div class="sc-team-card-desc"&gt;'+ro.desc+'&lt;/div&gt;&lt;/div&gt;';
+      var cnt=r.min===r.max?r.min+'×':(r.min+'–'+r.max+'×');
+      return'&lt;span class="sc-team-chip"&gt;'+cnt+' '+ro.label.split(' ').slice(0,2).join(' ')+'&lt;/span&gt;';
     }).join('');
 
     /* Insight */
