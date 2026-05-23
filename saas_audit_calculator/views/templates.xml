@@ -162,6 +162,29 @@
                   <div class="sc-prog-fill" id="progFill" style="width:0%"/>
                 </div>
                 <p class="sc-score-verdict" id="rVerdict">&#8212;</p>
+                <div class="sc-score-factors" id="scoreFactors" style="display:none">
+                  <div class="sc-factor-row">
+                    <span class="sc-factor-lbl">Budget Fit</span>
+                    <div class="sc-factor-track"><div class="sc-factor-fill" id="sfBudget" style="background:#1565c0"/></div>
+                    <span class="sc-factor-pts" id="sfBudgetPts">0/40</span>
+                  </div>
+                  <div class="sc-factor-row">
+                    <span class="sc-factor-lbl">Market Opp.</span>
+                    <div class="sc-factor-track"><div class="sc-factor-fill" id="sfMarket" style="background:#2e7d32"/></div>
+                    <span class="sc-factor-pts" id="sfMarketPts">0/30</span>
+                  </div>
+                  <div class="sc-factor-row">
+                    <span class="sc-factor-lbl">Audience</span>
+                    <div class="sc-factor-track"><div class="sc-factor-fill" id="sfAudience" style="background:#6a1b9a"/></div>
+                    <span class="sc-factor-pts" id="sfAudiencePts">0/20</span>
+                  </div>
+                  <div class="sc-factor-row">
+                    <span class="sc-factor-lbl">Timeline</span>
+                    <div class="sc-factor-track"><div class="sc-factor-fill" id="sfUrgency" style="background:#e65100"/></div>
+                    <span class="sc-factor-pts" id="sfUrgencyPts">0/10</span>
+                  </div>
+                  <div class="sc-score-tip" id="rScoreTip"/>
+                </div>
               </div>
 
               <!-- 2. Investment to Build It Right -->
@@ -288,10 +311,10 @@
     non_technical:    {urgency:.75,riskMult:1.10,mktCapture:.50,insight:'Without technical knowledge, the wrong development vendor can burn your entire budget with little to show.',rec:'Start with a discovery and prototype phase before committing to full development. Validate cheaply, then scale with confidence.'},
   };
   var ST={
-    b2b:        {competition:.60,baseMonths:3},
-    b2c:        {competition:.85,baseMonths:5},
-    marketplace:{competition:.78,baseMonths:7},
-    enterprise: {competition:.50,baseMonths:9},
+    b2b:        {competition:.60,baseMonths:5},
+    b2c:        {competition:.85,baseMonths:6},
+    marketplace:{competition:.78,baseMonths:9},
+    enterprise: {competition:.50,baseMonths:14},
   };
   var CMP={
     mvp:       {monthlyMin:8000,  monthlyMax:15000, timeMult:.70},
@@ -324,7 +347,7 @@
   var sel  = function(id){return document.getElementById(id).value;};
 
   function monthlyBuild(ck,uk,tk,aik,ik){var c=CMP[ck],u=USR[uk],t=TL[tk],ai=AI[aik]||AI.no_ai,ind=IND[ik]||IND.general;return{min:Math.round(c.monthlyMin*u.sf*t.cp*ai.cm*ind.cm),max:Math.round(c.monthlyMax*u.sf*t.cp*ai.cm*ind.cm)};}
-  function buildTime(sk,ck,budget,aik,ik){var base=ST[sk].baseMonths;var sp=budget>=100000?.60:budget>=60000?.75:budget>=30000?.90:1.15;var ai=AI[aik]||AI.no_ai,ind=IND[ik]||IND.general;return Math.max(1,Math.round(base*CMP[ck].timeMult*sp*ai.tm*ind.tm));}
+  function buildTime(sk,ck,budget,aik,ik){var base=ST[sk].baseMonths;var sp=budget>=200000?.80:budget>=100000?.90:budget>=50000?1.00:1.25;var ai=AI[aik]||AI.no_ai,ind=IND[ik]||IND.general;return Math.min(36,Math.max(2,Math.round(base*CMP[ck].timeMult*sp*ai.tm*ind.tm)));}
   function oppScore(ak,sk,ck,uk,tk,aik,ik,budget,rev){
     var a=AUD[ak],s=ST[sk],t=TL[tk],mb=monthlyBuild(ck,uk,tk,aik,ik),bt=buildTime(sk,ck,budget,aik,ik);
     var fit=Math.min(budget/Math.max(mb.min*bt,1),1),mkt=1-s.competition,urg=Math.min(t.um/1.5,1);
@@ -450,6 +473,32 @@
     var fill=document.getElementById('progFill');
     fill.style.background=col; setTimeout(function(){fill.style.width=sc+'%';},50);
 
+    /* Score factor breakdown */
+    var minTotal=mb.min*bt;
+    var budgetFit=Math.min(budget/Math.max(minTotal,1),1);
+    var marketFactor=1-ST[sk].competition;
+    var urgencyFactor=Math.min(TL[tk].um/1.5,1);
+    var mktCap=a.mktCapture;
+    document.getElementById('sfBudgetPts').textContent=Math.round(budgetFit*40)+'/40';
+    document.getElementById('sfMarketPts').textContent=Math.round(marketFactor*30)+'/30';
+    document.getElementById('sfAudiencePts').textContent=Math.round(mktCap*20)+'/20';
+    document.getElementById('sfUrgencyPts').textContent=Math.round(urgencyFactor*10)+'/10';
+    setTimeout(function(){
+      document.getElementById('sfBudget').style.width=Math.round(budgetFit*100)+'%';
+      document.getElementById('sfMarket').style.width=Math.round(marketFactor*100)+'%';
+      document.getElementById('sfAudience').style.width=Math.round(mktCap*100)+'%';
+      document.getElementById('sfUrgency').style.width=Math.round(urgencyFactor*100)+'%';
+    },60);
+    var tipPct=Math.round(budgetFit*100);
+    var scoreTipTxt;
+    if(budgetFit&lt;0.40)scoreTipTxt='&#9888;&#65039; Budget covers only '+tipPct+'% of the min build cost ('+fmt(minTotal)+'). Increasing budget or simplifying scope would have the biggest impact on your score.';
+    else if(budgetFit&lt;0.75)scoreTipTxt='&#128161; Budget covers '+tipPct+'% of the estimated build cost — closing this gap would add up to '+Math.round((1-budgetFit)*40)+' more points.';
+    else if(marketFactor&lt;0.25)scoreTipTxt='&#9889; Highly competitive market. Fast execution and strong differentiation are critical to claiming your opportunity window.';
+    else if(urgencyFactor&lt;0.85)scoreTipTxt='&#128197; ASAP timeline carries a 30% cost premium. A 3–6 month plan reduces risk and lifts your score.';
+    else scoreTipTxt='&#9989; Your opportunity is well-balanced. Focus on shipping fast and signing your first paying customers.';
+    document.getElementById('rScoreTip').textContent=scoreTipTxt;
+    document.getElementById('scoreFactors').style.display='block';
+
     /* Cost of doing nothing */
     document.getElementById('rMonthly').textContent=fmt(mo);
     document.getElementById('rLoss6').textContent=fmt(l6);
@@ -490,7 +539,7 @@
     document.getElementById('emptyState').style.display='none';
     document.getElementById('resContent').style.display='block';
 
-    window._audit={ak:ak,sk:sk,ck:ck,uk:uk,tk:tk,aik:aik,ik:ik,rev:rev,budget:budget,sc:sc,mo:mo,l6:l6,l12:l12,mb:mb,tbMin:tbMin,tbMax:tbMax,bt:bt,roi:roi,verd:verd,a:a};
+    window._audit={ak:ak,sk:sk,ck:ck,uk:uk,tk:tk,aik:aik,ik:ik,rev:rev,budget:budget,sc:sc,mo:mo,l6:l6,l12:l12,mb:mb,tbMin:tbMin,tbMax:tbMax,bt:bt,roi:roi,verd:verd,a:a,tMin:tMin,tMax:tMax};
     try{var ls=JSON.parse(localStorage.getItem('saas_audit')||'[]');ls.push({audienceType:ak,saasType:sk,complexity:ck,users:uk,timeline:tk,revenue:rev,budget:budget,ts:new Date().toISOString()});localStorage.setItem('saas_audit',JSON.stringify(ls));}catch(_){}
   });
 
@@ -524,7 +573,7 @@
         opportunityScore:d.sc,monthlyRevLost:d.mo,loss6Months:d.l6,loss12Months:d.l12,
         monthlyBuildMin:d.mb?d.mb.min:0,monthlyBuildMax:d.mb?d.mb.max:0,
         totalBudgetMin:d.tbMin,totalBudgetMax:d.tbMax,
-        buildTimeline:d.bt,roiMonths:d.roi,verdict:d.verd?d.verd.text:'',teamSize:tMin+'–'+tMax+' people',
+        buildTimeline:d.bt,roiMonths:d.roi,verdict:d.verd?d.verd.text:'',teamSize:(d.tMin||0)+'–'+(d.tMax||0)+' people',
       },
       source:'saas_audit_calculator',
     };

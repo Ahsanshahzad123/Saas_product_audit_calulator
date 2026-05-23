@@ -13,10 +13,10 @@ var AUDIENCE_TYPES = {
 
 /* ─── SaaS Type Profiles ────────────────────────────────────────────────── */
 var SAAS_TYPES = {
-  b2b:         { label:'B2B SaaS',          competition:.60, baseMonths:3 },
-  b2c:         { label:'B2C / Consumer',    competition:.85, baseMonths:5 },
-  marketplace: { label:'Marketplace',       competition:.78, baseMonths:7 },
-  enterprise:  { label:'Enterprise',        competition:.50, baseMonths:9 },
+  b2b:         { label:'B2B SaaS',          competition:.60, baseMonths:5  },
+  b2c:         { label:'B2C / Consumer',    competition:.85, baseMonths:6  },
+  marketplace: { label:'Marketplace',       competition:.78, baseMonths:9  },
+  enterprise:  { label:'Enterprise',        competition:.50, baseMonths:14 },
 };
 
 /* ─── Product Complexity ────────────────────────────────────────────────── */
@@ -81,24 +81,49 @@ function calcBuildTimeline(saasKey, complexityKey, budget, aiKey, industryKey) {
   var cMult       = COMPLEXITY[complexityKey].timeMult;
   var ai          = AI_TYPES[aiKey]     || AI_TYPES.no_ai;
   var ind         = INDUSTRIES[industryKey] || INDUSTRIES.general;
-  var speedFactor = budget >= 100000 ? 0.60 : budget >= 60000 ? 0.75 : budget >= 30000 ? 0.90 : 1.15;
-  return Math.max(1, Math.round(base * cMult * speedFactor * ai.timeMult * ind.timeMult));
+  // Budget gives more resources but can't compress timelines linearly — realistic caps
+  var speedFactor = budget >= 200000 ? 0.80 : budget >= 100000 ? 0.90 : budget >= 50000 ? 1.00 : 1.25;
+  return Math.min(36, Math.max(2, Math.round(base * cMult * speedFactor * ai.timeMult * ind.timeMult)));
+}
+
+function calcScoreFactors(audienceKey, saasKey, budget, complexityKey, usersKey, timelineKey, aiKey, industryKey) {
+  var aud = AUDIENCE_TYPES[audienceKey];
+  var st  = SAAS_TYPES[saasKey];
+  var tl  = LAUNCH_TIMELINE[timelineKey];
+  var mbc = calcMonthlyBuildCost(complexityKey, usersKey, timelineKey, aiKey, industryKey);
+  var bt  = calcBuildTimeline(saasKey, complexityKey, budget, aiKey, industryKey);
+  var minTotal      = mbc.min * bt;
+  var budgetFit     = Math.min(budget / Math.max(minTotal, 1), 1);
+  var marketFactor  = 1 - st.competition;
+  var urgencyFactor = Math.min(tl.urgencyMult / 1.5, 1);
+  return {
+    budgetFit:     budgetFit,
+    marketFactor:  marketFactor,
+    mktCapture:    aud.mktCapture,
+    urgencyFactor: urgencyFactor,
+    minBuildCost:  minTotal,
+    pts: {
+      budget:   Math.round(budgetFit     * 40),
+      market:   Math.round(marketFactor  * 30),
+      audience: Math.round(aud.mktCapture* 20),
+      urgency:  Math.round(urgencyFactor * 10),
+    },
+  };
 }
 
 function calcOpportunityScore(audienceKey, saasKey, budget, revenueGoal, complexityKey, usersKey, timelineKey, aiKey, industryKey) {
-  var aud  = AUDIENCE_TYPES[audienceKey];
-  var st   = SAAS_TYPES[saasKey];
-  var tl   = LAUNCH_TIMELINE[timelineKey];
-  var mbc  = calcMonthlyBuildCost(complexityKey, usersKey, timelineKey, aiKey, industryKey);
-  var bt   = calcBuildTimeline(saasKey, complexityKey, budget, aiKey, industryKey);
-
-  var minTotal    = mbc.min * bt;
-  var budgetFit   = Math.min(budget / Math.max(minTotal, 1), 1);
-  var marketFactor  = 1 - st.competition;
-  var urgencyFactor = Math.min(tl.urgencyMult / 1.5, 1);
-
-  var raw = (budgetFit * 40) + (marketFactor * 30) + (aud.mktCapture * 20) + (urgencyFactor * 10);
+  var f = calcScoreFactors(audienceKey, saasKey, budget, complexityKey, usersKey, timelineKey, aiKey, industryKey);
+  var raw = (f.budgetFit*40) + (f.marketFactor*30) + (f.mktCapture*20) + (f.urgencyFactor*10);
   return Math.round(Math.min(99, Math.max(5, raw)));
+}
+
+function scoreTip(f, budget, fmt) {
+  var pct = Math.round(f.budgetFit * 100);
+  if (f.budgetFit < 0.40) return 'Your budget covers only ' + pct + '% of the estimated minimum build cost (' + fmt(f.minBuildCost) + '). Increasing your budget or choosing a simpler product scope would have the biggest impact on your score.';
+  if (f.budgetFit < 0.75) return 'Your budget covers ' + pct + '% of the estimated build cost — closing this gap would add up to ' + Math.round((1 - f.budgetFit) * 40) + ' more points to your score.';
+  if (f.marketFactor < 0.25) return 'You are entering a highly competitive market. Fast execution and strong product differentiation are critical to claiming your opportunity window before competitors do.';
+  if (f.urgencyFactor < 0.85) return 'An ASAP timeline carries a 30% cost premium. A 3–6 month structured plan reduces risk, stretches your budget further and lifts your score.';
+  return 'Your opportunity is well-balanced. Focus on shipping fast and signing your first paying customers.';
 }
 
 function calcMonthlyRevLost(revenueGoal, audienceKey, saasKey, timelineKey) {

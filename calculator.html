@@ -57,19 +57,26 @@ body{font-family:'Segoe UI',-apple-system,BlinkMacSystemFont,'Inter',sans-serif;
 .sc-empty p{font-size:.82rem;line-height:1.65}
 
 .sc-results-body{padding:0}
-.sc-section{padding:14px 18px;border-bottom:1px solid #f0f0f0}
+.sc-section{padding:11px 14px;border-bottom:1px solid #f0f0f0}
 .sc-section:last-child{border-bottom:none}
-.sc-section-title{font-size:.6rem;font-weight:800;text-transform:uppercase;letter-spacing:1.2px;color:#aaa;margin-bottom:10px;display:flex;align-items:center;gap:6px}
+.sc-section-title{font-size:.6rem;font-weight:800;text-transform:uppercase;letter-spacing:1.2px;color:#aaa;margin-bottom:8px;display:flex;align-items:center;gap:6px}
 .sc-section-title span{font-size:.85rem}
 
-.sc-score-section{text-align:center;padding:18px 18px 14px;border-bottom:1px solid #f0f0f0}
+.sc-score-section{text-align:center;padding:16px 16px 12px;border-bottom:1px solid #f0f0f0}
 .sc-score-lbl{font-size:.6rem;font-weight:700;text-transform:uppercase;letter-spacing:1px;color:#aaa;margin-bottom:4px}
 .sc-score-row{display:flex;align-items:baseline;justify-content:center;gap:3px;margin-bottom:8px}
-.sc-score-num{font-size:3.5rem;font-weight:900;line-height:1;color:#1a237e}
-.sc-score-denom{font-size:1.1rem;color:#ccc;font-weight:400}
-.sc-prog-track{width:100%;height:8px;background:#ebebeb;border-radius:4px;overflow:hidden;margin-bottom:6px}
+.sc-score-num{font-size:3.2rem;font-weight:900;line-height:1;color:#1a237e}
+.sc-score-denom{font-size:1rem;color:#ccc;font-weight:400}
+.sc-prog-track{width:100%;height:7px;background:#ebebeb;border-radius:4px;overflow:hidden;margin-bottom:6px}
 .sc-prog-fill{height:100%;border-radius:4px;transition:width 1s cubic-bezier(.4,0,.2,1)}
-.sc-score-verdict{font-size:.76rem;font-weight:700;color:#555}
+.sc-score-verdict{font-size:.74rem;font-weight:700;color:#555}
+.sc-score-factors{margin-top:12px;text-align:left}
+.sc-factor-row{display:flex;align-items:center;gap:8px;margin-bottom:5px}
+.sc-factor-lbl{font-size:.58rem;font-weight:700;color:#888;width:76px;flex-shrink:0;text-transform:uppercase;letter-spacing:.4px}
+.sc-factor-track{flex:1;height:5px;background:#ebebeb;border-radius:3px;overflow:hidden}
+.sc-factor-fill{height:100%;border-radius:3px;width:0%;transition:width .9s cubic-bezier(.4,0,.2,1)}
+.sc-factor-pts{font-size:.6rem;font-weight:800;color:#555;width:34px;text-align:right;flex-shrink:0}
+.sc-score-tip{margin-top:10px;background:#fff8e1;border-left:3px solid #f9a825;border-radius:0 6px 6px 0;padding:8px 10px;font-size:.68rem;color:#5d4037;line-height:1.5;text-align:left}
 
 .sc-monthly-loss-lbl{font-size:.7rem;color:#777;margin-bottom:2px}
 .sc-monthly-loss-amt{font-size:2rem;font-weight:800;color:#e53935;letter-spacing:-.5px;margin-bottom:10px;line-height:1}
@@ -287,6 +294,29 @@ body{font-family:'Segoe UI',-apple-system,BlinkMacSystemFont,'Inter',sans-serif;
         </div>
         <div class="sc-prog-track"><div class="sc-prog-fill" id="progFill" style="width:0%"></div></div>
         <p class="sc-score-verdict" id="rVerdict">—</p>
+        <div class="sc-score-factors" id="scoreFactors" style="display:none">
+          <div class="sc-factor-row">
+            <span class="sc-factor-lbl">Budget Fit</span>
+            <div class="sc-factor-track"><div class="sc-factor-fill" id="sfBudget" style="background:#1565c0"></div></div>
+            <span class="sc-factor-pts" id="sfBudgetPts">0/40</span>
+          </div>
+          <div class="sc-factor-row">
+            <span class="sc-factor-lbl">Market Opp.</span>
+            <div class="sc-factor-track"><div class="sc-factor-fill" id="sfMarket" style="background:#2e7d32"></div></div>
+            <span class="sc-factor-pts" id="sfMarketPts">0/30</span>
+          </div>
+          <div class="sc-factor-row">
+            <span class="sc-factor-lbl">Audience</span>
+            <div class="sc-factor-track"><div class="sc-factor-fill" id="sfAudience" style="background:#6a1b9a"></div></div>
+            <span class="sc-factor-pts" id="sfAudiencePts">0/20</span>
+          </div>
+          <div class="sc-factor-row">
+            <span class="sc-factor-lbl">Timeline</span>
+            <div class="sc-factor-track"><div class="sc-factor-fill" id="sfUrgency" style="background:#e65100"></div></div>
+            <span class="sc-factor-pts" id="sfUrgencyPts">0/10</span>
+          </div>
+          <div class="sc-score-tip" id="rScoreTip"></div>
+        </div>
       </div>
 
       <!-- 2. Investment to Build It Right -->
@@ -410,10 +440,10 @@ var AUDIENCE_TYPES = {
 };
 
 var SAAS_TYPES = {
-  b2b:         { competition:.60, baseMonths:3 },
-  b2c:         { competition:.85, baseMonths:5 },
-  marketplace: { competition:.78, baseMonths:7 },
-  enterprise:  { competition:.50, baseMonths:9 },
+  b2b:         { competition:.60, baseMonths:5  },
+  b2c:         { competition:.85, baseMonths:6  },
+  marketplace: { competition:.78, baseMonths:9  },
+  enterprise:  { competition:.50, baseMonths:14 },
 };
 
 var COMPLEXITY = {
@@ -502,8 +532,8 @@ function calcBuildTimeline(sk, ck, budget, aik, ik) {
   var base = SAAS_TYPES[sk].baseMonths;
   var cMult = COMPLEXITY[ck].timeMult;
   var ai = AI_TYPES[aik] || AI_TYPES.no_ai, ind = INDUSTRIES[ik] || INDUSTRIES.general;
-  var spd = budget >= 100000 ? 0.60 : budget >= 60000 ? 0.75 : budget >= 30000 ? 0.90 : 1.15;
-  return Math.max(1, Math.round(base * cMult * spd * ai.timeMult * ind.timeMult));
+  var speedFactor = budget >= 200000 ? 0.80 : budget >= 100000 ? 0.90 : budget >= 50000 ? 1.00 : 1.25;
+  return Math.min(36, Math.max(2, Math.round(base * cMult * speedFactor * ai.timeMult * ind.timeMult)));
 }
 
 function calcOpportunityScore(ak, sk, budget, rev, ck, uk, tk, aik, ik) {
@@ -651,6 +681,32 @@ document.getElementById('calcBtn').addEventListener('click', function() {
   var col = sc >= 80 ? '#2e7d32' : sc >= 60 ? '#1565c0' : sc >= 40 ? '#f57f17' : '#c62828';
   fill.style.background = col;
   setTimeout(function() { fill.style.width = sc + '%'; }, 50);
+
+  /* Score factor breakdown */
+  var minTotal = mbc.min * bt;
+  var budgetFit = Math.min(budget / Math.max(minTotal, 1), 1);
+  var marketFactor = 1 - SAAS_TYPES[sk].competition;
+  var urgencyFactor = Math.min(LAUNCH_TIMELINE[tk].urgencyMult / 1.5, 1);
+  var mktCapture = aud.mktCapture;
+  document.getElementById('sfBudgetPts').textContent  = Math.round(budgetFit * 40) + '/40';
+  document.getElementById('sfMarketPts').textContent  = Math.round(marketFactor * 30) + '/30';
+  document.getElementById('sfAudiencePts').textContent = Math.round(mktCapture * 20) + '/20';
+  document.getElementById('sfUrgencyPts').textContent = Math.round(urgencyFactor * 10) + '/10';
+  setTimeout(function() {
+    document.getElementById('sfBudget').style.width   = Math.round(budgetFit * 100) + '%';
+    document.getElementById('sfMarket').style.width   = Math.round(marketFactor * 100) + '%';
+    document.getElementById('sfAudience').style.width = Math.round(mktCapture * 100) + '%';
+    document.getElementById('sfUrgency').style.width  = Math.round(urgencyFactor * 100) + '%';
+  }, 60);
+  var tipPct = Math.round(budgetFit * 100);
+  var scoreTipText;
+  if (budgetFit < 0.40) scoreTipText = '⚠️ Budget covers only ' + tipPct + '% of the min build cost (' + fmt(minTotal) + '). Increasing your budget or choosing a simpler scope would have the biggest impact on your score.';
+  else if (budgetFit < 0.75) scoreTipText = '💡 Budget covers ' + tipPct + '% of the estimated build cost — closing this gap would add up to ' + Math.round((1 - budgetFit) * 40) + ' more points.';
+  else if (marketFactor < 0.25) scoreTipText = '⚡ Highly competitive market. Fast execution and strong product differentiation are critical to claiming your opportunity window.';
+  else if (urgencyFactor < 0.85) scoreTipText = '📅 ASAP timeline carries a 30% cost premium. A 3–6 month structured plan reduces risk and lifts your score.';
+  else scoreTipText = '✅ Your opportunity is well-balanced. Focus on shipping fast and signing your first paying customers.';
+  document.getElementById('rScoreTip').textContent = scoreTipText;
+  document.getElementById('scoreFactors').style.display = 'block';
 
   /* Loss */
   document.getElementById('rMonthly').textContent = fmt(mo);

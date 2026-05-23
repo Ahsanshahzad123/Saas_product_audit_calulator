@@ -109,8 +109,17 @@
 .sc-prog-fill   { height:100%; border-radius:4px; transition:width 1s cubic-bezier(.4,0,.2,1); }
 .sc-score-verdict { font-size:.76rem; font-weight:700; color:#555; }
 
+/* ─── Score Factor Breakdown ─────────────────────────────── */
+.sc-score-factors { margin-top:12px; text-align:left; }
+.sc-factor-row { display:flex; align-items:center; gap:8px; margin-bottom:5px; }
+.sc-factor-lbl { font-size:.58rem; font-weight:700; color:#888; width:76px; flex-shrink:0; text-transform:uppercase; letter-spacing:.4px; }
+.sc-factor-track { flex:1; height:5px; background:#ebebeb; border-radius:3px; overflow:hidden; }
+.sc-factor-fill { height:100%; border-radius:3px; width:0%; transition:width .9s cubic-bezier(.4,0,.2,1); }
+.sc-factor-pts { font-size:.6rem; font-weight:800; color:#555; width:34px; text-align:right; flex-shrink:0; }
+.sc-score-tip { margin-top:10px; background:#fff8e1; border-left:3px solid #f9a825; border-radius:0 6px 6px 0; padding:8px 10px; font-size:.68rem; color:#5d4037; line-height:1.5; text-align:left; }
+
 /* ─── Result Sections ────────────────────────────────────── */
-.sc-section { padding:14px 18px; border-bottom:1px solid #f0f0f0; }
+.sc-section { padding:11px 14px; border-bottom:1px solid #f0f0f0; }
 .sc-section:last-child { border-bottom:none; }
 .sc-section-title {
     font-size:.6rem; font-weight:800; text-transform:uppercase;
