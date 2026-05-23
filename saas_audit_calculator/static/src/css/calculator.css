@@ -148,8 +148,9 @@
 .sc-tl-val  { font-size:.95rem; font-weight:800; color:#1a237e; }
 
 /* Chart wrapper — MUST have explicit height for Chart.js */
-.sc-chart-wrap { position:relative; height:80px; width:100%; }
+.sc-chart-wrap { position:relative; height:160px; width:100%; }
 .sc-chart-wrap canvas { position:absolute; top:0; left:0; }
+.sc-chart-note { font-size:.6rem; color:#aaa; margin-top:6px; text-align:center; line-height:1.4; }
 
 /* Insight card */
 .sc-insight-card { background:#e8f0fe; border-left:4px solid #1565c0; border-radius:0 8px 8px 0; padding:12px 14px; display:flex; gap:10px; align-items:flex-start; }

@@ -92,8 +92,9 @@ body{font-family:'Segoe UI',-apple-system,BlinkMacSystemFont,'Inter',sans-serif;
 .sc-tl-lbl{font-size:.58rem;color:#999;text-transform:uppercase;letter-spacing:.5px;margin-bottom:3px}
 .sc-tl-val{font-size:.95rem;font-weight:800;color:#1a237e}
 
-.sc-chart-wrap{position:relative;height:80px;width:100%}
+.sc-chart-wrap{position:relative;height:160px;width:100%}
 .sc-chart-wrap canvas{position:absolute;top:0;left:0}
+.sc-chart-note{font-size:.6rem;color:#aaa;margin-top:6px;text-align:center;line-height:1.4}
 
 .sc-insight-card{background:#e8f0fe;border-left:4px solid #1565c0;border-radius:0 8px 8px 0;padding:12px 14px;display:flex;gap:10px;align-items:flex-start}
 .sc-insight-icon{font-size:1rem;flex-shrink:0;margin-top:1px}
@@ -243,7 +244,7 @@ body{font-family:'Segoe UI',-apple-system,BlinkMacSystemFont,'Inter',sans-serif;
 
     <div class="sc-results-body" id="resContent" style="display:none">
 
-      <!-- Score -->
+      <!-- 1. Score -->
       <div class="sc-score-section">
         <p class="sc-score-lbl">Opportunity Score</p>
         <div class="sc-score-row">
@@ -254,24 +255,7 @@ body{font-family:'Segoe UI',-apple-system,BlinkMacSystemFont,'Inter',sans-serif;
         <p class="sc-score-verdict" id="rVerdict">—</p>
       </div>
 
-      <!-- Cost of doing nothing -->
-      <div class="sc-section">
-        <div class="sc-section-title"><span>⚠️</span> Cost of Doing Nothing</div>
-        <p class="sc-monthly-loss-lbl">Revenue lost per month of delay</p>
-        <div class="sc-monthly-loss-amt" id="rMonthly">$0</div>
-        <div class="sc-loss-grid">
-          <div class="sc-loss-card">
-            <div class="sc-loss-period">6-Month Delay</div>
-            <div class="sc-loss-amount" id="rLoss6">$0</div>
-          </div>
-          <div class="sc-loss-card crit">
-            <div class="sc-loss-period">12-Month Delay</div>
-            <div class="sc-loss-amount" id="rLoss12">$0</div>
-          </div>
-        </div>
-      </div>
-
-      <!-- Investment to build it right -->
+      <!-- 2. Investment to Build It Right -->
       <div class="sc-section">
         <div class="sc-section-title"><span>💰</span> Investment to Build It Right</div>
         <p class="sc-build-lbl">Estimated monthly development cost</p>
@@ -283,7 +267,7 @@ body{font-family:'Segoe UI',-apple-system,BlinkMacSystemFont,'Inter',sans-serif;
         </div>
       </div>
 
-      <!-- Timeline & ROI -->
+      <!-- 3. Timeline & ROI -->
       <div class="sc-section">
         <div class="sc-section-title"><span>⏱️</span> Timeline &amp; ROI</div>
         <div class="sc-timeline-grid">
@@ -294,21 +278,39 @@ body{font-family:'Segoe UI',-apple-system,BlinkMacSystemFont,'Inter',sans-serif;
           </div>
           <div class="sc-tl-card">
             <div class="sc-tl-icon">📈</div>
-            <div class="sc-tl-lbl">Break-even In</div>
+            <div class="sc-tl-lbl">Break-even If You Start Today</div>
             <div class="sc-tl-val" id="rROI">—</div>
           </div>
         </div>
       </div>
 
-      <!-- Chart -->
+      <!-- 4. Revenue at Risk -->
       <div class="sc-section">
-        <div class="sc-section-title"><span>📊</span> Cumulative Cost of Delay</div>
-        <div class="sc-chart-wrap">
-          <canvas id="trajChart"></canvas>
+        <div class="sc-section-title"><span>🔥</span> Revenue at Risk — Every Month Counts</div>
+        <p class="sc-monthly-loss-lbl">Revenue you stop losing the day you launch</p>
+        <div class="sc-monthly-loss-amt" id="rMonthly">$0</div>
+        <div class="sc-loss-grid">
+          <div class="sc-loss-card">
+            <div class="sc-loss-period">Wait 6 More Months</div>
+            <div class="sc-loss-amount" id="rLoss6">$0</div>
+          </div>
+          <div class="sc-loss-card crit">
+            <div class="sc-loss-period">Wait 12 More Months</div>
+            <div class="sc-loss-amount" id="rLoss12">$0</div>
+          </div>
         </div>
       </div>
 
-      <!-- Insight -->
+      <!-- 5. Chart — Cumulative cost of delay with axes -->
+      <div class="sc-section">
+        <div class="sc-section-title"><span>📊</span> Total Revenue Lost vs. Months of Delay</div>
+        <div class="sc-chart-wrap">
+          <canvas id="trajChart"></canvas>
+        </div>
+        <p class="sc-chart-note">The red line shows total compounding revenue opportunity lost the longer you wait to launch. Hover for exact values.</p>
+      </div>
+
+      <!-- 6. Insight -->
       <div class="sc-section">
         <div class="sc-insight-card">
           <span class="sc-insight-icon">💡</span>
@@ -452,24 +454,64 @@ function verdictLabel(score) {
 
 /* ── Chart ── */
 var trajChart = null;
+function fmtAxis(v) {
+  if (v >= 1000000) return '$' + (v / 1000000).toFixed(1) + 'M';
+  if (v >= 1000)    return '$' + (v / 1000).toFixed(0) + 'K';
+  return '$' + v;
+}
 function drawTraj(data) {
   var ctx = document.getElementById('trajChart').getContext('2d');
   if (trajChart) trajChart.destroy();
   trajChart = new Chart(ctx, {
     type: 'line',
     data: {
-      labels: data.map(function(_, i) { return i === 0 ? 'Now' : i + 'mo'; }),
+      labels: data.map(function(_, i) { return i === 0 ? 'Now' : i + ' mo'; }),
       datasets: [{
+        label: 'Revenue Lost',
         data: data,
         borderColor: '#e53935',
-        backgroundColor: 'rgba(229,57,53,.08)',
-        borderWidth: 2, pointRadius: 0, fill: true, tension: .4,
+        backgroundColor: 'rgba(229,57,53,.07)',
+        borderWidth: 2.5,
+        pointRadius: data.map(function(_, i) { return i % 3 === 0 ? 3 : 0; }),
+        pointBackgroundColor: '#e53935',
+        fill: true,
+        tension: .4,
       }]
     },
     options: {
-      responsive: true, maintainAspectRatio: false,
-      plugins: { legend: { display: false }, tooltip: { enabled: false } },
-      scales: { x: { display: false }, y: { display: false } },
+      responsive: true,
+      maintainAspectRatio: false,
+      plugins: {
+        legend: { display: false },
+        tooltip: {
+          enabled: true,
+          callbacks: {
+            title: function(items) { return 'Delay: ' + items[0].label; },
+            label: function(item) { return '  Revenue lost: ' + fmt(item.raw); },
+          },
+          backgroundColor: '#1a237e',
+          titleColor: '#fff',
+          bodyColor: '#fff',
+          padding: 8,
+          cornerRadius: 6,
+        },
+      },
+      scales: {
+        x: {
+          display: true,
+          title: { display: true, text: 'Months of delay', font: { size: 9 }, color: '#999' },
+          ticks: { font: { size: 9 }, color: '#aaa', maxTicksLimit: 7 },
+          grid: { display: false },
+          border: { color: '#e8e8e8' },
+        },
+        y: {
+          display: true,
+          title: { display: true, text: 'Cumulative revenue lost', font: { size: 9 }, color: '#999' },
+          ticks: { font: { size: 9 }, color: '#aaa', callback: fmtAxis, maxTicksLimit: 5 },
+          grid: { color: 'rgba(0,0,0,.05)' },
+          border: { color: '#e8e8e8' },
+        },
+      },
       animation: { duration: 800 },
     }
   });
