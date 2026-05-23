@@ -6,21 +6,21 @@
     <field name="name">saas.audit.lead.list</field>
     <field name="model">saas.audit.lead</field>
     <field name="arch" type="xml">
-      <list string="Audit Leads" decoration-danger="risk_level == 'Critical'"
-            decoration-warning="risk_level == 'High'"
-            decoration-success="risk_level == 'Low'">
+      <list string="Audit Leads"
+            decoration-success="opportunity_score &gt;= 60"
+            decoration-warning="opportunity_score &gt;= 40 and opportunity_score &lt; 60"
+            decoration-danger="opportunity_score &lt; 40">
         <field name="create_date" string="Submitted"/>
         <field name="name"/>
         <field name="email"/>
         <field name="company"/>
-        <field name="startup_stage"/>
-        <field name="architecture"/>
-        <field name="team_total" string="Team Size"/>
-        <field name="monthly_burn" widget="monetary" string="Burn/Mo"/>
-        <field name="health_score"/>
-        <field name="efficiency_grade" string="Grade"/>
-        <field name="risk_level"/>
-        <field name="monthly_cod" widget="monetary" string="Cost of Delay/Mo"/>
+        <field name="audience_type" string="Audience"/>
+        <field name="saas_type" string="Product Type"/>
+        <field name="annual_revenue_goal" widget="monetary" string="Revenue Goal/Yr"/>
+        <field name="available_budget" widget="monetary" string="Budget"/>
+        <field name="opportunity_score" string="Opp. Score"/>
+        <field name="verdict" string="Verdict"/>
+        <field name="loss_12_months" widget="monetary" string="12-Mo Loss Risk"/>
         <field name="state"
                widget="badge"
                decoration-info="state == 'new'"
@@ -53,7 +53,6 @@
         <sheet>
           <div class="oe_button_box" name="button_box"/>
           <group>
-            <!-- Contact info -->
             <group string="Contact Information">
               <field name="name"/>
               <field name="email" widget="email"/>
@@ -62,48 +61,29 @@
               <field name="role"/>
               <field name="website_url" widget="url"/>
             </group>
-            <!-- Audit scores -->
-            <group string="Audit Results">
-              <field name="health_score"/>
-              <field name="efficiency_grade"/>
-              <field name="risk_level"/>
-              <field name="monthly_cod" widget="monetary"/>
-              <field name="annual_cod" widget="monetary"/>
-              <field name="benchmark_percentile" string="Benchmark Percentile (%)"/>
+            <group string="Opportunity Audit Results">
+              <field name="opportunity_score"/>
+              <field name="verdict"/>
+              <field name="monthly_rev_lost" widget="monetary" string="Monthly Revenue at Risk"/>
+              <field name="loss_6_months" widget="monetary"/>
+              <field name="loss_12_months" widget="monetary"/>
             </group>
           </group>
           <group>
-            <!-- Calculator inputs -->
-            <group string="Calculator Inputs">
-              <field name="startup_stage"/>
-              <field name="architecture"/>
-              <field name="monthly_burn" widget="monetary"/>
-              <field name="monthly_revenue" widget="monetary"/>
+            <group string="Audit Inputs">
+              <field name="audience_type"/>
+              <field name="saas_type"/>
+              <field name="annual_revenue_goal" widget="monetary"/>
+              <field name="available_budget" widget="monetary"/>
             </group>
-            <!-- Financial breakdown -->
-            <group string="Financial Breakdown">
-              <field name="burn_inefficiency" widget="monetary"/>
-              <field name="delay_cost" widget="monetary"/>
-              <field name="lost_opportunity" widget="monetary"/>
-              <field name="refactor_cost" widget="monetary"/>
-              <field name="security_risk_cost" widget="monetary"/>
-              <field name="valuation_at_risk" widget="monetary"/>
+            <group string="Recommendations">
+              <field name="budget_rec_min" widget="monetary" string="Recommended Budget — Min"/>
+              <field name="budget_rec_max" widget="monetary" string="Recommended Budget — Max"/>
+              <field name="roi_months" string="Break-even (months)"/>
+              <field name="build_timeline" string="Estimated Build Time (months)"/>
             </group>
           </group>
-          <group string="Team Breakdown">
-            <group>
-              <field name="team_pm" string="Project Managers"/>
-              <field name="team_ux" string="UX/UI Designers"/>
-              <field name="team_eng" string="Software Engineers"/>
-            </group>
-            <group>
-              <field name="team_qa" string="QA Engineers"/>
-              <field name="team_devops" string="DevOps Engineers"/>
-              <field name="team_support" string="Support Engineers"/>
-              <field name="team_total" string="Total Team" readonly="1"/>
-            </group>
-          </group>
-          <group string="Lead Details">
+          <group string="Lead Notes">
             <field name="challenge" colspan="2"/>
             <field name="notes" colspan="2"/>
             <field name="source"/>
@@ -130,14 +110,14 @@
         <filter string="Qualified" name="qualified" domain="[('state','=','qualified')]"/>
         <filter string="Converted" name="converted" domain="[('state','=','converted')]"/>
         <separator/>
-        <filter string="Critical Risk" name="critical" domain="[('risk_level','=','Critical')]"/>
-        <filter string="High Risk"     name="high"     domain="[('risk_level','=','High')]"/>
+        <filter string="Strong Opportunity" name="strong" domain="[('opportunity_score','&gt;=',80)]"/>
+        <filter string="Good Opportunity"   name="good"   domain="[('opportunity_score','&gt;=',60),('opportunity_score','&lt;',80)]"/>
         <separator/>
         <group expand="0" string="Group By">
-          <filter string="Stage"    name="by_stage"  context="{'group_by':'startup_stage'}"/>
-          <filter string="Risk"     name="by_risk"   context="{'group_by':'risk_level'}"/>
-          <filter string="Status"   name="by_state"  context="{'group_by':'state'}"/>
-          <filter string="Month"    name="by_month"  context="{'group_by':'create_date:month'}"/>
+          <filter string="Audience Type" name="by_audience" context="{'group_by':'audience_type'}"/>
+          <filter string="SaaS Type"     name="by_saas"     context="{'group_by':'saas_type'}"/>
+          <filter string="Status"        name="by_state"    context="{'group_by':'state'}"/>
+          <filter string="Month"         name="by_month"    context="{'group_by':'create_date:month'}"/>
         </group>
       </search>
     </field>
@@ -149,11 +129,11 @@
     <field name="model">saas.audit.lead</field>
     <field name="arch" type="xml">
       <pivot string="Audit Leads Analysis">
-        <field name="startup_stage"  type="row"/>
-        <field name="risk_level"     type="col"/>
-        <field name="monthly_cod"    type="measure"/>
-        <field name="annual_cod"     type="measure"/>
-        <field name="health_score"   type="measure"/>
+        <field name="audience_type"  type="row"/>
+        <field name="saas_type"      type="col"/>
+        <field name="loss_12_months" type="measure"/>
+        <field name="available_budget" type="measure"/>
+        <field name="opportunity_score" type="measure"/>
       </pivot>
     </field>
   </record>
