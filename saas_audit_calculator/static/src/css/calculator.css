@@ -131,9 +131,11 @@
 .sc-loss-amount         { font-size:1.15rem; font-weight:800; color:#c62828; }
 
 /* Monthly build cost — big blue */
-.sc-build-lbl  { font-size:.68rem; color:#777; margin-bottom:3px; }
-.sc-build-amt  { font-size:1.5rem; font-weight:800; color:#1565c0; margin-bottom:2px; line-height:1.1; }
-.sc-build-sub  { font-size:.62rem; color:#aaa; margin-bottom:10px; }
+.sc-build-lbl   { font-size:.68rem; color:#777; margin-bottom:3px; }
+.sc-build-amt   { font-size:1.5rem; font-weight:800; color:#1565c0; margin-bottom:2px; line-height:1.1; }
+.sc-build-sub   { font-size:.62rem; color:#aaa; margin-bottom:6px; }
+.sc-build-notes { margin-bottom:10px; }
+.sc-build-note  { display:block; font-size:.62rem; color:#e65100; line-height:1.6; }
 
 /* Total budget bar */
 .sc-budget-row { background:#f0f4ff; border-radius:8px; padding:10px 12px; display:flex; justify-content:space-between; align-items:center; }

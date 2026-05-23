@@ -76,6 +76,8 @@
               <field name="product_complexity"/>
               <field name="target_users"/>
               <field name="launch_timeline"/>
+              <field name="ai_type"/>
+              <field name="industry"/>
               <field name="annual_revenue_goal" widget="monetary"/>
               <field name="available_budget" widget="monetary"/>
             </group>

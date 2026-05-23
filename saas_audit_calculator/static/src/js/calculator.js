@@ -43,40 +43,58 @@ var LAUNCH_TIMELINE = {
   long:   { label:'12+ months',        urgencyMult:0.80, costPremium:0.90 },
 };
 
+/* ─── AI / Technology Type ──────────────────────────────────────────────── */
+var AI_TYPES = {
+  no_ai:     { label:'No AI features',              costMult:1.00, timeMult:1.00, note:'' },
+  ai_api:    { label:'AI via API (OpenAI, Claude…)', costMult:1.20, timeMult:1.15, note:'AI API integration adds prompt engineering, reliability handling and ongoing API cost.' },
+  ai_custom: { label:'Custom ML model',              costMult:1.65, timeMult:1.50, note:'Custom ML requires data pipelines, model training, evaluation and MLOps infrastructure.' },
+  ai_core:   { label:'AI-powered core product',      costMult:2.00, timeMult:1.80, note:'AI-first products need significant R&D, data engineering and specialist AI/ML talent.' },
+};
+
+/* ─── Industry / Compliance ─────────────────────────────────────────────── */
+var INDUSTRIES = {
+  general:    { label:'General / Other',               costMult:1.00, timeMult:1.00, note:'' },
+  ecommerce:  { label:'E-commerce / Retail',           costMult:1.05, timeMult:1.05, note:'' },
+  hr_ops:     { label:'HR / Operations',               costMult:1.10, timeMult:1.08, note:'' },
+  education:  { label:'Education / EdTech',            costMult:1.10, timeMult:1.08, note:'' },
+  legal:      { label:'Legal / LegalTech',             costMult:1.30, timeMult:1.25, note:'Legal domain complexity and data sensitivity add meaningful scope to development.' },
+  healthcare: { label:'Healthcare / MedTech (HIPAA)',  costMult:1.50, timeMult:1.45, note:'HIPAA compliance, audit trails and security certification add 45% to cost and timeline.' },
+  fintech:    { label:'Finance / Fintech (PCI, SOC 2)',costMult:1.55, timeMult:1.50, note:'Financial regulation (PCI DSS, SOC 2) requires security audits and penetration testing.' },
+};
+
 /* ─── Core Calculations ─────────────────────────────────────────────────── */
 
-function calcMonthlyBuildCost(complexityKey, usersKey, timelineKey) {
+function calcMonthlyBuildCost(complexityKey, usersKey, timelineKey, aiKey, industryKey) {
   var cmp = COMPLEXITY[complexityKey];
   var usr = TARGET_USERS[usersKey];
   var tl  = LAUNCH_TIMELINE[timelineKey];
+  var ai  = AI_TYPES[aiKey]     || AI_TYPES.no_ai;
+  var ind = INDUSTRIES[industryKey] || INDUSTRIES.general;
   return {
-    min: Math.round(cmp.monthlyMin * usr.scaleFactor * tl.costPremium),
-    max: Math.round(cmp.monthlyMax * usr.scaleFactor * tl.costPremium),
+    min: Math.round(cmp.monthlyMin * usr.scaleFactor * tl.costPremium * ai.costMult * ind.costMult),
+    max: Math.round(cmp.monthlyMax * usr.scaleFactor * tl.costPremium * ai.costMult * ind.costMult),
   };
 }
 
-function calcBuildTimeline(saasKey, complexityKey, budget) {
-  var base  = SAAS_TYPES[saasKey].baseMonths;
-  var cMult = COMPLEXITY[complexityKey].timeMult;
+function calcBuildTimeline(saasKey, complexityKey, budget, aiKey, industryKey) {
+  var base        = SAAS_TYPES[saasKey].baseMonths;
+  var cMult       = COMPLEXITY[complexityKey].timeMult;
+  var ai          = AI_TYPES[aiKey]     || AI_TYPES.no_ai;
+  var ind         = INDUSTRIES[industryKey] || INDUSTRIES.general;
   var speedFactor = budget >= 100000 ? 0.60 : budget >= 60000 ? 0.75 : budget >= 30000 ? 0.90 : 1.15;
-  return Math.max(1, Math.round(base * cMult * speedFactor));
+  return Math.max(1, Math.round(base * cMult * speedFactor * ai.timeMult * ind.timeMult));
 }
 
-function calcOpportunityScore(audienceKey, saasKey, budget, revenueGoal, complexityKey, usersKey, timelineKey) {
+function calcOpportunityScore(audienceKey, saasKey, budget, revenueGoal, complexityKey, usersKey, timelineKey, aiKey, industryKey) {
   var aud  = AUDIENCE_TYPES[audienceKey];
   var st   = SAAS_TYPES[saasKey];
   var tl   = LAUNCH_TIMELINE[timelineKey];
-  var mbc  = calcMonthlyBuildCost(complexityKey, usersKey, timelineKey);
-  var bt   = calcBuildTimeline(saasKey, complexityKey, budget);
+  var mbc  = calcMonthlyBuildCost(complexityKey, usersKey, timelineKey, aiKey, industryKey);
+  var bt   = calcBuildTimeline(saasKey, complexityKey, budget, aiKey, industryKey);
 
-  // Budget adequacy vs minimum realistic build cost
-  var minTotal   = mbc.min * bt;
-  var budgetFit  = Math.min(budget / Math.max(minTotal, 1), 1);
-
-  // Market opportunity (lower competition = better window)
-  var marketFactor = 1 - st.competition;
-
-  // Timeline urgency (shorter = higher opportunity risk)
+  var minTotal    = mbc.min * bt;
+  var budgetFit   = Math.min(budget / Math.max(minTotal, 1), 1);
+  var marketFactor  = 1 - st.competition;
   var urgencyFactor = Math.min(tl.urgencyMult / 1.5, 1);
 
   var raw = (budgetFit * 40) + (marketFactor * 30) + (aud.mktCapture * 20) + (urgencyFactor * 10);
@@ -103,20 +121,29 @@ function calcROI(monthlyBuildCostMax, buildMonths, revenueGoal) {
 }
 
 function verdictLabel(score) {
-  if (score >= 80) return { text:'Strong Opportunity',                   cls:'opp-strong'     };
-  if (score >= 60) return { text:'Good Opportunity',                     cls:'opp-good'       };
-  if (score >= 40) return { text:'Moderate — Act Strategically',         cls:'opp-moderate'   };
-  if (score >= 20) return { text:'Challenging — Plan Carefully',         cls:'opp-challenging'};
-  return               { text:'High Risk — Seek Expert Guidance',    cls:'opp-risky'      };
+  if (score >= 80) return { text:'Strong Opportunity',             cls:'opp-strong'     };
+  if (score >= 60) return { text:'Good Opportunity',               cls:'opp-good'       };
+  if (score >= 40) return { text:'Moderate — Act Strategically',   cls:'opp-moderate'   };
+  if (score >= 20) return { text:'Challenging — Plan Carefully',   cls:'opp-challenging'};
+  return               { text:'High Risk — Seek Expert Guidance',  cls:'opp-risky'      };
+}
+
+function buildComplexityNotes(aiKey, industryKey) {
+  var notes = [];
+  var ai  = AI_TYPES[aiKey]     || AI_TYPES.no_ai;
+  var ind = INDUSTRIES[industryKey] || INDUSTRIES.general;
+  if (ai.note)  notes.push(ai.note);
+  if (ind.note) notes.push(ind.note);
+  return notes;
 }
 
 /* ─── Master Run ────────────────────────────────────────────────────────── */
 function runAudit(data) {
   var aud = AUDIENCE_TYPES[data.audienceType];
 
-  var monthlyBuildCost = calcMonthlyBuildCost(data.complexityKey, data.usersKey, data.timelineKey);
-  var buildTimeline    = calcBuildTimeline(data.saasKey, data.complexityKey, data.budget);
-  var opportunityScore = calcOpportunityScore(data.audienceType, data.saasKey, data.budget, data.revenueGoal, data.complexityKey, data.usersKey, data.timelineKey);
+  var monthlyBuildCost = calcMonthlyBuildCost(data.complexityKey, data.usersKey, data.timelineKey, data.aiKey, data.industryKey);
+  var buildTimeline    = calcBuildTimeline(data.saasKey, data.complexityKey, data.budget, data.aiKey, data.industryKey);
+  var opportunityScore = calcOpportunityScore(data.audienceType, data.saasKey, data.budget, data.revenueGoal, data.complexityKey, data.usersKey, data.timelineKey, data.aiKey, data.industryKey);
   var monthlyRevLost   = calcMonthlyRevLost(data.revenueGoal, data.audienceType, data.saasKey, data.timelineKey);
   var loss6Months      = calcDelayLoss(monthlyRevLost, 6,  aud.riskMult);
   var loss12Months     = calcDelayLoss(monthlyRevLost, 12, aud.riskMult);
@@ -124,6 +151,7 @@ function runAudit(data) {
   var totalBudgetMin   = monthlyBuildCost.min * buildTimeline;
   var totalBudgetMax   = monthlyBuildCost.max * buildTimeline;
   var verdict          = verdictLabel(opportunityScore);
+  var complexityNotes  = buildComplexityNotes(data.aiKey, data.industryKey);
   var trajectory       = [];
   for (var i = 0; i <= 12; i++) trajectory.push(i === 0 ? 0 : calcDelayLoss(monthlyRevLost, i, aud.riskMult));
 
@@ -140,10 +168,11 @@ function runAudit(data) {
     verdict:           verdict,
     trajectory:        trajectory,
     insight:           aud.insight,
-    recommendation:    aud.recommendation,
+    recommendation:    aud.rec,
+    complexityNotes:   complexityNotes,
   };
 }
 
 if (typeof module !== 'undefined' && module.exports) {
-  module.exports = { runAudit:runAudit, AUDIENCE_TYPES:AUDIENCE_TYPES, SAAS_TYPES:SAAS_TYPES, COMPLEXITY:COMPLEXITY, TARGET_USERS:TARGET_USERS, LAUNCH_TIMELINE:LAUNCH_TIMELINE };
+  module.exports = { runAudit:runAudit, AUDIENCE_TYPES:AUDIENCE_TYPES, SAAS_TYPES:SAAS_TYPES, COMPLEXITY:COMPLEXITY, TARGET_USERS:TARGET_USERS, LAUNCH_TIMELINE:LAUNCH_TIMELINE, AI_TYPES:AI_TYPES, INDUSTRIES:INDUSTRIES };
 }

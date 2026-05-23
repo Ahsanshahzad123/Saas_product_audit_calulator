@@ -37,6 +37,8 @@ class SaasAuditController(http.Controller):
             'product_complexity':  body.get('complexityKey', ''),
             'target_users':        body.get('usersKey', ''),
             'launch_timeline':     body.get('timelineKey', ''),
+            'ai_type':             body.get('aiKey', ''),
+            'industry':            body.get('industryKey', ''),
             'annual_revenue_goal': float(body.get('revenueGoal', 0) or 0),
             'available_budget':    float(body.get('budget', 0) or 0),
             # Results

@@ -58,6 +58,23 @@ class SaasAuditLead(models.Model):
         ('long',   '12+ months'),
     ], string='Desired Launch Timeline')
 
+    ai_type = fields.Selection([
+        ('no_ai',     'No AI features'),
+        ('ai_api',    'AI via API (OpenAI, Claude…)'),
+        ('ai_custom', 'Custom ML model'),
+        ('ai_core',   'AI-powered core product'),
+    ], string='AI / Technology Type')
+
+    industry = fields.Selection([
+        ('general',    'General / Other'),
+        ('ecommerce',  'E-commerce / Retail'),
+        ('hr_ops',     'HR / Operations'),
+        ('education',  'Education / EdTech'),
+        ('legal',      'Legal / LegalTech'),
+        ('healthcare', 'Healthcare / MedTech (HIPAA)'),
+        ('fintech',    'Finance / Fintech (PCI, SOC 2)'),
+    ], string='Industry / Compliance')
+
     # ── Audit Results ──────────────────────────────────────────────────────
     opportunity_score      = fields.Integer('Opportunity Score (0–100)')
     monthly_rev_lost       = fields.Float('Monthly Revenue at Risk ($)',       digits=(16, 2))

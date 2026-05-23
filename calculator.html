@@ -81,7 +81,9 @@ body{font-family:'Segoe UI',-apple-system,BlinkMacSystemFont,'Inter',sans-serif;
 
 .sc-build-lbl{font-size:.68rem;color:#777;margin-bottom:3px}
 .sc-build-amt{font-size:1.5rem;font-weight:800;color:#1565c0;margin-bottom:2px;line-height:1.1}
-.sc-build-sub{font-size:.62rem;color:#aaa;margin-bottom:10px}
+.sc-build-sub{font-size:.62rem;color:#aaa;margin-bottom:6px}
+.sc-build-notes{margin-bottom:10px}
+.sc-build-note{display:block;font-size:.62rem;color:#e65100;line-height:1.5;padding:3px 0}
 .sc-budget-row{background:#f0f4ff;border-radius:8px;padding:10px 12px;display:flex;justify-content:space-between;align-items:center}
 .sc-budget-lbl{font-size:.65rem;color:#555}
 .sc-budget-val{font-size:.85rem;font-weight:700;color:#1a237e}
@@ -198,6 +200,30 @@ body{font-family:'Segoe UI',-apple-system,BlinkMacSystemFont,'Inter',sans-serif;
       </div>
     </div>
 
+    <div class="sc-row">
+      <div class="sc-field">
+        <label>AI / Technology Component</label>
+        <select id="fAI">
+          <option value="no_ai">No AI features</option>
+          <option value="ai_api">AI via API (OpenAI, Claude…)</option>
+          <option value="ai_custom">Custom ML model</option>
+          <option value="ai_core">AI-powered core product</option>
+        </select>
+      </div>
+      <div class="sc-field">
+        <label>Industry / Compliance</label>
+        <select id="fIndustry">
+          <option value="general">General / Other</option>
+          <option value="ecommerce">E-commerce / Retail</option>
+          <option value="hr_ops">HR / Operations</option>
+          <option value="education">Education / EdTech</option>
+          <option value="legal">Legal / LegalTech</option>
+          <option value="healthcare">Healthcare / MedTech (HIPAA)</option>
+          <option value="fintech">Finance / Fintech (PCI, SOC 2)</option>
+        </select>
+      </div>
+    </div>
+
     <div class="sc-form-sep">Financial Details</div>
 
     <div class="sc-row">
@@ -260,7 +286,8 @@ body{font-family:'Segoe UI',-apple-system,BlinkMacSystemFont,'Inter',sans-serif;
         <div class="sc-section-title"><span>💰</span> Investment to Build It Right</div>
         <p class="sc-build-lbl">Estimated monthly development cost</p>
         <div class="sc-build-amt" id="rMonthlyBuild">$0 – $0 /month</div>
-        <p class="sc-build-sub">Based on your complexity, user scale &amp; timeline</p>
+        <p class="sc-build-sub">Based on complexity, user scale, timeline, AI &amp; industry</p>
+        <div id="rBuildNotes" class="sc-build-notes" style="display:none"></div>
         <div class="sc-budget-row">
           <span class="sc-budget-lbl">Total Project Budget Estimate</span>
           <span class="sc-budget-val" id="rTotalBudget">—</span>
@@ -395,6 +422,23 @@ var LAUNCH_TIMELINE = {
   long:   { urgencyMult:0.80, costPremium:0.90 },
 };
 
+var AI_TYPES = {
+  no_ai:     { costMult:1.00, timeMult:1.00, note:'' },
+  ai_api:    { costMult:1.20, timeMult:1.15, note:'AI API integration adds prompt engineering, reliability handling and ongoing API cost.' },
+  ai_custom: { costMult:1.65, timeMult:1.50, note:'Custom ML requires data pipelines, model training, evaluation and MLOps infrastructure.' },
+  ai_core:   { costMult:2.00, timeMult:1.80, note:'AI-first products need significant R&D, data engineering and specialist AI/ML talent.' },
+};
+
+var INDUSTRIES = {
+  general:    { costMult:1.00, timeMult:1.00, note:'' },
+  ecommerce:  { costMult:1.05, timeMult:1.05, note:'' },
+  hr_ops:     { costMult:1.10, timeMult:1.08, note:'' },
+  education:  { costMult:1.10, timeMult:1.08, note:'' },
+  legal:      { costMult:1.30, timeMult:1.25, note:'Legal domain complexity and data sensitivity add meaningful scope.' },
+  healthcare: { costMult:1.50, timeMult:1.45, note:'HIPAA compliance, audit trails and security certification add ~45% to cost and timeline.' },
+  fintech:    { costMult:1.55, timeMult:1.50, note:'PCI DSS and SOC 2 require security audits, penetration testing and compliance work.' },
+};
+
 /* ── Helpers ── */
 function fmt(n) { return '$' + Math.round(n).toLocaleString(); }
 function fmtK(n) { var v = Math.round(n); return v >= 1000 ? '$' + (v / 1000).toFixed(0) + 'K' : fmt(v); }
@@ -402,25 +446,27 @@ function sel(id) { return document.getElementById(id).value; }
 function flt(id) { return parseFloat(document.getElementById(id).value) || 0; }
 
 /* ── Calculation functions ── */
-function calcMonthlyBuildCost(ck, uk, tk) {
+function calcMonthlyBuildCost(ck, uk, tk, aik, ik) {
   var cmp = COMPLEXITY[ck], usr = TARGET_USERS[uk], tl = LAUNCH_TIMELINE[tk];
+  var ai = AI_TYPES[aik] || AI_TYPES.no_ai, ind = INDUSTRIES[ik] || INDUSTRIES.general;
   return {
-    min: Math.round(cmp.monthlyMin * usr.scaleFactor * tl.costPremium),
-    max: Math.round(cmp.monthlyMax * usr.scaleFactor * tl.costPremium),
+    min: Math.round(cmp.monthlyMin * usr.scaleFactor * tl.costPremium * ai.costMult * ind.costMult),
+    max: Math.round(cmp.monthlyMax * usr.scaleFactor * tl.costPremium * ai.costMult * ind.costMult),
   };
 }
 
-function calcBuildTimeline(sk, ck, budget) {
+function calcBuildTimeline(sk, ck, budget, aik, ik) {
   var base = SAAS_TYPES[sk].baseMonths;
   var cMult = COMPLEXITY[ck].timeMult;
+  var ai = AI_TYPES[aik] || AI_TYPES.no_ai, ind = INDUSTRIES[ik] || INDUSTRIES.general;
   var spd = budget >= 100000 ? 0.60 : budget >= 60000 ? 0.75 : budget >= 30000 ? 0.90 : 1.15;
-  return Math.max(1, Math.round(base * cMult * spd));
+  return Math.max(1, Math.round(base * cMult * spd * ai.timeMult * ind.timeMult));
 }
 
-function calcOpportunityScore(ak, sk, budget, rev, ck, uk, tk) {
+function calcOpportunityScore(ak, sk, budget, rev, ck, uk, tk, aik, ik) {
   var aud = AUDIENCE_TYPES[ak], st = SAAS_TYPES[sk], tl = LAUNCH_TIMELINE[tk];
-  var mbc = calcMonthlyBuildCost(ck, uk, tk);
-  var bt = calcBuildTimeline(sk, ck, budget);
+  var mbc = calcMonthlyBuildCost(ck, uk, tk, aik, ik);
+  var bt = calcBuildTimeline(sk, ck, budget, aik, ik);
   var minTotal = mbc.min * bt;
   var budgetFit = Math.min(budget / Math.max(minTotal, 1), 1);
   var marketFactor = 1 - st.competition;
@@ -535,12 +581,13 @@ document.getElementById('calcBtn').addEventListener('click', function() {
 
   var ak = sel('fAudience'), sk = sel('fSaasType'), ck = sel('fComplexity');
   var uk = sel('fUsers'), tk = sel('fTimeline');
+  var aik = sel('fAI'), ik = sel('fIndustry');
   var rev = flt('fRevenue'), budget = flt('fBudget');
   var aud = AUDIENCE_TYPES[ak];
 
-  var mbc = calcMonthlyBuildCost(ck, uk, tk);
-  var bt  = calcBuildTimeline(sk, ck, budget);
-  var sc  = calcOpportunityScore(ak, sk, budget, rev, ck, uk, tk);
+  var mbc = calcMonthlyBuildCost(ck, uk, tk, aik, ik);
+  var bt  = calcBuildTimeline(sk, ck, budget, aik, ik);
+  var sc  = calcOpportunityScore(ak, sk, budget, rev, ck, uk, tk, aik, ik);
   var mo  = calcMonthlyRevLost(rev, ak, sk, tk);
   var l6  = calcDelayLoss(mo, 6,  aud.riskMult);
   var l12 = calcDelayLoss(mo, 12, aud.riskMult);
@@ -571,6 +618,14 @@ document.getElementById('calcBtn').addEventListener('click', function() {
   document.getElementById('rMonthlyBuild').textContent = fmt(mbc.min) + ' – ' + fmt(mbc.max) + ' /month';
   document.getElementById('rTotalBudget').textContent  = fmtK(totalMin) + ' – ' + fmtK(totalMax);
 
+  /* Complexity notes (AI + industry) */
+  var notes = [];
+  if (AI_TYPES[aik] && AI_TYPES[aik].note)  notes.push(AI_TYPES[aik].note);
+  if (INDUSTRIES[ik] && INDUSTRIES[ik].note) notes.push(INDUSTRIES[ik].note);
+  var noteEl = document.getElementById('rBuildNotes');
+  noteEl.innerHTML = notes.map(function(n) { return '<span class="sc-build-note">⚙️ ' + n + '</span>'; }).join('');
+  noteEl.style.display = notes.length ? 'block' : 'none';
+
   /* Timeline */
   document.getElementById('rBuildTime').textContent = bt + ' months';
   document.getElementById('rROI').textContent = roi ? roi + ' months' : 'N/A';
@@ -585,7 +640,7 @@ document.getElementById('calcBtn').addEventListener('click', function() {
   document.getElementById('emptyState').style.display = 'none';
   document.getElementById('resContent').style.display  = 'block';
 
-  window._audit = { ak:ak, sk:sk, ck:ck, uk:uk, tk:tk, rev:rev, budget:budget,
+  window._audit = { ak:ak, sk:sk, ck:ck, uk:uk, tk:tk, aik:aik, ik:ik, rev:rev, budget:budget,
     sc:sc, mo:mo, l6:l6, l12:l12, mbc:mbc, totalMin:totalMin, totalMax:totalMax,
     bt:bt, roi:roi, verd:verd, aud:aud };
 });
@@ -620,6 +675,7 @@ document.getElementById('leadSubmit').addEventListener('click', function() {
     website: document.getElementById('fWebsite').value.trim(),
     audienceType:  d.ak, saasType: d.sk,
     complexityKey: d.ck, usersKey: d.uk, timelineKey: d.tk,
+    aiKey: d.aik, industryKey: d.ik,
     revenueGoal: d.rev, budget: d.budget,
     auditResults: {
       opportunityScore: d.sc,

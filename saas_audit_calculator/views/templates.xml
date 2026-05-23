@@ -80,6 +80,30 @@
 
             <div class="sc-row">
               <div class="sc-field">
+                <label>AI / Technology Component</label>
+                <select id="fAI">
+                  <option value="no_ai">No AI features</option>
+                  <option value="ai_api">AI via API (OpenAI, Claude…)</option>
+                  <option value="ai_custom">Custom ML model</option>
+                  <option value="ai_core">AI-powered core product</option>
+                </select>
+              </div>
+              <div class="sc-field">
+                <label>Industry / Compliance</label>
+                <select id="fIndustry">
+                  <option value="general">General / Other</option>
+                  <option value="ecommerce">E-commerce / Retail</option>
+                  <option value="hr_ops">HR / Operations</option>
+                  <option value="education">Education / EdTech</option>
+                  <option value="legal">Legal / LegalTech</option>
+                  <option value="healthcare">Healthcare / MedTech (HIPAA)</option>
+                  <option value="fintech">Finance / Fintech (PCI, SOC 2)</option>
+                </select>
+              </div>
+            </div>
+
+            <div class="sc-row">
+              <div class="sc-field">
                 <label>Target Revenue — Year 1 ($)</label>
                 <div class="pfx">
                   <span>$</span>
@@ -145,6 +169,7 @@
                 <p class="sc-section-title"><span>&#128176;</span> Investment to Build It Right</p>
                 <p class="sc-build-lbl">Estimated monthly development cost:</p>
                 <div class="sc-build-amt" id="rMonthlyBuild">$0 – $0 <small style="font-size:.6em;font-weight:500;color:#888">/month</small></div>
+                <div id="rBuildNotes" class="sc-build-notes" style="display:none"/>
                 <div class="sc-budget-row">
                   <span class="sc-budget-lbl">Total project budget estimate:</span>
                   <span class="sc-budget-val" id="rTotalBudget">&#8212;</span>
@@ -269,6 +294,21 @@
   };
   var USR={small:{sf:1.00},medium:{sf:1.20},large:{sf:1.55},xlarge:{sf:1.95}};
   var TL={asap:{um:1.50,cp:1.30},short:{um:1.20,cp:1.10},medium:{um:1.00,cp:1.00},long:{um:0.80,cp:0.90}};
+  var AI={
+    no_ai:    {cm:1.00,tm:1.00,note:''},
+    ai_api:   {cm:1.20,tm:1.15,note:'AI API integration adds prompt engineering, reliability handling and ongoing API cost.'},
+    ai_custom:{cm:1.65,tm:1.50,note:'Custom ML requires data pipelines, model training, evaluation and MLOps infrastructure.'},
+    ai_core:  {cm:2.00,tm:1.80,note:'AI-first products need significant R&amp;D, data engineering and specialist AI/ML talent.'},
+  };
+  var IND={
+    general:   {cm:1.00,tm:1.00,note:''},
+    ecommerce: {cm:1.05,tm:1.05,note:''},
+    hr_ops:    {cm:1.10,tm:1.08,note:''},
+    education: {cm:1.10,tm:1.08,note:''},
+    legal:     {cm:1.30,tm:1.25,note:'Legal domain complexity and data sensitivity add meaningful scope.'},
+    healthcare:{cm:1.50,tm:1.45,note:'HIPAA compliance, audit trails and security certification add ~45% to cost and timeline.'},
+    fintech:   {cm:1.55,tm:1.50,note:'PCI DSS and SOC 2 require security audits, penetration testing and compliance work.'},
+  };
 
   /* ── Helpers ── */
   var fmt  = function(n){return '$'+Math.round(n).toLocaleString();};
@@ -276,10 +316,10 @@
   var flt  = function(id){return parseFloat(document.getElementById(id).value)||0;};
   var sel  = function(id){return document.getElementById(id).value;};
 
-  function monthlyBuild(ck,uk,tk){var c=CMP[ck],u=USR[uk],t=TL[tk];return{min:Math.round(c.monthlyMin*u.sf*t.cp),max:Math.round(c.monthlyMax*u.sf*t.cp)};}
-  function buildTime(sk,ck,budget){var base=ST[sk].baseMonths;var sp=budget>=100000?.60:budget>=60000?.75:budget>=30000?.90:1.15;return Math.max(1,Math.round(base*CMP[ck].timeMult*sp));}
-  function oppScore(ak,sk,ck,uk,tk,budget,rev){
-    var a=AUD[ak],s=ST[sk],t=TL[tk],mb=monthlyBuild(ck,uk,tk),bt=buildTime(sk,ck,budget);
+  function monthlyBuild(ck,uk,tk,aik,ik){var c=CMP[ck],u=USR[uk],t=TL[tk],ai=AI[aik]||AI.no_ai,ind=IND[ik]||IND.general;return{min:Math.round(c.monthlyMin*u.sf*t.cp*ai.cm*ind.cm),max:Math.round(c.monthlyMax*u.sf*t.cp*ai.cm*ind.cm)};}
+  function buildTime(sk,ck,budget,aik,ik){var base=ST[sk].baseMonths;var sp=budget>=100000?.60:budget>=60000?.75:budget>=30000?.90:1.15;var ai=AI[aik]||AI.no_ai,ind=IND[ik]||IND.general;return Math.max(1,Math.round(base*CMP[ck].timeMult*sp*ai.tm*ind.tm));}
+  function oppScore(ak,sk,ck,uk,tk,aik,ik,budget,rev){
+    var a=AUD[ak],s=ST[sk],t=TL[tk],mb=monthlyBuild(ck,uk,tk,aik,ik),bt=buildTime(sk,ck,budget,aik,ik);
     var fit=Math.min(budget/Math.max(mb.min*bt,1),1),mkt=1-s.competition,urg=Math.min(t.um/1.5,1);
     return Math.round(Math.min(99,Math.max(5,(fit*40)+(mkt*30)+(a.mktCapture*20)+(urg*10))));
   }
@@ -352,12 +392,13 @@
   document.getElementById('calcBtn').addEventListener('click',function(){
     if(!validate())return;
     var ak=sel('fAudience'),sk=sel('fSaasType'),ck=sel('fComplexity'),uk=sel('fUsers'),tk=sel('fTimeline');
+    var aik=sel('fAI'),ik=sel('fIndustry');
     var rev=flt('fRevenue'),budget=flt('fBudget');
     var a=AUD[ak];
 
-    var mb   = monthlyBuild(ck,uk,tk);
-    var bt   = buildTime(sk,ck,budget);
-    var sc   = oppScore(ak,sk,ck,uk,tk,budget,rev);
+    var mb   = monthlyBuild(ck,uk,tk,aik,ik);
+    var bt   = buildTime(sk,ck,budget,aik,ik);
+    var sc   = oppScore(ak,sk,ck,uk,tk,aik,ik,budget,rev);
     var mo   = monthlyLost(rev,ak,sk,tk);
     var l6   = delayLoss(mo,6,a.riskMult);
     var l12  = delayLoss(mo,12,a.riskMult);
@@ -385,6 +426,12 @@
     /* Investment */
     document.getElementById('rMonthlyBuild').innerHTML=fmtK(mb.min)+' – '+fmtK(mb.max)+'<small style="font-size:.6em;font-weight:500;color:#888"> /month</small>';
     document.getElementById('rTotalBudget').textContent=fmtK(tbMin)+' – '+fmtK(tbMax);
+    var notes=[];
+    if(AI[aik]&&AI[aik].note)notes.push(AI[aik].note);
+    if(IND[ik]&&IND[ik].note)notes.push(IND[ik].note);
+    var noteEl=document.getElementById('rBuildNotes');
+    noteEl.innerHTML=notes.map(function(n){return'<span class="sc-build-note">&#9881; '+n+'</span>';}).join('');
+    noteEl.style.display=notes.length?'block':'none';
 
     /* Timeline */
     document.getElementById('rBuildTime').textContent=bt+(bt===1?' month':' months');
@@ -400,7 +447,7 @@
     document.getElementById('emptyState').style.display='none';
     document.getElementById('resContent').style.display='block';
 
-    window._audit={ak:ak,sk:sk,ck:ck,uk:uk,tk:tk,rev:rev,budget:budget,sc:sc,mo:mo,l6:l6,l12:l12,mb:mb,tbMin:tbMin,tbMax:tbMax,bt:bt,roi:roi,verd:verd,a:a};
+    window._audit={ak:ak,sk:sk,ck:ck,uk:uk,tk:tk,aik:aik,ik:ik,rev:rev,budget:budget,sc:sc,mo:mo,l6:l6,l12:l12,mb:mb,tbMin:tbMin,tbMax:tbMax,bt:bt,roi:roi,verd:verd,a:a};
     try{var ls=JSON.parse(localStorage.getItem('saas_audit')||'[]');ls.push({audienceType:ak,saasType:sk,complexity:ck,users:uk,timeline:tk,revenue:rev,budget:budget,ts:new Date().toISOString()});localStorage.setItem('saas_audit',JSON.stringify(ls));}catch(_){}
   });
 
@@ -428,7 +475,7 @@
       challenge:document.getElementById('lfChallenge').value.trim(),
       email:document.getElementById('fEmail').value.trim(),
       website:document.getElementById('fWebsite').value.trim(),
-      audienceType:d.ak,saasType:d.sk,complexityKey:d.ck,usersKey:d.uk,timelineKey:d.tk,
+      audienceType:d.ak,saasType:d.sk,complexityKey:d.ck,usersKey:d.uk,timelineKey:d.tk,aiKey:d.aik,industryKey:d.ik,
       revenueGoal:d.rev,budget:d.budget,
       auditResults:{
         opportunityScore:d.sc,monthlyRevLost:d.mo,loss6Months:d.l6,loss12Months:d.l12,
