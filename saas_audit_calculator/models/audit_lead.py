@@ -4,6 +4,7 @@ from odoo import api, fields, models
 class SaasAuditLead(models.Model):
     _name = 'saas.audit.lead'
     _description = 'SaaS Audit Calculator Lead'
+    _inherit = ['mail.thread', 'mail.activity.mixin']
     _order = 'create_date desc'
     _rec_name = 'email'
 

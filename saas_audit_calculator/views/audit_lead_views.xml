@@ -6,7 +6,7 @@
     <field name="name">saas.audit.lead.list</field>
     <field name="model">saas.audit.lead</field>
     <field name="arch" type="xml">
-      <tree string="Audit Leads" decoration-danger="risk_level == 'Critical'"
+      <list string="Audit Leads" decoration-danger="risk_level == 'Critical'"
             decoration-warning="risk_level == 'High'"
             decoration-success="risk_level == 'Low'">
         <field name="create_date" string="Submitted"/>
@@ -27,7 +27,7 @@
                decoration-warning="state == 'contacted'"
                decoration-success="state == 'converted'"
                decoration-danger="state == 'lost'"/>
-      </tree>
+      </list>
     </field>
   </record>
 
@@ -40,13 +40,13 @@
         <header>
           <button name="action_mark_contacted" string="Mark Contacted"
                   type="object" class="btn-primary"
-                  attrs="{'invisible': [('state', 'not in', ['new'])]}"/>
+                  invisible="state not in ['new']"/>
           <button name="action_mark_qualified" string="Mark Qualified"
                   type="object" class="btn-primary"
-                  attrs="{'invisible': [('state', 'not in', ['contacted'])]}"/>
+                  invisible="state not in ['contacted']"/>
           <button name="action_mark_converted" string="Mark Converted"
                   type="object" class="btn-success"
-                  attrs="{'invisible': [('state', 'not in', ['qualified'])]}"/>
+                  invisible="state not in ['qualified']"/>
           <field name="state" widget="statusbar"
                  statusbar_visible="new,contacted,qualified,converted"/>
         </header>
@@ -111,10 +111,7 @@
             <field name="ip_address" readonly="1"/>
           </group>
         </sheet>
-        <div class="oe_chatter">
-          <field name="message_follower_ids"/>
-          <field name="message_ids"/>
-        </div>
+        <chatter/>
       </form>
     </field>
   </record>
@@ -165,7 +162,7 @@
   <record id="saas_audit_lead_action" model="ir.actions.act_window">
     <field name="name">Audit Leads</field>
     <field name="res_model">saas.audit.lead</field>
-    <field name="view_mode">tree,form,pivot</field>
+    <field name="view_mode">list,form,pivot</field>
     <field name="search_view_id" ref="saas_audit_lead_search"/>
     <field name="context">{'search_default_new': 1}</field>
   </record>
