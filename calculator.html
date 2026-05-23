@@ -16,7 +16,6 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Free SaaS Opportunity Audit</title>
-<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
 <style>
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
 body{font-family:'Segoe UI',-apple-system,BlinkMacSystemFont,'Inter',sans-serif;background:linear-gradient(135deg,#0b1731 0%,#1a237e 45%,#1565c0 100%);min-height:100vh;color:#fff;padding-bottom:60px}
@@ -140,134 +139,6 @@ body{font-family:'Segoe UI',-apple-system,BlinkMacSystemFont,'Inter',sans-serif;
 
 @media(max-width:860px){.sc-container{grid-template-columns:1fr}.sc-form-panel{border-radius:16px 16px 0 0}.sc-results-panel{border-radius:0 0 16px 16px}}
 @media(max-width:600px){.sc-row{grid-template-columns:1fr}.sc-lead-grid{grid-template-columns:1fr}.sc-modal{padding:18px}.sc-metrics-row{grid-template-columns:1fr 1fr}}
-</style>
-
-.sc-header{text-align:center;padding:44px 20px 32px}
-.sc-header h1{font-size:clamp(1.6rem,4vw,2.5rem);font-weight:800;letter-spacing:-.5px;margin-bottom:10px}
-.sc-header p{font-size:.94rem;color:rgba(255,255,255,.65);max-width:560px;margin:0 auto;line-height:1.55}
-
-.sc-container{max-width:1180px;margin:0 auto;padding:0 20px;display:grid;grid-template-columns:1fr 440px;gap:28px;align-items:start}
-
-.sc-form-panel{display:flex;flex-direction:column;gap:14px}
-.sc-row{display:grid;grid-template-columns:1fr 1fr;gap:14px}
-.sc-row-3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:14px}
-.sc-field{display:flex;flex-direction:column;gap:6px}
-.sc-field label{font-size:.66rem;font-weight:700;text-transform:uppercase;letter-spacing:.9px;color:rgba(255,255,255,.82)}
-.sc-field input,.sc-field select{padding:11px 14px;background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.22);border-radius:9px;color:#fff;font-size:.88rem;outline:none;transition:border-color .2s,background .2s;width:100%;-webkit-appearance:none;appearance:none}
-.sc-field select{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='rgba(255,255,255,0.7)' d='M6 8L1 3h10z'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 12px center;padding-right:34px}
-.sc-field input::placeholder{color:rgba(255,255,255,.35)}
-.sc-field input:focus,.sc-field select:focus{border-color:rgba(255,255,255,.6);background:rgba(255,255,255,.19)}
-.sc-field select option{background:#1a237e;color:#fff}
-.pfx{position:relative}.pfx span{position:absolute;left:13px;top:50%;transform:translateY(-50%);color:rgba(255,255,255,.5);font-size:.88rem;pointer-events:none}.pfx input{padding-left:26px}
-.sc-err{font-size:.68rem;color:#ef9a9a;margin-top:2px;display:none}
-.sc-err.show{display:block}
-.sc-form-sep{font-size:.6rem;font-weight:800;text-transform:uppercase;letter-spacing:1.4px;color:rgba(255,255,255,.45);padding-top:4px;border-top:1px solid rgba(255,255,255,.12)}
-
-.sc-calc-btn{width:100%;padding:16px;background:#1565c0;color:#fff;font-size:.98rem;font-weight:700;border:none;border-radius:10px;cursor:pointer;letter-spacing:.3px;transition:background .2s,transform .1s,box-shadow .2s;box-shadow:0 4px 20px rgba(21,101,192,.5);margin-top:4px}
-.sc-calc-btn:hover{background:#1976d2;transform:translateY(-1px);box-shadow:0 7px 26px rgba(21,101,192,.65)}
-.sc-calc-btn:active{transform:translateY(0)}
-
-.sc-results-panel{background:#fff;border-radius:16px;overflow:hidden;box-shadow:0 24px 64px rgba(0,0,0,.38);position:sticky;top:16px;color:#1a1a2e}
-.sc-results-header{display:flex;justify-content:space-between;align-items:center;padding:13px 18px;background:#1a237e;color:#fff}
-.sc-results-header h3{font-size:.63rem;font-weight:800;text-transform:uppercase;letter-spacing:1.6px}
-.sc-opp-badge{padding:4px 10px;border-radius:20px;font-size:.66rem;font-weight:700;white-space:nowrap}
-.opp-strong{background:#c8e6c9;color:#1b5e20}.opp-good{background:#bbdefb;color:#0d47a1}.opp-moderate{background:#fff9c4;color:#f57f17}.opp-challenging{background:#ffe0b2;color:#e65100}.opp-risky{background:#ffcdd2;color:#b71c1c}
-
-.sc-empty{display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:460px;text-align:center;padding:32px;color:#bbb}
-.sc-empty-icon{font-size:2.8rem;opacity:.28;margin-bottom:14px}
-.sc-empty p{font-size:.82rem;line-height:1.65}
-
-.sc-results-body{padding:0}
-.sc-section{padding:11px 14px;border-bottom:1px solid #f0f0f0}
-.sc-section:last-child{border-bottom:none}
-.sc-section-title{font-size:.6rem;font-weight:800;text-transform:uppercase;letter-spacing:1.2px;color:#aaa;margin-bottom:8px;display:flex;align-items:center;gap:6px}
-.sc-section-title span{font-size:.85rem}
-
-.sc-score-section{text-align:center;padding:16px 16px 12px;border-bottom:1px solid #f0f0f0}
-.sc-score-lbl{font-size:.6rem;font-weight:700;text-transform:uppercase;letter-spacing:1px;color:#aaa;margin-bottom:4px}
-.sc-score-row{display:flex;align-items:baseline;justify-content:center;gap:3px;margin-bottom:8px}
-.sc-score-num{font-size:3.2rem;font-weight:900;line-height:1;color:#1a237e}
-.sc-score-denom{font-size:1rem;color:#ccc;font-weight:400}
-.sc-prog-track{width:100%;height:7px;background:#ebebeb;border-radius:4px;overflow:hidden;margin-bottom:6px}
-.sc-prog-fill{height:100%;border-radius:4px;transition:width 1s cubic-bezier(.4,0,.2,1)}
-.sc-score-verdict{font-size:.74rem;font-weight:700;color:#555}
-.sc-score-factors{margin-top:12px;text-align:left}
-.sc-factor-row{display:flex;align-items:center;gap:8px;margin-bottom:5px}
-.sc-factor-lbl{font-size:.58rem;font-weight:700;color:#888;width:76px;flex-shrink:0;text-transform:uppercase;letter-spacing:.4px}
-.sc-factor-track{flex:1;height:5px;background:#ebebeb;border-radius:3px;overflow:hidden}
-.sc-factor-fill{height:100%;border-radius:3px;width:0%;transition:width .9s cubic-bezier(.4,0,.2,1)}
-.sc-factor-pts{font-size:.6rem;font-weight:800;color:#555;width:34px;text-align:right;flex-shrink:0}
-.sc-score-tip{margin-top:10px;background:#fff8e1;border-left:3px solid #f9a825;border-radius:0 6px 6px 0;padding:8px 10px;font-size:.68rem;color:#5d4037;line-height:1.5;text-align:left}
-
-.sc-monthly-loss-lbl{font-size:.7rem;color:#777;margin-bottom:2px}
-.sc-monthly-loss-amt{font-size:2rem;font-weight:800;color:#e53935;letter-spacing:-.5px;margin-bottom:10px;line-height:1}
-.sc-loss-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px}
-.sc-loss-card{background:#fff3e0;border:1px solid #ffe0b2;border-radius:9px;padding:11px;text-align:center}
-.sc-loss-card.crit{background:#ffebee;border-color:#ffcdd2}
-.sc-loss-period{font-size:.58rem;font-weight:700;text-transform:uppercase;letter-spacing:.5px;color:#aaa;margin-bottom:4px}
-.sc-loss-amount{font-size:1.15rem;font-weight:800;color:#c62828}
-
-.sc-build-lbl{font-size:.68rem;color:#777;margin-bottom:3px}
-.sc-build-amt{font-size:1.5rem;font-weight:800;color:#1565c0;margin-bottom:2px;line-height:1.1}
-.sc-build-sub{font-size:.62rem;color:#aaa;margin-bottom:6px}
-.sc-build-notes{margin-bottom:10px}
-.sc-build-note{display:block;font-size:.62rem;color:#e65100;line-height:1.5;padding:3px 0}
-.sc-budget-row{background:#f0f4ff;border-radius:8px;padding:10px 12px;display:flex;justify-content:space-between;align-items:center}
-.sc-budget-lbl{font-size:.65rem;color:#555}
-.sc-budget-val{font-size:.85rem;font-weight:700;color:#1a237e}
-
-.sc-timeline-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px}
-.sc-tl-card{background:#f8f9fa;border-radius:9px;padding:11px 12px}
-.sc-tl-icon{font-size:1.1rem;margin-bottom:3px}
-.sc-tl-lbl{font-size:.58rem;color:#999;text-transform:uppercase;letter-spacing:.5px;margin-bottom:3px}
-.sc-tl-val{font-size:.95rem;font-weight:800;color:#1a237e}
-
-.sc-chart-wrap{position:relative;height:160px;width:100%}
-.sc-chart-wrap canvas{position:absolute;top:0;left:0}
-.sc-chart-note{font-size:.6rem;color:#aaa;margin-top:6px;text-align:center;line-height:1.4}
-.sc-team-grid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin-bottom:10px}
-.sc-team-card{background:#f8f9fa;border-radius:9px;padding:10px 10px 8px;text-align:center;border:1px solid #eee}
-.sc-team-card-icon{font-size:1.3rem;margin-bottom:4px}
-.sc-team-card-role{font-size:.62rem;font-weight:700;color:#1a237e;margin-bottom:2px;line-height:1.3}
-.sc-team-card-count{font-size:.72rem;font-weight:800;color:#1565c0;margin-bottom:3px}
-.sc-team-card-desc{font-size:.56rem;color:#aaa;line-height:1.4}
-.sc-team-total{font-size:.72rem;color:#555;text-align:center;padding:8px 12px;background:#f0f4ff;border-radius:8px}
-.sc-team-total strong{color:#1a237e}
-
-.sc-insight-card{background:#e8f0fe;border-left:4px solid #1565c0;border-radius:0 8px 8px 0;padding:12px 14px;display:flex;gap:10px;align-items:flex-start}
-.sc-insight-icon{font-size:1rem;flex-shrink:0;margin-top:1px}
-.sc-insight-text{font-size:.74rem;color:#1a237e;line-height:1.55}
-
-.sc-cta-btn{display:block;width:100%;padding:15px 18px;background:#1565c0;color:#fff;font-size:.85rem;font-weight:700;border:none;border-radius:0 0 14px 14px;cursor:pointer;text-align:center;transition:background .2s;letter-spacing:.2px}
-.sc-cta-btn:hover{background:#1976d2}
-
-.sc-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.72);z-index:9999;align-items:center;justify-content:center;padding:16px}
-.sc-overlay.on{display:flex}
-.sc-modal{background:#fff;border-radius:16px;width:100%;max-width:660px;max-height:90vh;overflow-y:auto;padding:28px;position:relative;color:#1a1a2e}
-.sc-modal-x{position:absolute;top:13px;right:13px;background:#f0f0f0;border:none;border-radius:50%;width:30px;height:30px;cursor:pointer;font-size:.9rem;color:#444;display:flex;align-items:center;justify-content:center}
-.sc-modal-x:hover{background:#e0e0e0}
-.sc-modal h2{font-size:1.12rem;font-weight:800;color:#1a237e;margin-bottom:5px}
-.sc-modal-sub{font-size:.76rem;color:#666;margin-bottom:18px;line-height:1.55}
-.sc-rec-box{background:#e8f0fe;border-left:4px solid #1565c0;border-radius:8px;padding:14px;margin-bottom:20px}
-.sc-rec-box strong{display:block;font-size:.62rem;text-transform:uppercase;letter-spacing:.6px;color:#1565c0;margin-bottom:5px}
-.sc-rec-box p{font-size:.8rem;color:#1a237e;line-height:1.6}
-
-.sc-lead-form{border-top:2px solid #1a237e;padding-top:18px;margin-top:6px}
-.sc-lead-form h3{font-size:.9rem;font-weight:700;color:#1a237e;margin-bottom:14px}
-.sc-lead-grid{display:grid;grid-template-columns:1fr 1fr;gap:11px;margin-bottom:14px}
-.sc-lf{display:flex;flex-direction:column;gap:4px}
-.sc-lf label{font-size:.66rem;font-weight:700;color:#666;text-transform:uppercase;letter-spacing:.5px}
-.sc-lf input,.sc-lf textarea{padding:10px 12px;border:1px solid #ddd;border-radius:8px;font-size:.82rem;color:#222;outline:none;transition:border-color .2s}
-.sc-lf input:focus,.sc-lf textarea:focus{border-color:#1565c0}
-.sc-lead-sub{width:100%;padding:14px;background:#1565c0;color:#fff;font-size:.88rem;font-weight:700;border:none;border-radius:9px;cursor:pointer;transition:background .2s}
-.sc-lead-sub:hover{background:#1976d2}
-.sc-lead-ok{text-align:center;padding:20px;color:#1b5e20;font-weight:600;font-size:.9rem;display:none}
-
-.sc-toast{position:fixed;bottom:22px;right:22px;background:#1b5e20;color:#fff;padding:12px 20px;border-radius:10px;font-size:.82rem;font-weight:600;box-shadow:0 8px 24px rgba(0,0,0,.3);z-index:10000;transform:translateY(80px);opacity:0;transition:transform .35s,opacity .35s}
-.sc-toast.on{transform:translateY(0);opacity:1}
-
-@media(max-width:960px){.sc-container{grid-template-columns:1fr}.sc-results-panel{position:static}}
-@media(max-width:600px){.sc-row{grid-template-columns:1fr}.sc-row-3{grid-template-columns:1fr}.sc-lead-grid{grid-template-columns:1fr}.sc-modal{padding:18px}}
 </style>
 </head>
 <body>
@@ -422,29 +293,6 @@ body{font-family:'Segoe UI',-apple-system,BlinkMacSystemFont,'Inter',sans-serif;
         <div class="sc-score-info">
           <div class="sc-score-verdict" id="rVerdict">—</div>
           <div class="sc-score-sub" id="rScoreSub">—</div>
-          <div class="sc-score-factors" id="scoreFactors" style="display:none">
-            <div class="sc-factor-row">
-              <span class="sc-factor-lbl">Budget</span>
-              <div class="sc-factor-track"><div class="sc-factor-fill" id="sfBudget" style="background:#1565c0"></div></div>
-              <span class="sc-factor-pts" id="sfBudgetPts">0/40</span>
-            </div>
-            <div class="sc-factor-row">
-              <span class="sc-factor-lbl">Market</span>
-              <div class="sc-factor-track"><div class="sc-factor-fill" id="sfMarket" style="background:#2e7d32"></div></div>
-              <span class="sc-factor-pts" id="sfMarketPts">0/30</span>
-            </div>
-            <div class="sc-factor-row">
-              <span class="sc-factor-lbl">Audience</span>
-              <div class="sc-factor-track"><div class="sc-factor-fill" id="sfAudience" style="background:#6a1b9a"></div></div>
-              <span class="sc-factor-pts" id="sfAudiencePts">0/20</span>
-            </div>
-            <div class="sc-factor-row">
-              <span class="sc-factor-lbl">Timeline</span>
-              <div class="sc-factor-track"><div class="sc-factor-fill" id="sfUrgency" style="background:#e65100"></div></div>
-              <span class="sc-factor-pts" id="sfUrgencyPts">0/10</span>
-            </div>
-            <div class="sc-score-tip" id="rScoreTip"></div>
-          </div>
         </div>
       </div>
 
@@ -482,21 +330,14 @@ body{font-family:'Segoe UI',-apple-system,BlinkMacSystemFont,'Inter',sans-serif;
           <span class="sc-delay-lbl">Every month you delay costs</span>
         </div>
         <div class="sc-delay-amt" id="rMonthly">$0</div>
-        <div class="sc-delay-sub"><span id="rLoss6">$0</span> at risk over 6 months &nbsp;·&nbsp; <span id="rLoss12">$0</span> over 12 months</div>
+        <div class="sc-delay-sub"><span id="rLoss6">$0</span> at risk over 6 months</div>
       </div>
 
-      <!-- 5. Chart -->
-      <div class="sc-section">
-        <div class="sc-section-title"><span>📊</span> Cumulative Revenue Lost vs. Months of Delay</div>
-        <div class="sc-chart-wrap"><canvas id="trajChart"></canvas></div>
-        <p class="sc-chart-note">Hover for exact values. Red line shows how delay compounds your lost revenue.</p>
-      </div>
-
-      <!-- 6. Insight -->
+      <!-- 5. Snapshot info -->
       <div class="sc-section">
         <div class="sc-insight-card">
-          <span class="sc-insight-icon">💡</span>
-          <p class="sc-insight-text" id="rInsight">—</p>
+          <span class="sc-insight-icon">ℹ️</span>
+          <p class="sc-insight-text">This is a snapshot. Your full report includes cost-per-role breakdown, 12-month projections, and a 90-day action plan.</p>
         </div>
       </div>
 
@@ -681,71 +522,6 @@ function verdictLabel(score) {
   return               { text:'High Risk — Seek Expert Guidance',cls:'opp-risky'      };
 }
 
-/* ── Chart ── */
-var trajChart = null;
-function fmtAxis(v) {
-  if (v >= 1000000) return '$' + (v / 1000000).toFixed(1) + 'M';
-  if (v >= 1000)    return '$' + (v / 1000).toFixed(0) + 'K';
-  return '$' + v;
-}
-function drawTraj(data) {
-  var ctx = document.getElementById('trajChart').getContext('2d');
-  if (trajChart) trajChart.destroy();
-  trajChart = new Chart(ctx, {
-    type: 'line',
-    data: {
-      labels: data.map(function(_, i) { return i === 0 ? 'Now' : i + ' mo'; }),
-      datasets: [{
-        label: 'Revenue Lost',
-        data: data,
-        borderColor: '#e53935',
-        backgroundColor: 'rgba(229,57,53,.07)',
-        borderWidth: 2.5,
-        pointRadius: data.map(function(_, i) { return i % 3 === 0 ? 3 : 0; }),
-        pointBackgroundColor: '#e53935',
-        fill: true,
-        tension: .4,
-      }]
-    },
-    options: {
-      responsive: true,
-      maintainAspectRatio: false,
-      plugins: {
-        legend: { display: false },
-        tooltip: {
-          enabled: true,
-          callbacks: {
-            title: function(items) { return 'Delay: ' + items[0].label; },
-            label: function(item) { return '  Revenue lost: ' + fmt(item.raw); },
-          },
-          backgroundColor: '#1a237e',
-          titleColor: '#fff',
-          bodyColor: '#fff',
-          padding: 8,
-          cornerRadius: 6,
-        },
-      },
-      scales: {
-        x: {
-          display: true,
-          title: { display: true, text: 'Months of delay', font: { size: 9 }, color: '#999' },
-          ticks: { font: { size: 9 }, color: '#aaa', maxTicksLimit: 7 },
-          grid: { display: false },
-          border: { color: '#e8e8e8' },
-        },
-        y: {
-          display: true,
-          title: { display: true, text: 'Cumulative revenue lost', font: { size: 9 }, color: '#999' },
-          ticks: { font: { size: 9 }, color: '#aaa', callback: fmtAxis, maxTicksLimit: 5 },
-          grid: { color: 'rgba(0,0,0,.05)' },
-          border: { color: '#e8e8e8' },
-        },
-      },
-      animation: { duration: 800 },
-    }
-  });
-}
-
 /* ── Validation ── */
 function validate() {
   var ok = true;
@@ -777,8 +553,6 @@ document.getElementById('calcBtn').addEventListener('click', function() {
   var roi = calcROI(mbc.max, bt, rev);
   var totalMin = mbc.min * bt, totalMax = mbc.max * bt;
   var verd = verdictLabel(sc);
-  var traj = [];
-  for (var i = 0; i <= 12; i++) traj.push(i === 0 ? 0 : calcDelayLoss(mo, i, aud.riskMult));
 
   /* Badge + ring */
   var badge = document.getElementById('oppBadge');
@@ -795,36 +569,9 @@ document.getElementById('calcBtn').addEventListener('click', function() {
   ringEl.style.stroke = ringCol;
   setTimeout(function() { ringEl.style.strokeDashoffset = (201.1 * (1 - sc / 100)).toFixed(1); }, 60);
 
-  /* Score factor breakdown */
-  var minTotal = mbc.min * bt;
-  var budgetFit = Math.min(budget / Math.max(minTotal, 1), 1);
-  var marketFactor = 1 - SAAS_TYPES[sk].competition;
-  var urgencyFactor = Math.min(LAUNCH_TIMELINE[tk].urgencyMult / 1.5, 1);
-  var mktCapture = aud.mktCapture;
-  document.getElementById('sfBudgetPts').textContent   = Math.round(budgetFit * 40) + '/40';
-  document.getElementById('sfMarketPts').textContent   = Math.round(marketFactor * 30) + '/30';
-  document.getElementById('sfAudiencePts').textContent = Math.round(mktCapture * 20) + '/20';
-  document.getElementById('sfUrgencyPts').textContent  = Math.round(urgencyFactor * 10) + '/10';
-  setTimeout(function() {
-    document.getElementById('sfBudget').style.width   = Math.round(budgetFit * 100) + '%';
-    document.getElementById('sfMarket').style.width   = Math.round(marketFactor * 100) + '%';
-    document.getElementById('sfAudience').style.width = Math.round(mktCapture * 100) + '%';
-    document.getElementById('sfUrgency').style.width  = Math.round(urgencyFactor * 100) + '%';
-  }, 80);
-  var tipPct = Math.round(budgetFit * 100);
-  var scoreTipText;
-  if (budgetFit < 0.40) scoreTipText = '⚠️ Budget covers only ' + tipPct + '% of min build cost (' + fmt(minTotal) + '). Increasing budget or simplifying scope has the biggest impact.';
-  else if (budgetFit < 0.75) scoreTipText = '💡 Budget covers ' + tipPct + '% of build cost — closing this gap adds up to ' + Math.round((1 - budgetFit) * 40) + ' more points.';
-  else if (marketFactor < 0.25) scoreTipText = '⚡ Highly competitive market. Fast execution and differentiation are critical.';
-  else if (urgencyFactor < 0.85) scoreTipText = '📅 ASAP timeline carries a 30% cost premium. A 3–6 month plan reduces risk and lifts your score.';
-  else scoreTipText = '✅ Well-balanced opportunity. Focus on shipping fast and signing your first customers.';
-  document.getElementById('rScoreTip').textContent = scoreTipText;
-  document.getElementById('scoreFactors').style.display = 'block';
-
   /* Delay cost */
   document.getElementById('rMonthly').textContent = fmt(mo);
   document.getElementById('rLoss6').textContent   = fmt(l6);
-  document.getElementById('rLoss12').textContent  = fmt(l12);
 
   /* Metrics row */
   document.getElementById('rMonthlyBuild').textContent = fmtK(mbc.min) + ' – ' + fmtK(mbc.max);
@@ -839,9 +586,6 @@ document.getElementById('calcBtn').addEventListener('click', function() {
   noteEl.innerHTML = notes.map(function(n) { return '<span class="sc-build-note">⚙️ ' + n + '</span>'; }).join('');
   noteEl.style.display = notes.length ? 'block' : 'none';
 
-  /* Chart */
-  setTimeout(function() { drawTraj(traj); }, 100);
-
   /* Team chips */
   var team = calcTeam(ck, aik, ik, uk);
   var tMin = team.reduce(function(s,r){return s+r.min;},0);
@@ -852,9 +596,6 @@ document.getElementById('calcBtn').addEventListener('click', function() {
     var cnt = r.min === r.max ? r.min + '×' : r.min + '–' + r.max + '×';
     return '<span class="sc-team-chip">' + cnt + ' ' + ro.label.split(' ').slice(0,2).join(' ') + '</span>';
   }).join('');
-
-  /* Insight */
-  document.getElementById('rInsight').textContent = aud.insight;
 
   /* Show results */
   document.getElementById('emptyState').style.display = 'none';

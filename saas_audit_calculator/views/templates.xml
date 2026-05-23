@@ -160,29 +160,6 @@
               <div class="sc-score-info">
                 <div class="sc-score-verdict" id="rVerdict">&#8212;</div>
                 <div class="sc-score-sub" id="rScoreSub">&#8212;</div>
-                <div class="sc-score-factors" id="scoreFactors" style="display:none">
-                  <div class="sc-factor-row">
-                    <span class="sc-factor-lbl">Budget</span>
-                    <div class="sc-factor-track"><div class="sc-factor-fill" id="sfBudget" style="background:#1565c0"/></div>
-                    <span class="sc-factor-pts" id="sfBudgetPts">0/40</span>
-                  </div>
-                  <div class="sc-factor-row">
-                    <span class="sc-factor-lbl">Market</span>
-                    <div class="sc-factor-track"><div class="sc-factor-fill" id="sfMarket" style="background:#2e7d32"/></div>
-                    <span class="sc-factor-pts" id="sfMarketPts">0/30</span>
-                  </div>
-                  <div class="sc-factor-row">
-                    <span class="sc-factor-lbl">Audience</span>
-                    <div class="sc-factor-track"><div class="sc-factor-fill" id="sfAudience" style="background:#6a1b9a"/></div>
-                    <span class="sc-factor-pts" id="sfAudiencePts">0/20</span>
-                  </div>
-                  <div class="sc-factor-row">
-                    <span class="sc-factor-lbl">Timeline</span>
-                    <div class="sc-factor-track"><div class="sc-factor-fill" id="sfUrgency" style="background:#e65100"/></div>
-                    <span class="sc-factor-pts" id="sfUrgencyPts">0/10</span>
-                  </div>
-                  <div class="sc-score-tip" id="rScoreTip"/>
-                </div>
               </div>
             </div>
 
@@ -220,27 +197,18 @@
                 <span class="sc-delay-lbl">Every month you delay costs</span>
               </div>
               <div class="sc-delay-amt" id="rMonthly">$0</div>
-              <div class="sc-delay-sub"><span id="rLoss6">$0</span> at risk over 6 months &#183; <span id="rLoss12">$0</span> over 12 months</div>
+              <div class="sc-delay-sub"><span id="rLoss6">$0</span> at risk over 6 months</div>
             </div>
 
-            <!-- 6. Chart -->
-            <div class="sc-section">
-              <p class="sc-section-title"><span>&#128202;</span> Total Revenue Lost vs. Months of Delay</p>
-              <div class="sc-chart-wrap">
-                <canvas id="trajChart"/>
-              </div>
-              <p class="sc-chart-note">The red line shows total compounding revenue opportunity lost the longer you wait to launch. Hover for exact values.</p>
-            </div>
-
-            <!-- 7. Insight -->
+            <!-- 5. Snapshot info -->
             <div class="sc-section">
               <div class="sc-insight-card">
-                <span class="sc-insight-icon">&#128161;</span>
-                <p class="sc-insight-text" id="rInsight">&#8212;</p>
+                <span class="sc-insight-icon">&#8505;&#65039;</span>
+                <p class="sc-insight-text">This is a snapshot. Your full report includes cost-per-role breakdown, 12-month projections, and a 90-day action plan.</p>
               </div>
             </div>
 
-            <!-- 8. CTA -->
+            <!-- 6. CTA -->
             <button class="sc-cta-btn" id="openAuditBtn">
               Get Full Report &amp; Book Your Free Strategy Call &#8594;
             </button>
@@ -281,7 +249,6 @@
 
     <div class="sc-toast" id="toast"/>
 
-    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"/>
     <script>
 (function(){
   /* ── Data tables ── */
@@ -365,36 +332,6 @@
     return res;
   }
 
-  var fmtAxis=function(v){if(v>=1000000)return'$'+(v/1000000).toFixed(1)+'M';if(v>=1000)return'$'+(v/1000).toFixed(0)+'K';return'$'+v;};
-  var trajCh=null;
-  function drawTraj(data){
-    var canvas=document.getElementById('trajChart');
-    if(trajCh){trajCh.destroy();trajCh=null;}
-    trajCh=new Chart(canvas,{
-      type:'line',
-      data:{
-        labels:data.map(function(_,i){return i===0?'Now':i+' mo';}),
-        datasets:[{
-          label:'Revenue Lost',data:data,borderColor:'#e53935',backgroundColor:'rgba(229,57,53,.07)',
-          borderWidth:2.5,pointRadius:data.map(function(_,i){return i%3===0?3:0;}),
-          pointBackgroundColor:'#e53935',fill:true,tension:.4,
-        }]
-      },
-      options:{
-        responsive:true,maintainAspectRatio:false,
-        plugins:{
-          legend:{display:false},
-          tooltip:{enabled:true,callbacks:{title:function(items){return'Delay: '+items[0].label;},label:function(item){return'  Revenue lost: '+fmt(item.raw);}},backgroundColor:'#1a237e',titleColor:'#fff',bodyColor:'#fff',padding:8,cornerRadius:6},
-        },
-        scales:{
-          x:{display:true,title:{display:true,text:'Months of delay',font:{size:9},color:'#999'},ticks:{font:{size:9},color:'#aaa',maxTicksLimit:7},grid:{display:false},border:{color:'#e8e8e8'}},
-          y:{display:true,title:{display:true,text:'Cumulative revenue lost',font:{size:9},color:'#999'},ticks:{font:{size:9},color:'#aaa',callback:fmtAxis,maxTicksLimit:5},grid:{color:'rgba(0,0,0,.05)'},border:{color:'#e8e8e8'}},
-        },
-        animation:{duration:900},
-      },
-    });
-  }
-
   function validate(){
     var ok=true,em=document.getElementById('fEmail').value.trim(),rv=flt('fRevenue'),bud=flt('fBudget');
     var show=function(id,v){var el=document.getElementById(id);if(v){el.classList.add('show');ok=false;}else el.classList.remove('show');};
@@ -419,7 +356,6 @@
     var tbMin= mb.min*bt, tbMax=mb.max*bt;
     var roi  = rev>0?Math.ceil(tbMax/(rev/12)):null;
     var verd = verdict(sc);
-    var traj = [];for(var i=0;i&lt;=12;i++)traj.push(i===0?0:delayLoss(mo,i,a.riskMult));
 
     /* Badge + ring */
     var badge=document.getElementById('oppBadge');
@@ -436,36 +372,9 @@
     ringEl.style.stroke=ringCol;
     setTimeout(function(){ringEl.style.strokeDashoffset=(201.1*(1-sc/100)).toFixed(1);},60);
 
-    /* Score factor breakdown */
-    var minTotal=mb.min*bt;
-    var budgetFit=Math.min(budget/Math.max(minTotal,1),1);
-    var marketFactor=1-ST[sk].competition;
-    var urgencyFactor=Math.min(TL[tk].um/1.5,1);
-    var mktCap=a.mktCapture;
-    document.getElementById('sfBudgetPts').textContent=Math.round(budgetFit*40)+'/40';
-    document.getElementById('sfMarketPts').textContent=Math.round(marketFactor*30)+'/30';
-    document.getElementById('sfAudiencePts').textContent=Math.round(mktCap*20)+'/20';
-    document.getElementById('sfUrgencyPts').textContent=Math.round(urgencyFactor*10)+'/10';
-    setTimeout(function(){
-      document.getElementById('sfBudget').style.width=Math.round(budgetFit*100)+'%';
-      document.getElementById('sfMarket').style.width=Math.round(marketFactor*100)+'%';
-      document.getElementById('sfAudience').style.width=Math.round(mktCap*100)+'%';
-      document.getElementById('sfUrgency').style.width=Math.round(urgencyFactor*100)+'%';
-    },80);
-    var tipPct=Math.round(budgetFit*100);
-    var scoreTipTxt;
-    if(budgetFit&lt;0.40)scoreTipTxt='&#9888;&#65039; Budget covers only '+tipPct+'% of min build cost ('+fmt(minTotal)+'). Increasing budget or simplifying scope has the biggest impact.';
-    else if(budgetFit&lt;0.75)scoreTipTxt='&#128161; Budget covers '+tipPct+'% of build cost — closing this gap adds up to '+Math.round((1-budgetFit)*40)+' more points.';
-    else if(marketFactor&lt;0.25)scoreTipTxt='&#9889; Highly competitive market. Fast execution and differentiation are critical.';
-    else if(urgencyFactor&lt;0.85)scoreTipTxt='&#128197; ASAP timeline carries a 30% cost premium. A 3–6 month plan reduces risk and lifts your score.';
-    else scoreTipTxt='&#9989; Well-balanced opportunity. Focus on shipping fast and signing your first customers.';
-    document.getElementById('rScoreTip').textContent=scoreTipTxt;
-    document.getElementById('scoreFactors').style.display='block';
-
     /* Delay cost */
     document.getElementById('rMonthly').textContent=fmt(mo);
     document.getElementById('rLoss6').textContent=fmt(l6);
-    document.getElementById('rLoss12').textContent=fmt(l12);
 
     /* Metrics row */
     document.getElementById('rMonthlyBuild').textContent=fmtK(mb.min)+' – '+fmtK(mb.max);
@@ -480,9 +389,6 @@
     noteEl.innerHTML=notes.map(function(n){return'&lt;span class="sc-build-note"&gt;&#9881; '+n+'&lt;/span&gt;';}).join('');
     noteEl.style.display=notes.length?'block':'none';
 
-    /* Chart */
-    setTimeout(function(){drawTraj(traj);},100);
-
     /* Team chips */
     var team=calcTeam(ck,aik,ik,uk);
     var tMin=team.reduce(function(s,r){return s+r.min;},0);
@@ -493,9 +399,6 @@
       var cnt=r.min===r.max?r.min+'×':(r.min+'–'+r.max+'×');
       return'&lt;span class="sc-team-chip"&gt;'+cnt+' '+ro.label.split(' ').slice(0,2).join(' ')+'&lt;/span&gt;';
     }).join('');
-
-    /* Insight */
-    document.getElementById('rInsight').textContent=a.insight;
 
     /* Show */
     document.getElementById('emptyState').style.display='none';
