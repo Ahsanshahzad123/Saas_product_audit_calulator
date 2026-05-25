@@ -292,12 +292,12 @@
 
   /* ── Helpers ── */
   var fmt  = function(n){return '$'+Math.round(n).toLocaleString();};
-  var fmtK = function(n){var v=Math.round(n);return v>=1000?'$'+(v/1000).toFixed(0)+'K':fmt(v);};
+  var fmtK = function(n){var v=Math.round(n);return v&gt;=1000?'$'+(v/1000).toFixed(0)+'K':fmt(v);};
   var flt  = function(id){return parseFloat(document.getElementById(id).value)||0;};
   var sel  = function(id){return document.getElementById(id).value;};
 
   function monthlyBuild(ck,uk,tk,aik,ik){var c=CMP[ck],u=USR[uk],t=TL[tk],ai=AI[aik]||AI.no_ai,ind=IND[ik]||IND.general;return{min:Math.round(c.monthlyMin*u.sf*t.cp*ai.cm*ind.cm),max:Math.round(c.monthlyMax*u.sf*t.cp*ai.cm*ind.cm)};}
-  function buildTime(sk,ck,budget,aik,ik){var base=ST[sk].baseMonths;var sp=budget>=200000?.80:budget>=100000?.90:budget>=50000?1.00:1.25;var ai=AI[aik]||AI.no_ai,ind=IND[ik]||IND.general;return Math.min(36,Math.max(2,Math.round(base*CMP[ck].timeMult*sp*ai.tm*ind.tm)));}
+  function buildTime(sk,ck,budget,aik,ik){var base=ST[sk].baseMonths;var sp=budget&gt;=200000?.80:budget&gt;=100000?.90:budget&gt;=50000?1.00:1.25;var ai=AI[aik]||AI.no_ai,ind=IND[ik]||IND.general;return Math.min(36,Math.max(2,Math.round(base*CMP[ck].timeMult*sp*ai.tm*ind.tm)));}
   function oppScore(ak,sk,ck,uk,tk,aik,ik,budget,rev){
     var a=AUD[ak],s=ST[sk],t=TL[tk],mb=monthlyBuild(ck,uk,tk,aik,ik),bt=buildTime(sk,ck,budget,aik,ik);
     var fit=Math.min(budget/Math.max(mb.min*bt,1),1),mkt=1-s.competition,urg=Math.min(t.um/1.5,1);
@@ -305,7 +305,7 @@
   }
   function monthlyLost(rev,ak,sk,tk){return Math.round((rev/12)*AUD[ak].urgency*ST[sk].competition*TL[tk].um);}
   function delayLoss(mo,months,mult){var t=0;for(var i=0;i&lt;months;i++)t+=mo*Math.pow(1.05,i);return Math.round(t*mult);}
-  function verdict(sc){if(sc>=80)return{text:'Strong Opportunity',cls:'opp-strong'};if(sc>=60)return{text:'Good Opportunity',cls:'opp-good'};if(sc>=40)return{text:'Moderate — Act Strategically',cls:'opp-moderate'};if(sc>=20)return{text:'Challenging — Plan Carefully',cls:'opp-challenging'};return{text:'High Risk — Seek Guidance',cls:'opp-risky'};}
+  function verdict(sc){if(sc&gt;=80)return{text:'Strong Opportunity',cls:'opp-strong'};if(sc&gt;=60)return{text:'Good Opportunity',cls:'opp-good'};if(sc&gt;=40)return{text:'Moderate — Act Strategically',cls:'opp-moderate'};if(sc&gt;=20)return{text:'Challenging — Plan Carefully',cls:'opp-challenging'};return{text:'High Risk — Seek Guidance',cls:'opp-risky'};}
 
   var TEAM_ROLES={
     designer:{icon:'🎨',label:'UI/UX Designer',    desc:'Branding, wireframes, user flows &amp; visual design'},
@@ -328,7 +328,7 @@
     if(aik==='ai_core')  {t.aiml.min=2;t.aiml.max=3;t.backend.min=Math.max(t.backend.min,2);}
     if(ik==='healthcare'||ik==='fintech'||ik==='legal'){t.sqa.min=1;t.analyst.min=1;}
     if(uk==='large'||uk==='xlarge'){t.devops.min=1;t.support.min=1;t.support.max=1;}
-    var res=[];for(var k in t){if(t[k].max>0)res.push({key:k,min:t[k].min,max:t[k].max});}
+    var res=[];for(var k in t){if(t[k].max&gt;0)res.push({key:k,min:t[k].min,max:t[k].max});}
     return res;
   }
 
@@ -354,13 +354,13 @@
     var l6   = delayLoss(mo,6,a.riskMult);
     var l12  = delayLoss(mo,12,a.riskMult);
     var tbMin= mb.min*bt, tbMax=mb.max*bt;
-    var roi  = rev>0?Math.ceil(tbMax/(rev/12)):null;
+    var roi  = rev&gt;0?Math.ceil(tbMax/(rev/12)):null;
     var verd = verdict(sc);
 
     /* Badge + ring */
     var badge=document.getElementById('oppBadge');
     badge.textContent=verd.text; badge.className='sc-opp-badge '+verd.cls;
-    var ringCol=sc>=80?'#2e7d32':sc>=60?'#1565c0':sc>=40?'#f57f17':'#c62828';
+    var ringCol=sc&gt;=80?'#2e7d32':sc&gt;=60?'#1565c0':sc&gt;=40?'#f57f17':'#c62828';
     document.getElementById('rScore').textContent=sc;
     document.getElementById('rVerdict').textContent=verd.text;
     document.getElementById('rVerdict').style.color=ringCol;
