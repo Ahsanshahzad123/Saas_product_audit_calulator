@@ -253,12 +253,12 @@
 (function(){
   /* ── Data tables ── */
   var AUD={
-    idea_personal:    {urgency:.85,riskMult:1.20,mktCapture:.60,insight:'Every month of delay is money from your own pocket — and an open door for competitors to enter your market first.',rec:'Start with a lean MVP targeting your first 10–20 paying customers. Budget 4–6 months of focused development with a reliable technical partner.'},
-    idea_funded:      {urgency:.95,riskMult:1.70,mktCapture:.75,insight:'Investor runway has a hard deadline. Slow execution compresses your window to hit milestones and secure your next funding round.',rec:'Speed to a working product is everything. Investors expect milestones on schedule — a strong development partner can halve your time-to-demo.'},
-    unsatisfied_team: {urgency:.90,riskMult:1.50,mktCapture:.65,insight:'An underperforming team doubles your cost — you pay salaries AND lose market time simultaneously.',rec:'Audit your current output vs monthly spend. Switching to the right partner typically saves 40–60% long-term and recovers 3–6 months of velocity.'},
-    mvp_investment:   {urgency:.80,riskMult:1.40,mktCapture:.70,insight:'Your MVP proves the concept. Now you need execution speed and code quality to scale before competitors replicate your idea.',rec:'Prioritise scalability, code quality, and feature delivery speed. The right team pays for itself within 3–4 months.'},
-    mvp_ai:           {urgency:.88,riskMult:1.60,mktCapture:.60,insight:'AI-generated code carries hidden technical debt — security vulnerabilities, no scalability plan, logic that breaks under real loads.',rec:'Get a professional technical audit before scaling marketing or pitching investors. Fixing AI-built MVPs early costs 3x less.'},
-    non_technical:    {urgency:.75,riskMult:1.10,mktCapture:.50,insight:'Without technical knowledge, the wrong development vendor can burn your entire budget with little to show.',rec:'Start with a discovery and prototype phase before committing to full development. Validate cheaply, then scale with confidence.'},
+    idea_personal:    {urgency:.85,riskMult:1.20,mktCapture:.60,rec:'Start with a lean MVP targeting your first 10–20 paying customers. Budget 4–6 months of focused development with a reliable technical partner.'},
+    idea_funded:      {urgency:.95,riskMult:1.70,mktCapture:.75,rec:'Speed to a working product is everything. Investors expect milestones on schedule — a strong development partner can halve your time-to-demo.'},
+    unsatisfied_team: {urgency:.90,riskMult:1.50,mktCapture:.65,rec:'Audit your current output vs monthly spend. Switching to the right partner typically saves 40–60% long-term and recovers 3–6 months of velocity.'},
+    mvp_investment:   {urgency:.80,riskMult:1.40,mktCapture:.70,rec:'Prioritise scalability, code quality, and feature delivery speed. The right team pays for itself within 3–4 months.'},
+    mvp_ai:           {urgency:.88,riskMult:1.60,mktCapture:.60,rec:'Get a professional technical audit before scaling marketing or pitching investors. Fixing AI-built MVPs early costs 3x less.'},
+    non_technical:    {urgency:.75,riskMult:1.10,mktCapture:.50,rec:'Start with a discovery and prototype phase before committing to full development. Validate cheaply, then scale with confidence.'},
   };
   var ST={
     b2b:        {competition:.60,baseMonths:5},
@@ -402,7 +402,8 @@
 
     /* Show */
     document.getElementById('emptyState').style.display='none';
-    document.getElementById('resContent').style.display='block';
+    var rc=document.getElementById('resContent');
+    rc.style.display='flex';rc.style.flexDirection='column';rc.style.flex='1';
 
     window._audit={ak:ak,sk:sk,ck:ck,uk:uk,tk:tk,aik:aik,ik:ik,rev:rev,budget:budget,sc:sc,mo:mo,l6:l6,l12:l12,mb:mb,tbMin:tbMin,tbMax:tbMax,bt:bt,roi:roi,verd:verd,a:a,tMin:tMin,tMax:tMax};
   });

@@ -225,8 +225,6 @@ function runAudit(data) {
   var team             = calcTeam(data.complexityKey, data.aiKey, data.industryKey, data.usersKey);
   var teamTotalMin     = team.reduce(function(s,r){return s+r.min;},0);
   var teamTotalMax     = team.reduce(function(s,r){return s+r.max;},0);
-  var trajectory       = [];
-  for (var i = 0; i <= 12; i++) trajectory.push(i === 0 ? 0 : calcDelayLoss(monthlyRevLost, i, aud.riskMult));
 
   return {
     opportunityScore:  opportunityScore,
@@ -239,8 +237,6 @@ function runAudit(data) {
     buildTimeline:     buildTimeline,
     roiMonths:         roiMonths,
     verdict:           verdict,
-    trajectory:        trajectory,
-    insight:           aud.insight,
     recommendation:    aud.rec,
     complexityNotes:   complexityNotes,
     team:              team,

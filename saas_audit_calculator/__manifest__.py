@@ -24,7 +24,6 @@
     'assets': {
         'web.assets_frontend': [
             'saas_audit_calculator/static/src/css/calculator.css',
-            'saas_audit_calculator/static/src/js/calculator.js',
         ],
     },
     'installable': True,

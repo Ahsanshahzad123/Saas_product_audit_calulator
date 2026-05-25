@@ -65,13 +65,6 @@ body{font-family:'Segoe UI',-apple-system,BlinkMacSystemFont,'Inter',sans-serif;
 .sc-score-info{flex:1;min-width:0}
 .sc-score-verdict{font-size:.82rem;font-weight:800;color:#1a237e;margin-bottom:2px}
 .sc-score-sub{font-size:.62rem;color:#aaa;margin-bottom:7px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.sc-score-factors{text-align:left}
-.sc-factor-row{display:flex;align-items:center;gap:7px;margin-bottom:4px}
-.sc-factor-lbl{font-size:.54rem;font-weight:700;color:#aaa;width:62px;flex-shrink:0;text-transform:uppercase;letter-spacing:.4px}
-.sc-factor-track{flex:1;height:4px;background:#ebebeb;border-radius:3px;overflow:hidden}
-.sc-factor-fill{height:100%;border-radius:3px;width:0%;transition:width .9s cubic-bezier(.4,0,.2,1)}
-.sc-factor-pts{font-size:.58rem;font-weight:800;color:#777;width:28px;text-align:right;flex-shrink:0}
-.sc-score-tip{margin-top:7px;background:#fff8e1;border-left:3px solid #f9a825;border-radius:0 5px 5px 0;padding:6px 8px;font-size:.63rem;color:#5d4037;line-height:1.5}
 
 /* ── 3-column metrics ── */
 .sc-metrics-row{display:grid;grid-template-columns:repeat(3,1fr);border-bottom:1px solid #f0f0f0;flex-shrink:0}
@@ -96,14 +89,9 @@ body{font-family:'Segoe UI',-apple-system,BlinkMacSystemFont,'Inter',sans-serif;
 .sc-delay-amt{font-size:1.55rem;font-weight:900;color:#c62828;letter-spacing:-.5px;line-height:1.1;margin-bottom:2px}
 .sc-delay-sub{font-size:.6rem;color:#e57373}
 
-/* ── Chart / Insight / Sections ── */
+/* ── Snapshot info section ── */
 .sc-section{padding:10px 14px;border-bottom:1px solid #f0f0f0}
 .sc-section:last-child{border-bottom:none}
-.sc-section-title{font-size:.57rem;font-weight:800;text-transform:uppercase;letter-spacing:1px;color:#bbb;margin-bottom:7px;display:flex;align-items:center;gap:5px}
-.sc-section-title span{font-size:.8rem}
-.sc-chart-wrap{position:relative;height:130px;width:100%}
-.sc-chart-wrap canvas{position:absolute;top:0;left:0}
-.sc-chart-note{font-size:.57rem;color:#ccc;margin-top:5px;text-align:center;line-height:1.4}
 .sc-insight-card{background:#e8f0fe;border-left:4px solid #1565c0;border-radius:0 8px 8px 0;padding:10px 12px;display:flex;gap:8px;align-items:flex-start}
 .sc-insight-icon{font-size:.88rem;flex-shrink:0;margin-top:1px}
 .sc-insight-text{font-size:.69rem;color:#1a237e;line-height:1.55}
@@ -276,7 +264,7 @@ body{font-family:'Segoe UI',-apple-system,BlinkMacSystemFont,'Inter',sans-serif;
       <p>Fill in your details and click <strong>Run My Free SaaS Audit</strong> to see your personalised analysis.</p>
     </div>
 
-    <div id="resContent" style="display:none;display:flex;flex-direction:column;flex:1;overflow:hidden">
+    <div id="resContent" style="display:none">
 
       <!-- 1. Score ring + factor breakdown -->
       <div class="sc-score-section">
@@ -382,12 +370,12 @@ body{font-family:'Segoe UI',-apple-system,BlinkMacSystemFont,'Inter',sans-serif;
 
 /* ── Lookup tables (mirrors calculator.js) ── */
 var AUDIENCE_TYPES = {
-  idea_personal:    { urgency:.85, riskMult:1.20, mktCapture:.60, insight:'Every month of delay is money from your own pocket — and an open door for competitors to enter your market first.', rec:'Start with a lean MVP targeting your first 10–20 paying customers. Budget 4–6 months of focused development with a reliable technical partner who has built SaaS products before.' },
-  idea_funded:      { urgency:.95, riskMult:1.70, mktCapture:.75, insight:'Investor runway has a hard deadline. Slow execution compresses your window to hit milestones and secure your next funding round.', rec:'Speed to a working product is everything. Investors expect milestones on schedule — a strong development partner can halve your time-to-demo and strengthen your funding story.' },
-  unsatisfied_team: { urgency:.90, riskMult:1.50, mktCapture:.65, insight:'An underperforming team doubles your cost — you pay salaries AND lose market time simultaneously. Every month you stay costs more than switching.', rec:'Audit your current output vs monthly spend. Switching to the right partner typically saves 40–60% long-term and recovers 3–6 months of lost velocity immediately.' },
-  mvp_investment:   { urgency:.80, riskMult:1.40, mktCapture:.70, insight:'Your MVP proves the concept. Now you need execution speed and code quality to scale before competitors replicate your idea with better funding.', rec:'Prioritise scalability, code quality, and feature delivery speed. The right team pays for itself within 3–4 months through faster go-to-market execution.' },
-  mvp_ai:           { urgency:.88, riskMult:1.60, mktCapture:.60, insight:'AI-generated code carries hidden technical debt — security vulnerabilities, no scalability plan, and logic that breaks under real user loads.', rec:'Get a professional technical audit before scaling marketing or pitching investors. Fixing AI-built MVPs early costs 3x less than a full rebuild under pressure.' },
-  non_technical:    { urgency:.75, riskMult:1.10, mktCapture:.50, insight:'Without technical knowledge, the wrong development vendor can burn your entire budget with little to show — the most common and costly founder mistake.', rec:'Start with a discovery and prototype phase before committing to full development. Validate cheaply with a trusted partner, then scale with full confidence.' },
+  idea_personal:    { urgency:.85, riskMult:1.20, mktCapture:.60, rec:'Start with a lean MVP targeting your first 10–20 paying customers. Budget 4–6 months of focused development with a reliable technical partner who has built SaaS products before.' },
+  idea_funded:      { urgency:.95, riskMult:1.70, mktCapture:.75, rec:'Speed to a working product is everything. Investors expect milestones on schedule — a strong development partner can halve your time-to-demo and strengthen your funding story.' },
+  unsatisfied_team: { urgency:.90, riskMult:1.50, mktCapture:.65, rec:'Audit your current output vs monthly spend. Switching to the right partner typically saves 40–60% long-term and recovers 3–6 months of lost velocity immediately.' },
+  mvp_investment:   { urgency:.80, riskMult:1.40, mktCapture:.70, rec:'Prioritise scalability, code quality, and feature delivery speed. The right team pays for itself within 3–4 months through faster go-to-market execution.' },
+  mvp_ai:           { urgency:.88, riskMult:1.60, mktCapture:.60, rec:'Get a professional technical audit before scaling marketing or pitching investors. Fixing AI-built MVPs early costs 3x less than a full rebuild under pressure.' },
+  non_technical:    { urgency:.75, riskMult:1.10, mktCapture:.50, rec:'Start with a discovery and prototype phase before committing to full development. Validate cheaply with a trusted partner, then scale with full confidence.' },
 };
 
 var SAAS_TYPES = {
