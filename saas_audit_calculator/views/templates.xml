@@ -406,6 +406,10 @@
     rc.style.display='flex';rc.style.flexDirection='column';rc.style.flex='1';
 
     window._audit={ak:ak,sk:sk,ck:ck,uk:uk,tk:tk,aik:aik,ik:ik,rev:rev,budget:budget,sc:sc,mo:mo,l6:l6,l12:l12,mb:mb,tbMin:tbMin,tbMax:tbMax,bt:bt,roi:roi,verd:verd,a:a,tMin:tMin,tMax:tMax};
+
+    /* Auto-save calculator result as a lead (requires email) */
+    var _em=document.getElementById('fEmail').value.trim();
+    if(_em){fetch('/saas-calculator/submit-lead',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({email:_em,leadType:'calculator',audienceType:ak,saasType:sk,complexityKey:ck,usersKey:uk,timelineKey:tk,aiKey:aik,industryKey:ik,revenueGoal:rev,budget:budget,source:'saas_audit_calculator',auditResults:{opportunityScore:sc,monthlyRevLost:mo,loss6Months:l6,loss12Months:l12,monthlyBuildMin:mb?mb.min:0,monthlyBuildMax:mb?mb.max:0,totalBudgetMin:tbMin,totalBudgetMax:tbMax,buildTimeline:bt,roiMonths:roi||0,verdict:verd?verd.text:'',teamSize:tMin+'–'+tMax+' people'}})}).catch(function(){});}
   });
 
   document.getElementById('openAuditBtn').addEventListener('click',function(){
@@ -441,6 +445,7 @@
         buildTimeline:d.bt,roiMonths:d.roi,verdict:d.verd?d.verd.text:'',teamSize:(d.tMin||0)+'–'+(d.tMax||0)+' people',
       },
       source:'saas_audit_calculator',
+      leadType:'audit_request',
     };
     fetch('/saas-calculator/submit-lead',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(payload)}).catch(function(){});
     document.getElementById('leadSubmit').style.display='none';

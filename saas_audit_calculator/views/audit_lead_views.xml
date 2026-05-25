@@ -14,6 +14,11 @@
         <field name="name"/>
         <field name="email"/>
         <field name="company"/>
+        <field name="lead_type"
+               widget="badge"
+               decoration-info="lead_type == 'calculator'"
+               decoration-success="lead_type == 'audit_request'"
+               string="Type"/>
         <field name="audience_type" string="Audience"/>
         <field name="saas_type" string="Product Type"/>
         <field name="annual_revenue_goal" widget="monetary" string="Revenue Goal/Yr"/>
@@ -94,6 +99,7 @@
           <group string="Lead Notes">
             <field name="challenge" colspan="2"/>
             <field name="notes" colspan="2"/>
+            <field name="lead_type"/>
             <field name="source"/>
             <field name="submitted_at" readonly="1"/>
             <field name="ip_address" readonly="1"/>
@@ -113,6 +119,9 @@
         <field name="email"/>
         <field name="name"/>
         <field name="company"/>
+        <filter string="Calculator Results" name="calculator"    domain="[('lead_type','=','calculator')]"/>
+        <filter string="Audit Requests"    name="audit_request" domain="[('lead_type','=','audit_request')]"/>
+        <separator/>
         <filter string="New"       name="new"       domain="[('state','=','new')]"/>
         <filter string="Contacted" name="contacted" domain="[('state','=','contacted')]"/>
         <filter string="Qualified" name="qualified" domain="[('state','=','qualified')]"/>
@@ -122,6 +131,7 @@
         <filter string="Good Opportunity"   name="good"   domain="[('opportunity_score','&gt;=',60),('opportunity_score','&lt;',80)]"/>
         <separator/>
         <group expand="0" string="Group By">
+          <filter string="Lead Type"     name="by_lead_type" context="{'group_by':'lead_type'}"/>
           <filter string="Audience Type" name="by_audience" context="{'group_by':'audience_type'}"/>
           <filter string="SaaS Type"     name="by_saas"     context="{'group_by':'saas_type'}"/>
           <filter string="Status"        name="by_state"    context="{'group_by':'state'}"/>

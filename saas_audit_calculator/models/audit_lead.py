@@ -98,6 +98,10 @@ class SaasAuditLead(models.Model):
     recommended_team_size  = fields.Char('Recommended Team Size')
 
     # ── Meta ───────────────────────────────────────────────────────────────
+    lead_type = fields.Selection([
+        ('calculator',    'Calculator Result'),
+        ('audit_request', 'Full Audit Request'),
+    ], string='Lead Type', default='calculator', index=True)
     source       = fields.Char('Source', default='saas_audit_calculator')
     ip_address   = fields.Char('IP Address')
     submitted_at = fields.Datetime('Submitted At', default=fields.Datetime.now)
