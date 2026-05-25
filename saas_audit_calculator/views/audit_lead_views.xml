@@ -1,168 +1,135 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
 
-  <!-- ── List View ─────────────────────────────────────────────────────── -->
-  <record id="saas_audit_lead_list" model="ir.ui.view">
-    <field name="name">saas.audit.lead.list</field>
-    <field name="model">saas.audit.lead</field>
+  <!-- ── SaaS Audit tab injected into the standard CRM Lead/Opportunity form ── -->
+  <record id="crm_lead_form_saas_audit" model="ir.ui.view">
+    <field name="name">crm.lead.form.saas.audit</field>
+    <field name="model">crm.lead</field>
+    <field name="inherit_id" ref="crm.crm_lead_all_leads"/>
     <field name="arch" type="xml">
-      <list string="Audit Leads"
-            decoration-success="opportunity_score &gt;= 60"
-            decoration-warning="opportunity_score &gt;= 40 and opportunity_score &lt; 60"
-            decoration-danger="opportunity_score &lt; 40">
+      <xpath expr="//notebook" position="inside">
+        <page string="SaaS Audit" name="saas_audit"
+              invisible="saas_source != 'saas_audit_calculator'">
+          <group>
+            <group string="Lead Classification">
+              <field name="saas_lead_type" widget="badge"/>
+              <field name="saas_opportunity_score"/>
+              <field name="saas_verdict"/>
+              <field name="saas_team_size"/>
+              <field name="saas_ip_address" readonly="1"/>
+            </group>
+            <group string="Audit Inputs">
+              <field name="saas_audience_type"/>
+              <field name="saas_type"/>
+              <field name="saas_complexity"/>
+              <field name="saas_target_users"/>
+              <field name="saas_launch_timeline"/>
+              <field name="saas_ai_type"/>
+              <field name="saas_industry"/>
+              <field name="saas_role"/>
+            </group>
+          </group>
+          <group>
+            <group string="Financial Inputs">
+              <field name="saas_revenue_goal" widget="monetary" options="{'currency_field': 'saas_currency_id'}"/>
+              <field name="saas_budget"       widget="monetary" options="{'currency_field': 'saas_currency_id'}"/>
+            </group>
+            <group string="Audit Results">
+              <field name="saas_monthly_rev_lost"  widget="monetary" options="{'currency_field': 'saas_currency_id'}"/>
+              <field name="saas_loss_6_months"     widget="monetary" options="{'currency_field': 'saas_currency_id'}"/>
+              <field name="saas_loss_12_months"    widget="monetary" options="{'currency_field': 'saas_currency_id'}"/>
+              <field name="saas_monthly_build_min" widget="monetary" options="{'currency_field': 'saas_currency_id'}"/>
+              <field name="saas_monthly_build_max" widget="monetary" options="{'currency_field': 'saas_currency_id'}"/>
+              <field name="saas_total_budget_min"  widget="monetary" options="{'currency_field': 'saas_currency_id'}"/>
+              <field name="saas_total_budget_max"  widget="monetary" options="{'currency_field': 'saas_currency_id'}"/>
+              <field name="saas_roi_months"/>
+              <field name="saas_build_timeline"/>
+            </group>
+          </group>
+          <group string="Challenge">
+            <field name="saas_challenge" nolabel="1" colspan="2"/>
+          </group>
+          <!-- hidden currency field needed by monetary widgets -->
+          <field name="saas_currency_id" invisible="1"/>
+        </page>
+      </xpath>
+    </field>
+  </record>
+
+  <!-- ── Dedicated list view for SaaS calculator leads ── -->
+  <record id="saas_audit_crm_lead_list" model="ir.ui.view">
+    <field name="name">saas.audit.crm.lead.list</field>
+    <field name="model">crm.lead</field>
+    <field name="arch" type="xml">
+      <list string="SaaS Audit Leads"
+            decoration-success="saas_opportunity_score &gt;= 60"
+            decoration-warning="saas_opportunity_score &gt;= 40 and saas_opportunity_score &lt; 60"
+            decoration-danger="saas_opportunity_score &lt; 40">
         <field name="create_date" string="Submitted"/>
-        <field name="name"/>
-        <field name="email"/>
-        <field name="company"/>
-        <field name="lead_type"
+        <field name="partner_name" string="Name"/>
+        <field name="email_from"   string="Email"/>
+        <field name="phone"/>
+        <field name="saas_lead_type"
                widget="badge"
-               decoration-info="lead_type == 'calculator'"
-               decoration-success="lead_type == 'audit_request'"
+               decoration-info="saas_lead_type == 'calculator'"
+               decoration-success="saas_lead_type == 'audit_request'"
                string="Type"/>
-        <field name="audience_type" string="Audience"/>
-        <field name="saas_type" string="Product Type"/>
-        <field name="annual_revenue_goal" widget="monetary" string="Revenue Goal/Yr"/>
-        <field name="available_budget" widget="monetary" string="Budget"/>
-        <field name="opportunity_score" string="Opp. Score"/>
-        <field name="verdict" string="Verdict"/>
-        <field name="loss_12_months" widget="monetary" string="12-Mo Loss Risk"/>
-        <field name="state"
-               widget="badge"
-               decoration-info="state == 'new'"
-               decoration-warning="state == 'contacted'"
-               decoration-success="state == 'converted'"
-               decoration-danger="state == 'lost'"/>
+        <field name="saas_audience_type"    string="Audience"/>
+        <field name="saas_type"             string="Product Type"/>
+        <field name="saas_opportunity_score" string="Score"/>
+        <field name="saas_verdict"           string="Verdict"/>
+        <field name="saas_revenue_goal"      string="Rev Goal/Yr" widget="monetary"
+               options="{'currency_field': 'saas_currency_id'}"/>
+        <field name="saas_loss_12_months"    string="12-Mo Risk"  widget="monetary"
+               options="{'currency_field': 'saas_currency_id'}"/>
+        <field name="saas_currency_id" column_invisible="1"/>
+        <field name="priority" widget="priority"/>
+        <field name="stage_id"/>
       </list>
     </field>
   </record>
 
-  <!-- ── Form View ─────────────────────────────────────────────────────── -->
-  <record id="saas_audit_lead_form" model="ir.ui.view">
-    <field name="name">saas.audit.lead.form</field>
-    <field name="model">saas.audit.lead</field>
+  <!-- ── Search view for SaaS calculator leads ── -->
+  <record id="saas_audit_crm_lead_search" model="ir.ui.view">
+    <field name="name">saas.audit.crm.lead.search</field>
+    <field name="model">crm.lead</field>
     <field name="arch" type="xml">
-      <form string="Audit Lead">
-        <header>
-          <button name="action_mark_contacted" string="Mark Contacted"
-                  type="object" class="btn-primary"
-                  invisible="state not in ['new']"/>
-          <button name="action_mark_qualified" string="Mark Qualified"
-                  type="object" class="btn-primary"
-                  invisible="state not in ['contacted']"/>
-          <button name="action_mark_converted" string="Mark Converted"
-                  type="object" class="btn-success"
-                  invisible="state not in ['qualified']"/>
-          <field name="state" widget="statusbar"
-                 statusbar_visible="new,contacted,qualified,converted"/>
-        </header>
-        <sheet>
-          <div class="oe_button_box" name="button_box"/>
-          <group>
-            <group string="Contact Information">
-              <field name="name"/>
-              <field name="email" widget="email"/>
-              <field name="phone" widget="phone"/>
-              <field name="company"/>
-              <field name="role"/>
-              <field name="website_url" widget="url"/>
-            </group>
-            <group string="Opportunity Audit Results">
-              <field name="opportunity_score"/>
-              <field name="verdict"/>
-              <field name="recommended_team_size" string="Recommended Team Size"/>
-              <field name="monthly_rev_lost" widget="monetary" string="Monthly Revenue at Risk"/>
-              <field name="loss_6_months" widget="monetary"/>
-              <field name="loss_12_months" widget="monetary"/>
-            </group>
-          </group>
-          <group>
-            <group string="Audit Inputs">
-              <field name="audience_type"/>
-              <field name="saas_type"/>
-              <field name="product_complexity"/>
-              <field name="target_users"/>
-              <field name="launch_timeline"/>
-              <field name="ai_type"/>
-              <field name="industry"/>
-              <field name="annual_revenue_goal" widget="monetary"/>
-              <field name="available_budget" widget="monetary"/>
-            </group>
-            <group string="Build Cost Estimates">
-              <field name="monthly_build_cost_min" widget="monetary" string="Monthly Build Cost — Min"/>
-              <field name="monthly_build_cost_max" widget="monetary" string="Monthly Build Cost — Max"/>
-              <field name="total_budget_min" widget="monetary" string="Total Project Budget — Min"/>
-              <field name="total_budget_max" widget="monetary" string="Total Project Budget — Max"/>
-              <field name="roi_months" string="Break-even (months)"/>
-              <field name="build_timeline" string="Estimated Build Time (months)"/>
-            </group>
-          </group>
-          <group string="Lead Notes">
-            <field name="challenge" colspan="2"/>
-            <field name="notes" colspan="2"/>
-            <field name="lead_type"/>
-            <field name="source"/>
-            <field name="submitted_at" readonly="1"/>
-            <field name="ip_address" readonly="1"/>
-          </group>
-        </sheet>
-        <chatter/>
-      </form>
-    </field>
-  </record>
-
-  <!-- ── Search View ───────────────────────────────────────────────────── -->
-  <record id="saas_audit_lead_search" model="ir.ui.view">
-    <field name="name">saas.audit.lead.search</field>
-    <field name="model">saas.audit.lead</field>
-    <field name="arch" type="xml">
-      <search string="Search Audit Leads">
-        <field name="email"/>
-        <field name="name"/>
-        <field name="company"/>
-        <filter string="Calculator Results" name="calculator"    domain="[('lead_type','=','calculator')]"/>
-        <filter string="Audit Requests"    name="audit_request" domain="[('lead_type','=','audit_request')]"/>
+      <search string="Search SaaS Audit Leads">
+        <field name="email_from" string="Email"/>
+        <field name="partner_name" string="Name"/>
+        <filter string="Calculator Results" name="calculator"
+                domain="[('saas_lead_type','=','calculator')]"/>
+        <filter string="Audit Requests"     name="audit_request"
+                domain="[('saas_lead_type','=','audit_request')]"/>
         <separator/>
-        <filter string="New"       name="new"       domain="[('state','=','new')]"/>
-        <filter string="Contacted" name="contacted" domain="[('state','=','contacted')]"/>
-        <filter string="Qualified" name="qualified" domain="[('state','=','qualified')]"/>
-        <filter string="Converted" name="converted" domain="[('state','=','converted')]"/>
-        <separator/>
-        <filter string="Strong Opportunity" name="strong" domain="[('opportunity_score','&gt;=',80)]"/>
-        <filter string="Good Opportunity"   name="good"   domain="[('opportunity_score','&gt;=',60),('opportunity_score','&lt;',80)]"/>
+        <filter string="Score ≥ 80 (Strong)"  name="strong"   domain="[('saas_opportunity_score','&gt;=',80)]"/>
+        <filter string="Score ≥ 60 (Good)"    name="good"     domain="[('saas_opportunity_score','&gt;=',60),('saas_opportunity_score','&lt;',80)]"/>
+        <filter string="Score &lt; 40 (Risky)" name="risky"   domain="[('saas_opportunity_score','&lt;',40)]"/>
         <separator/>
         <group expand="0" string="Group By">
-          <filter string="Lead Type"     name="by_lead_type" context="{'group_by':'lead_type'}"/>
-          <filter string="Audience Type" name="by_audience" context="{'group_by':'audience_type'}"/>
+          <filter string="Lead Type"     name="by_type"     context="{'group_by':'saas_lead_type'}"/>
+          <filter string="Audience Type" name="by_audience" context="{'group_by':'saas_audience_type'}"/>
           <filter string="SaaS Type"     name="by_saas"     context="{'group_by':'saas_type'}"/>
-          <filter string="Status"        name="by_state"    context="{'group_by':'state'}"/>
+          <filter string="Stage"         name="by_stage"    context="{'group_by':'stage_id'}"/>
           <filter string="Month"         name="by_month"    context="{'group_by':'create_date:month'}"/>
         </group>
       </search>
     </field>
   </record>
 
-  <!-- ── Pivot View ────────────────────────────────────────────────────── -->
-  <record id="saas_audit_lead_pivot" model="ir.ui.view">
-    <field name="name">saas.audit.lead.pivot</field>
-    <field name="model">saas.audit.lead</field>
-    <field name="arch" type="xml">
-      <pivot string="Audit Leads Analysis">
-        <field name="audience_type"  type="row"/>
-        <field name="saas_type"      type="col"/>
-        <field name="loss_12_months" type="measure"/>
-        <field name="available_budget" type="measure"/>
-        <field name="opportunity_score" type="measure"/>
-      </pivot>
-    </field>
-  </record>
-
-  <!-- ── Action ────────────────────────────────────────────────────────── -->
-  <record id="saas_audit_lead_action" model="ir.actions.act_window">
-    <field name="name">Audit Leads</field>
-    <field name="res_model">saas.audit.lead</field>
-    <field name="view_mode">list,form,pivot</field>
-    <field name="search_view_id" ref="saas_audit_lead_search"/>
-    <field name="context">{'search_default_new': 1}</field>
+  <!-- ── Window action — shows only SaaS calculator leads ── -->
+  <record id="saas_audit_crm_lead_action" model="ir.actions.act_window">
+    <field name="name">SaaS Audit Leads</field>
+    <field name="res_model">crm.lead</field>
+    <field name="view_mode">list,form</field>
+    <field name="domain">[('saas_source','=','saas_audit_calculator')]</field>
+    <field name="view_ids" eval="[
+      (5, 0, 0),
+      (0, 0, {'view_mode': 'list', 'view_id': ref('saas_audit_crm_lead_list')}),
+      (0, 0, {'view_mode': 'form', 'view_id': ref('crm.crm_lead_all_leads')}),
+    ]"/>
+    <field name="search_view_id" ref="saas_audit_crm_lead_search"/>
+    <field name="context">{'search_default_audit_request': 0}</field>
   </record>
 
 </odoo>

@@ -14,9 +14,8 @@
     'website': '',
     'category': 'Website/Marketing',
     'license': 'LGPL-3',
-    'depends': ['website', 'mail'],
+    'depends': ['website', 'crm'],
     'data': [
-        'security/ir.model.access.csv',
         'views/audit_lead_views.xml',
         'views/menus.xml',
         'views/templates.xml',
